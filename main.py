@@ -1,6 +1,8 @@
 
 import csv
 import numpy
+from strategies import *
+from TradingDay import TradingDay
 
 init_deposit = 1000
 daily_deposit = 1
@@ -110,3 +112,6 @@ with open(data_location) as csvfile:
     print("Total Value: " + str(protfolio_value))
     
 
+print(strategy_no_investment())
+td = TradingDay(100, 10, [10, 20, 30])
+print(td.price_history)
