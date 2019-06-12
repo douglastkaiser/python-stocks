@@ -112,6 +112,6 @@ with open(data_location) as csvfile:
     print("Total Value: " + str(protfolio_value))
     
 
-print(strategy_no_investment())
 td = TradingDay(100, 10, [10, 20, 30])
+print(strategy_no_investment(td))
 print(td.price_history)
