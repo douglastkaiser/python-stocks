@@ -45,18 +45,18 @@ def run_dougs_strategies(initial_deposit, daily_investment, close_prices):
 
 #### STRATEGIES
 def strategy_no_investment(trading_day):
-    assert type(trading_day) is TradingDay, "trading_day is not TradingDay"
+    assert type(trading_day) is TradingDay, "trading_day is not of type TradingDay"
 
     return trading_day
 
 def strategy_asap_investment(trading_day):
-    assert type(trading_day) is TradingDay, "trading_day is not TradingDay"
+    assert type(trading_day) is TradingDay, "trading_day is not of type TradingDay"
 
     trading_day.buy_all_shares()
     return trading_day
 
 def strategy_sinusoid_investment(trading_day):
-    assert type(trading_day) is TradingDay, "trading_day is not TradingDay"
+    assert type(trading_day) is TradingDay, "trading_day is not of type TradingDay"
 
     close_prices = trading_day.price_history
     bank_account = trading_day.bank_account
@@ -75,17 +75,23 @@ def strategy_sinusoid_investment(trading_day):
     return trading_day
 
 def strategy_maf_investment(trading_day):
-    assert type(trading_day) is TradingDay, "trading_day is not TradingDay"
+    assert type(trading_day) is TradingDay, "trading_day is not of type TradingDay"
 
-    maf_n = 50
+    maf_n = 200
     prices = trading_day.price_history
     latest_i = len(prices)
     oldest_i = min([len(prices)-maf_n, 0])
     prices_in_window = prices[oldest_i:latest_i]
     maf_average = sum(prices_in_window) / maf_n
+
     if (prices[-1] < maf_average):
         trading_day.buy_all_shares()
-    # elif (prices[-1] > maf_average):
-    #     trading_day.sell_one_share()
+
+    maf_n = 50
+    oldest_i = min([len(prices)-maf_n, 0])
+    prices_in_window = prices[oldest_i:latest_i]
+    maf_average = sum(prices_in_window) / maf_n
+    if (prices[-1] < maf_average):
+        trading_day.sell_one_share()
 
     return trading_day
