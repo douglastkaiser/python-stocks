@@ -1,6 +1,6 @@
 
 import csv
-from strategies import *
+from doug_basic_strategies import *
 
 initial_deposit = 1000
 daily_investment = 1

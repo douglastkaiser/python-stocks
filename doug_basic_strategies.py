@@ -11,9 +11,9 @@ def run_dougs_strategies(initial_deposit, daily_investment, close_prices):
     strategy_maf_investment_trading_day = TradingDay(0, initial_deposit, close_prices[0])
 
     # for close_price in close_prices:
-    for i in range(1, len(close_prices)-2510):
+    for i in range(1, len(close_prices)):
         price_history_today = close_prices[0:i]
-        print(len(price_history_today))
+        # print(len(price_history_today))
         strategy_no_investment_trading_day.bank_account += daily_investment
         strategy_no_investment_trading_day.price_history = price_history_today
         strategy_no_investment_trading_day = strategy_no_investment(strategy_no_investment_trading_day)
@@ -32,13 +32,15 @@ def run_dougs_strategies(initial_deposit, daily_investment, close_prices):
         
     print("\n -- Strat = NONE --")
     strategy_no_investment_trading_day.printer()
+
     print("\n -- Strat = ASAP --")
     strategy_asap_investment_trading_day.printer()
+
     print("\n -- Strat = SINUSOID --")
     strategy_sinusoid_investment_trading_day.printer()
+
     print("\n -- Strat = 100pt MAF --")
     strategy_maf_investment_trading_day.printer()
-
 
 
 #### STRATEGIES
