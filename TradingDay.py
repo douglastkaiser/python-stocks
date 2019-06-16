@@ -30,6 +30,16 @@ class TradingDay:
             value_history[i] = self.bank_account_history[i] + self.shares_history[i]*self.price_history[i]
         return value_history
 
+    #### STRAT HELP ####
+    def maf(self, maf_n):
+        prices = self.price_history
+        latest_i = len(prices)
+        oldest_i = min([len(prices)-maf_n, 0])
+        prices_in_window = prices[oldest_i:latest_i]
+        return sum(prices_in_window)/maf_n
+
+    # def no_delay_maf(self, maf_n):
+
     #### BUY SELL HELP ####
     def buy_one_share(self):
         assert type(self) is TradingDay, "self is not of type TradingDay"

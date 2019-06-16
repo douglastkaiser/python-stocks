@@ -13,6 +13,10 @@ def run_some_strategies(initial_deposit, daily_investment, close_prices):
     strategy_no_investment_trading_day = run_strat_over_full_time(strategy_no_investment, close_prices, daily_investment, initial_deposit)
     strategy_no_investment_trading_day.printer()
 
+    print("\n -- Strat = MARCUS 2.25% --")
+    marcus_trading_day = run_strat_over_full_time(strategy_marcus_2p25, close_prices, daily_investment, initial_deposit)
+    marcus_trading_day.printer()
+
     print("\n -- Strat = ASAP --")
     strategy_asap_investment_trading_day = run_strat_over_full_time(strategy_asap_investment, close_prices, daily_investment, initial_deposit)
     strategy_asap_investment_trading_day.printer()
@@ -31,6 +35,7 @@ def run_some_strategies(initial_deposit, daily_investment, close_prices):
     x = np.linspace(1, len(close_prices), len(close_prices))
 
     strategy_no_investment_trading_day.add_port_value_to_plt('No Investment Strat')
+    marcus_trading_day.add_port_value_to_plt('MARCUS 2.25%')
     strategy_asap_investment_trading_day.add_port_value_to_plt('ASAP Strat')
     strategy_sinusoid_investment_trading_day.add_port_value_to_plt('Sinusoid Strat')
     strategy_maf_investment_trading_day.add_port_value_to_plt('MAF Strat')

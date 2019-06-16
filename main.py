@@ -7,8 +7,8 @@ import matplotlib.pyplot as plt
 # python -m pip install -U matplotlib
 plt.close('all')
 
-initial_deposit = 1000
-daily_investment = 1
+initial_deposit = 10000
+daily_investment = 10
 
 # https://www.nasdaq.com/quotes/historical-quotes.aspx
 data_location = 'raw_data\HistoricalQuotes_SPY.csv'  # https://www.nasdaq.com/symbol/spy/historical
