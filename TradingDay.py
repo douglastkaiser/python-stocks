@@ -1,42 +1,59 @@
 class TradingDay:
 
-    def __init__(self, shares_owned, bank_account, price_history):
-        self.shares_owned = shares_owned
-        self.bank_account = bank_account
+    def __init__(self, bank_account_history, shares_history, price_history):
+        self.bank_account_history = bank_account_history
+        self.shares_history = shares_history
         self.price_history = price_history
 
     #### HELPERS
-    def buy_one_share(self):
-        assert type(self) is TradingDay, "self is not TradingDay"
+    def new_day(self, share_price):
+        assert type(self) is TradingDay, "self is not of type TradingDay"
 
-        if self.price_history[-1] < self.bank_account:
-            self.shares_owned += 1
-            self.bank_account -= self.price_history[-1]
+        self.bank_account_history.append(self.bank_account_history[-1])
+        self.shares_history.append(self.shares_history[-1])
+        self.price_history.append(share_price)
+
+    def add_daily_investment(self, daily_investment):
+        assert type(self) is TradingDay, "self is not of type TradingDay"
+
+        self.bank_account_history[-1] += daily_investment
+
+    def update_price_history(self, new_price_history):
+        assert type(self) is TradingDay, "self is not of type TradingDay"
+
+        self.price_history = new_price_history
+
+    def buy_one_share(self):
+        assert type(self) is TradingDay, "self is not of type TradingDay"
+
+        if self.price_history[-1] < self.bank_account_history[-1]:
+            self.shares_history[-1] += 1
+            self.bank_account_history[-1] -= self.price_history[-1]
 
     def buy_all_shares(self):
-        assert type(self) is TradingDay, "self is not TradingDay"
+        assert type(self) is TradingDay, "self is not of type TradingDay"
 
-        shares_to_buy = int(self.bank_account/self.price_history[-1])
-        self.bank_account -= shares_to_buy*self.price_history[-1]
-        self.shares_owned += shares_to_buy
+        shares_to_buy = int(self.bank_account_history[-1]/self.price_history[-1])
+        self.bank_account_history[-1] -= shares_to_buy*self.price_history[-1]
+        self.shares_history[-1] += shares_to_buy
 
     def sell_one_share(self):
-        assert type(self) is TradingDay, "self is not TradingDay"
+        assert type(self) is TradingDay, "self is not of type TradingDay"
 
-        if self.shares_owned > 0:
-            self.shares_owned = self.shares_owned - 1
-            self.bank_account += self.price_history[-1]
+        if self.shares_history[-1] > 0:
+            self.shares_history[-1] = self.shares_history[-1] - 1
+            self.bank_account_history[-1] += self.price_history[-1]
 
     def sell_all_shares(self):
-        assert type(self) is TradingDay, "self is not TradingDay"
+        assert type(self) is TradingDay, "self is not of type TradingDay"
 
-        self.bank_account += self.shares_owned*self.price_history[-1]
-        self.shares_owned = 0
+        self.bank_account_history[-1] += self.shares_history[-1]*self.price_history[-1]
+        self.shares_history[-1] = 0
 
     def printer(self):
-        assert type(self) is TradingDay, "self is not TradingDay"
+        assert type(self) is TradingDay, "self is not of type TradingDay"
 
-        print("Shares Owned in end: " + str(self.shares_owned))
-        print("Bank Account left over: " + "%.2f" % self.bank_account)
-        protfolio_value = self.shares_owned*self.price_history[-1] + self.bank_account
+        print("Shares Owned in end: " + str(self.shares_history[-1]))
+        print("Bank Account left over: " + "%.2f" % self.bank_account_history[-1])
+        protfolio_value = self.shares_history[-1]*self.price_history[-1] + self.bank_account_history[-1]
         print("Total Value: " + "%.2f" % protfolio_value)

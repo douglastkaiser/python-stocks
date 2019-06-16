@@ -1,6 +1,9 @@
 
 import csv
-from doug_basic_strategies import *
+from run_strategies import *
+
+## For plotting
+# python -m pip install -U matplotlib
 
 initial_deposit = 1000
 daily_investment = 1
