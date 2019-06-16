@@ -43,11 +43,11 @@ def strategy_sinusoid_investment(trading_day):
 def strategy_maf_investment(trading_day):
     assert type(trading_day) is TradingDay, "trading_day is not of type TradingDay"
 
-    maf_average = trading_day.maf(10)
+    maf_average = trading_day.maf(5)
     if (trading_day.price_history[-1] < maf_average):
         trading_day.buy_all_shares()
 
-    maf_average = trading_day.maf(200)
+    maf_average = trading_day.maf(300)
     if (trading_day.price_history[-1] > maf_average):
         trading_day.sell_one_share()
 
