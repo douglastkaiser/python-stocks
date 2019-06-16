@@ -25,4 +25,4 @@ with open(data_location) as csvfile:
     close_prices = list(reversed(close_prices))
 
 ####### Run Strats #######
-run_dougs_strategies(initial_deposit, daily_investment, close_prices)
+run_some_strategies(initial_deposit, daily_investment, close_prices)

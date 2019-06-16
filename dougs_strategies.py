@@ -1,3 +1,6 @@
+
+from TradingDay import TradingDay
+
 #### STRATEGIES
 def strategy_no_investment(trading_day):
     assert type(trading_day) is TradingDay, "trading_day is not of type TradingDay"
@@ -14,8 +17,7 @@ def strategy_sinusoid_investment(trading_day):
     assert type(trading_day) is TradingDay, "trading_day is not of type TradingDay"
 
     close_prices = trading_day.price_history
-    bank_account = trading_day.bank_account
-    shares_owned = trading_day.shares_owned
+    shares_owned = trading_day.shares_history[-1]
 
     days_prev = len(close_prices)
     prev_close_price_1 = close_prices[max([days_prev-3, 0])]

@@ -6,22 +6,12 @@ class TradingDay:
         self.price_history = price_history
 
     #### HELPERS
-    def new_day(self, share_price):
+    def new_day(self, share_price, daily_investment):
         assert type(self) is TradingDay, "self is not of type TradingDay"
 
-        self.bank_account_history.append(self.bank_account_history[-1])
+        self.bank_account_history.append(self.bank_account_history[-1] + daily_investment)
         self.shares_history.append(self.shares_history[-1])
         self.price_history.append(share_price)
-
-    def add_daily_investment(self, daily_investment):
-        assert type(self) is TradingDay, "self is not of type TradingDay"
-
-        self.bank_account_history[-1] += daily_investment
-
-    def update_price_history(self, new_price_history):
-        assert type(self) is TradingDay, "self is not of type TradingDay"
-
-        self.price_history = new_price_history
 
     def buy_one_share(self):
         assert type(self) is TradingDay, "self is not of type TradingDay"
