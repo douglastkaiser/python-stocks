@@ -1,3 +1,6 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
 class TradingDay:
 
     def __init__(self, bank_account_history, shares_history, price_history):
@@ -5,6 +8,7 @@ class TradingDay:
         self.shares_history = shares_history
         self.price_history = price_history
 
+    #### GENERAL HELP ####
     def new_day(self, new_share_price, daily_investment):
         assert type(self) is TradingDay, "self is not of type TradingDay"
 
@@ -62,3 +66,8 @@ class TradingDay:
         print("Bank Account left over: " + "%.2f" % self.bank_account_history[-1])
         protfolio_value = self.shares_history[-1]*self.price_history[-1] + self.bank_account_history[-1]
         print("Total Value: " + "%.2f" % protfolio_value)
+
+    def add_port_value_to_plt(self, label_for_legend):
+        x = np.linspace(1, len(self.price_history), len(self.price_history))
+        portfolio_value_history = self.portfolio_value_history()
+        plt.plot(x, portfolio_value_history, label=label_for_legend)

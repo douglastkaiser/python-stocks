@@ -1,13 +1,14 @@
 
 from TradingDay import TradingDay
-import matplotlib.pyplot as plt
 import numpy as np
 from dougs_strategies import *
+import matplotlib.pyplot as plt
 
 def run_some_strategies(initial_deposit, daily_investment, close_prices):
     print("Initial Deposit: " + str(initial_deposit))
     print("Daily Investment: " + str(daily_investment))
 
+    # Pass strat function name to run_strat_over_full_time()
     print("\n -- Strat = NONE --")
     strategy_no_investment_trading_day = run_strat_over_full_time(strategy_no_investment, close_prices, daily_investment, initial_deposit)
     strategy_no_investment_trading_day.printer()
@@ -29,24 +30,15 @@ def run_some_strategies(initial_deposit, daily_investment, close_prices):
     fig = plt.figure()  # an empty figure with no axes
     x = np.linspace(1, len(close_prices), len(close_prices))
 
-    portfolio_value_history = strategy_no_investment_trading_day.portfolio_value_history()
-    plt.plot(x, portfolio_value_history, label='No Investment Strat')
-
-    portfolio_value_history = strategy_asap_investment_trading_day.portfolio_value_history()
-    plt.plot(x, portfolio_value_history, label='ASAP Strat')
-
-    portfolio_value_history = strategy_sinusoid_investment_trading_day.portfolio_value_history()
-    plt.plot(x, portfolio_value_history, label='Sinusoid Strat')
-
-    portfolio_value_history = strategy_maf_investment_trading_day.portfolio_value_history()
-    plt.plot(x, portfolio_value_history, label='MAF Strat')
+    strategy_no_investment_trading_day.add_port_value_to_plt('No Investment Strat')
+    strategy_asap_investment_trading_day.add_port_value_to_plt('ASAP Strat')
+    strategy_sinusoid_investment_trading_day.add_port_value_to_plt('Sinusoid Strat')
+    strategy_maf_investment_trading_day.add_port_value_to_plt('MAF Strat')
 
     plt.xlabel('Trading Days')
     plt.ylabel('Value ($)')
     plt.title("Portfolio Values for Different Strategies")
     plt.legend()
-    plt.show()
-
 
 def run_strat_over_full_time(strat, close_prices, daily_investment, initial_deposit):
 

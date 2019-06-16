@@ -1,9 +1,11 @@
 
 import csv
 from run_strategies import *
+import matplotlib.pyplot as plt
 
 ## For plotting
 # python -m pip install -U matplotlib
+plt.close('all')
 
 initial_deposit = 1000
 daily_investment = 1
@@ -24,5 +26,12 @@ with open(data_location) as csvfile:
     # Reverse order of arrays to be chronological.
     close_prices = list(reversed(close_prices))
 
+
+
 ####### Run Strats #######
 run_some_strategies(initial_deposit, daily_investment, close_prices)
+
+
+
+
+plt.show()

@@ -48,7 +48,7 @@ def strategy_maf_investment(trading_day):
     oldest_i = min([len(prices)-maf_n, 0])
     prices_in_window = prices[oldest_i:latest_i]
     maf_average = sum(prices_in_window) / maf_n
-    # if (prices[-1] < maf_average):
-        # trading_day.sell_one_share()
+    if (prices[-1] < maf_average):
+        trading_day.sell_one_share()
 
     return trading_day
