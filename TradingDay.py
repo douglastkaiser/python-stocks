@@ -5,14 +5,28 @@ class TradingDay:
         self.shares_history = shares_history
         self.price_history = price_history
 
-    #### HELPERS
-    def new_day(self, share_price, daily_investment):
+    def new_day(self, new_share_price, daily_investment):
         assert type(self) is TradingDay, "self is not of type TradingDay"
 
         self.bank_account_history.append(self.bank_account_history[-1] + daily_investment)
         self.shares_history.append(self.shares_history[-1])
-        self.price_history.append(share_price)
+        self.price_history.append(new_share_price)
 
+    def current_protfolio_value(self):
+        assert type(self) is TradingDay, "self is not of type TradingDay"
+
+        current_value = self.bank_account_history[-1] + self.shares_history[-1]*self.price_history[-1]
+        return current_value
+
+    def portfolio_value_history(self):
+        assert type(self) is TradingDay, "self is not of type TradingDay"
+
+        value_history = self.bank_account_history
+        for i in range(0, len(self.bank_account_history)):
+            value_history[i] = self.bank_account_history[i] + self.shares_history[i]*self.price_history[i]
+        return value_history
+
+    #### BUY SELL HELP ####
     def buy_one_share(self):
         assert type(self) is TradingDay, "self is not of type TradingDay"
 
@@ -40,6 +54,7 @@ class TradingDay:
         self.bank_account_history[-1] += self.shares_history[-1]*self.price_history[-1]
         self.shares_history[-1] = 0
 
+    #### DISPLAY HELP ####
     def printer(self):
         assert type(self) is TradingDay, "self is not of type TradingDay"
 

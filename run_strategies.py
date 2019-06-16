@@ -8,15 +8,14 @@ def run_some_strategies(initial_deposit, daily_investment, close_prices):
     print("Initial Deposit: " + str(initial_deposit))
     print("Daily Investment: " + str(daily_investment))
 
-    # fig = plt.figure()  # an empty figure with no axes
-    # fig.suptitle('No axes on this figure')  # Add a title so we know which it is
-    # x = np.linspace(0, 2, len(close_prices))
+    fig = plt.figure()  # an empty figure with no axes
+    fig.suptitle('No axes on this figure')  # Add a title so we know which it is
+    x = np.linspace(0, 2, len(close_prices))
 
     # plt.plot(x, close_prices, label='Closing Prices')
-    # plt.xlabel('x label')
-    # plt.ylabel('y label')
-    # plt.title("Simple Plot")
-    # plt.legend()
+    plt.xlabel('x label')
+    plt.ylabel('y label')
+    plt.title("Simple Plot")
     # plt.show()
 
     print("\n -- Strat = NONE --")
@@ -34,6 +33,23 @@ def run_some_strategies(initial_deposit, daily_investment, close_prices):
     print("\n -- Strat = 100pt MAF --")
     strategy_maf_investment_trading_day = run_strat_over_time(strategy_maf_investment, close_prices, daily_investment, initial_deposit)
     strategy_maf_investment_trading_day.printer()
+
+
+    ## Print it
+    portfolio_value_history = strategy_no_investment_trading_day.portfolio_value_history()
+    plt.plot(x, portfolio_value_history, label='No Investment Strat')
+
+    portfolio_value_history = strategy_asap_investment_trading_day.portfolio_value_history()
+    plt.plot(x, portfolio_value_history, label='ASAP Strat')
+
+    portfolio_value_history = strategy_sinusoid_investment_trading_day.portfolio_value_history()
+    plt.plot(x, portfolio_value_history, label='Sinusoid Strat')
+
+    portfolio_value_history = strategy_maf_investment_trading_day.portfolio_value_history()
+    plt.plot(x, portfolio_value_history, label='MAF Strat')
+
+    plt.legend()
+    plt.show()
 
 def run_strat_over_time(strat, close_prices, daily_investment, initial_deposit):
 
