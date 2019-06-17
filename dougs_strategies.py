@@ -1,5 +1,6 @@
 
 from TradingDay import TradingDay
+from math_helper import *
 
 #### STRATEGIES
 def strategy_no_investment(trading_day):
@@ -26,7 +27,6 @@ def strategy_sinusoid_investment(trading_day):
     assert type(trading_day) is TradingDay, "trading_day is not of type TradingDay"
 
     close_prices = trading_day.price_history
-    shares_owned = trading_day.shares_history[-1]
 
     days_prev = len(close_prices)
     prev_close_price_1 = close_prices[max([days_prev-3, 0])]
@@ -34,21 +34,21 @@ def strategy_sinusoid_investment(trading_day):
     prev_close_price_3 = close_prices[max([days_prev-1, 0])]
     latest_close_price = close_prices[-1]
 
-    if (prev_close_price_1 < latest_close_price) and (prev_close_price_1 < prev_close_price_2) and (prev_close_price_2 < prev_close_price_3):
+    if (prev_close_price_1 <= latest_close_price) and (prev_close_price_1 <= prev_close_price_2) and (prev_close_price_2 <= prev_close_price_3):
         trading_day.buy_all_shares()
-    elif (prev_close_price_1 > latest_close_price) and (prev_close_price_1 > prev_close_price_2) and (prev_close_price_2 > prev_close_price_3):
+    elif (prev_close_price_1 >= latest_close_price) and (prev_close_price_1 >= prev_close_price_2) and (prev_close_price_2 >= prev_close_price_3):
         trading_day.sell_one_share()
     return trading_day
 
 def strategy_maf_investment(trading_day):
     assert type(trading_day) is TradingDay, "trading_day is not of type TradingDay"
 
-    maf_average = trading_day.maf(5)
+    maf_average = moving_average_filter(trading_day.price_history, 50)
     if (trading_day.price_history[-1] < maf_average):
         trading_day.buy_all_shares()
 
-    maf_average = trading_day.maf(300)
-    if (trading_day.price_history[-1] > maf_average):
-        trading_day.sell_one_share()
+    # maf_average = moving_average_filter(trading_day.price_history, 200)
+    # if (trading_day.price_history[-1] > maf_average):
+    #     trading_day.sell_one_share()
 
     return trading_day

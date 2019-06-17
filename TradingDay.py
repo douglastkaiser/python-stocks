@@ -16,6 +16,9 @@ class TradingDay:
         self.shares_history.append(self.shares_history[-1])
         self.price_history.append(new_share_price)
 
+        if self.bank_account_history[-1] < 0:
+            self.sell_one_share()
+
     def current_protfolio_value(self):
         assert type(self) is TradingDay, "self is not of type TradingDay"
 
@@ -25,20 +28,10 @@ class TradingDay:
     def portfolio_value_history(self):
         assert type(self) is TradingDay, "self is not of type TradingDay"
 
-        value_history = self.bank_account_history
+        value_history = []
         for i in range(0, len(self.bank_account_history)):
-            value_history[i] = self.bank_account_history[i] + self.shares_history[i]*self.price_history[i]
+            value_history.append(self.bank_account_history[i] + self.shares_history[i]*self.price_history[i])
         return value_history
-
-    #### STRAT HELP ####
-    def maf(self, maf_n):
-        prices = self.price_history
-        latest_i = len(prices)
-        oldest_i = min([len(prices)-maf_n, 0])
-        prices_in_window = prices[oldest_i:latest_i]
-        return sum(prices_in_window)/maf_n
-
-    # def no_delay_maf(self, maf_n):
 
     #### BUY SELL HELP ####
     def buy_one_share(self):
@@ -76,8 +69,11 @@ class TradingDay:
         print("Bank Account left over: " + "%.2f" % self.bank_account_history[-1])
         protfolio_value = self.shares_history[-1]*self.price_history[-1] + self.bank_account_history[-1]
         print("Total Value: " + "%.2f" % protfolio_value)
+        port_val_hist = self.portfolio_value_history()
+        percentage_increase = (port_val_hist[-1] - port_val_hist[0])/port_val_hist[0]*100/10
+        print("Total Percentage Increase: " + "%.2f" % percentage_increase + "%")
 
     def add_port_value_to_plt(self, label_for_legend):
-        x = np.linspace(1, len(self.price_history), len(self.price_history))
+        t = np.linspace(1, len(self.price_history), len(self.price_history))
         portfolio_value_history = self.portfolio_value_history()
-        plt.plot(x, portfolio_value_history, label=label_for_legend)
+        plt.plot(t, portfolio_value_history, label=label_for_legend)

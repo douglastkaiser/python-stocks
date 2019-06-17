@@ -8,7 +8,7 @@ from HistoricData import HistoricData
 # python -m pip install -U matplotlib
 plt.close('all')
 
-initial_deposit = 1000
+initial_deposit = 10000
 daily_investment = 1
 
 # https://www.nasdaq.com/quotes/historical-quotes.aspx
@@ -22,7 +22,7 @@ with open(data_location) as csvfile:
     opening_prices = []
     high_prices = []
     low_prices = []
-    
+
     for row in reader:
         date_today = (row["date"])
         dates.append(date_today)
@@ -35,9 +35,15 @@ with open(data_location) as csvfile:
         low = float(row["low"])
         low_prices.append(low)
     # Reverse order of arrays to be chronological.
+    dates = list(reversed(dates))
     closing_prices = list(reversed(closing_prices))
+    opening_prices = list(reversed(opening_prices))
+    high_prices = list(reversed(high_prices))
+    low_prices = list(reversed(low_prices))
 
 historic_data = HistoricData(dates, closing_prices, opening_prices, high_prices, low_prices)
+historic_data.plot()
+
 
 ####### Run Strats #######
 run_some_strategies(initial_deposit, daily_investment, historic_data)
