@@ -3,6 +3,7 @@ import csv
 from run_strategies import *
 import matplotlib.pyplot as plt
 from HistoricData import HistoricData
+import sys
 
 ## For plotting
 # python -m pip install -U matplotlib
@@ -12,7 +13,12 @@ initial_deposit = 10000
 daily_investment = 1
 
 # https://www.nasdaq.com/quotes/historical-quotes.aspx
-data_location = 'raw_data\HistoricalQuotes_SPY.csv'  # https://www.nasdaq.com/symbol/spy/historical
+if sys.platform == 'Windows':
+    print('For King and Country, get a Mac Doug')
+    data_location = 'raw_data\HistoricalQuotes_SPY.csv'  # https://www.nasdaq.com/symbol/spy/historical
+else:
+    data_location = 'raw_data/HistoricalQuotes_SPY.csv'
+
 # Load up daily closing prices
 with open(data_location) as csvfile:
     reader = csv.DictReader(csvfile)
