@@ -11,13 +11,13 @@ def run_some_strategies(initial_deposit, daily_investment, historic_data):
     ## Print full values
     fig = plt.figure()
 
-    # print("\n -- Strat = NONE --")
-    # no_investment_trading_day = run_strat_over_full_time(strategy_no_investment, historic_data, daily_investment, initial_deposit)
-    # no_investment_trading_day.add_port_value_to_plt('No Investment Strat')
+    print("\n -- Strat = NONE --")
+    no_investment_trading_day = run_strat_over_full_time(strategy_no_investment, historic_data, daily_investment, initial_deposit)
+    no_investment_trading_day.add_port_value_to_plt('No Investment Strat')
 
-    print("\n -- Strat = MARCUS 2.25% --")
-    marcus_trading_day = run_strat_over_full_time(strategy_marcus_2p25, historic_data, daily_investment, initial_deposit)
-    marcus_trading_day.add_port_value_to_plt('MARCUS 2.25%')
+    # print("\n -- Strat = MARCUS 2.25% --")
+    # marcus_trading_day = run_strat_over_full_time(strategy_marcus_2p25, historic_data, daily_investment, initial_deposit)
+    # marcus_trading_day.add_port_value_to_plt('MARCUS 2.25%')
     
     print("\n -- Strat = ASAP --")
     asap_investment_trading_day = run_strat_over_full_time(strategy_asap_investment, historic_data, daily_investment, initial_deposit)

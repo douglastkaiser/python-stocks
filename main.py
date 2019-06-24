@@ -4,13 +4,16 @@ from run_strategies import *
 import matplotlib.pyplot as plt
 from HistoricData import HistoricData
 import sys
+import time
 
 ## For plotting
 # python -m pip install -U matplotlib
 plt.close('all')
 
-initial_deposit = 10000
-daily_investment = 1
+t0 = time.time()
+
+initial_deposit = 1000
+daily_investment = 20
 
 # https://www.nasdaq.com/quotes/historical-quotes.aspx
 if sys.platform == 'Windows':
@@ -47,16 +50,23 @@ with open(data_location) as csvfile:
     high_prices = list(reversed(high_prices))
     low_prices = list(reversed(low_prices))
 
+    # range_this_time = 20
+    range_this_time = len(dates)
+    dates = dates[0:range_this_time]
+    closing_prices = closing_prices[0:range_this_time]
+    opening_prices = opening_prices[0:range_this_time]
+    high_prices = high_prices[0:range_this_time]
+    low_prices = low_prices[0:range_this_time]
+
 historic_data = HistoricData(dates, closing_prices, opening_prices, high_prices, low_prices)
 historic_data.plot()
-
 
 ####### Run Strats #######
 run_some_strategies(initial_deposit, daily_investment, historic_data)
 
 
-
-
-
+t1 = time.time()
+Time = t1-t0
+print("\nTime: " + "%.2f" % Time + " seconds")
 
 plt.show()

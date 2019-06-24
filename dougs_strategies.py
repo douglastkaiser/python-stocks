@@ -43,12 +43,20 @@ def strategy_sinusoid_investment(trading_day):
 def strategy_maf_investment(trading_day):
     assert type(trading_day) is TradingDay, "trading_day is not of type TradingDay"
 
-    maf_average = moving_average_filter(trading_day.price_history, 50)
-    if (trading_day.price_history[-1] < maf_average):
-        trading_day.buy_all_shares()
+    maf20_average = no_delay_moving_average_filter(trading_day.price_history, 20)
+    maf100_average = no_delay_moving_average_filter(trading_day.price_history, 100)
 
-    # maf_average = moving_average_filter(trading_day.price_history, 200)
-    # if (trading_day.price_history[-1] > maf_average):
-    #     trading_day.sell_one_share()
+    percent_diff = percentage_difference(maf100_average, maf20_average)
+
+    # if (maf20_average < maf100_average):
+    #     trading_day.buy_all_shares()
+    # if (maf20_average > maf100_average):
+    #     trading_day.sell_all_shares()
+
+    # print(percent_diff)
+    if (percent_diff < 3):
+        trading_day.buy_all_shares()
+    if (percent_diff > 3):
+        trading_day.sell_all_shares()
 
     return trading_day

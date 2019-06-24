@@ -26,17 +26,12 @@ class HistoricData:
         fig = plt.figure()
         t = np.linspace(1, len(self.closing_prices), len(self.closing_prices))
         plt.plot(t, self.closing_prices, label='Closing Prices')
-        closing_maf = moving_average_filter(self.closing_prices, 50)
-        
-        # plt.plot(t, closing_maf, label='Closing Prices - 50 pt MAF')
+
+        maf100_average = no_delay_moving_average_filter_vectorized(self.closing_prices, 20)
+        plt.plot(t, maf100_average, label='Closing Prices - 20 day MAF')
+
+        maf20_average = no_delay_moving_average_filter_vectorized(self.closing_prices, 100)
+        plt.plot(t, maf20_average, label='Closing Prices - 100 day MAF')
+
         plt.legend()
         plt.title('SPY Prices')
-
-
-
-
-
-
-
-
-
