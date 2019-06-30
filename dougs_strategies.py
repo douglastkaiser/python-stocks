@@ -43,20 +43,34 @@ def strategy_sinusoid_investment(trading_day):
 def strategy_maf_investment(trading_day):
     assert type(trading_day) is TradingDay, "trading_day is not of type TradingDay"
 
-    maf20_average = no_delay_moving_average_filter(trading_day.price_history, 20)
-    maf100_average = no_delay_moving_average_filter(trading_day.price_history, 100)
-
-    percent_diff = percentage_difference(maf100_average, maf20_average)
-
-    # if (maf20_average < maf100_average):
+    # mafshort = no_delay_moving_average_filter(trading_day.price_history, 20)
+    # maflong = no_delay_moving_average_filter(trading_day.price_history, 200)
+    # if (mafshort < maflong):
     #     trading_day.buy_all_shares()
-    # if (maf20_average > maf100_average):
+    # if (mafshort > maflong):
     #     trading_day.sell_all_shares()
 
-    # print(percent_diff)
-    if (percent_diff < 3):
-        trading_day.buy_all_shares()
-    if (percent_diff > 3):
-        trading_day.sell_all_shares()
+    # percent_diff = percentage_difference(maflong, mafshort)
+    # if (percent_diff > 2):
+    #     trading_day.buy_all_shares()
+    # if (percent_diff < -2):
+    #     trading_day.sell_all_shares()
 
+    mafshort = no_delay_moving_average_filter_vectorized(trading_day.price_history, 40)
+    # maflong = no_delay_moving_average_filter_vectorized(trading_day.price_history, 200)
+    # slope_mafshort = slope_vectorized(mafshort, 2)
+    # slope_mafshort = no_delay_moving_average_filter_vectorized(slope_mafshort, 10)
+    # curvature_mafshort = curvature_vectorized(mafshort, 2)
+    # curvature_mafshort = no_delay_moving_average_filter_vectorized(curvature_mafshort, 6)
+    # if (curvature_mafshort[-1] > 0) and (slope_mafshort[-1] > 0) and (mafshort[-1] < maflong[-1]):
+    #     trading_day.buy_all_shares()
+    # if (curvature_mafshort[-1] < 0) and (slope_mafshort[-1] < 0) and (mafshort[-1] > maflong[-1]):
+    #     trading_day.sell_all_shares()
+
+    slope_mafshort = slope(mafshort, 2)
+    # slope_maflong = slope(maflong, 2)
+    # if (slope_mafshort < 0):
+    trading_day.buy_all_shares()
+    if (slope_mafshort < 0):
+        trading_day.sell_all_shares()
     return trading_day

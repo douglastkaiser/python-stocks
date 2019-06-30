@@ -12,8 +12,8 @@ plt.close('all')
 
 t0 = time.time()
 
-initial_deposit = 1000
-daily_investment = 20
+initial_deposit = 10000
+daily_investment = 900/30
 
 # https://www.nasdaq.com/quotes/historical-quotes.aspx
 if sys.platform == 'Windows':
@@ -50,8 +50,8 @@ with open(data_location) as csvfile:
     high_prices = list(reversed(high_prices))
     low_prices = list(reversed(low_prices))
 
-    # range_this_time = 20
-    range_this_time = len(dates)
+    range_this_time = 1000
+    # range_this_time = len(dates)
     dates = dates[0:range_this_time]
     closing_prices = closing_prices[0:range_this_time]
     opening_prices = opening_prices[0:range_this_time]
