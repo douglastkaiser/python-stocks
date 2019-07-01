@@ -1,5 +1,31 @@
 
 import numpy as np
+from scipy.signal import butter, lfilter, freqz
+
+
+def butter_lowpass(cutoff, fs, order=5):
+    nyq = 0.5 * fs
+    normal_cutoff = cutoff / nyq
+    b, a = butter(order, normal_cutoff, btype='low', analog=False)
+    return b, a
+
+
+def butter_lowpass_filter(data, cutoff, fs, order=5):
+    b, a = butter_lowpass(cutoff, fs, order=order)
+    if len(data) == 0:
+        return 0
+    if len(data) == 1:
+        return data
+    # data = [data[1], data[1], data[1], data[1], data[1], data]
+    y = lfilter(b, a, data)
+    # y = y[5:]
+    return y
+
+
+def no_delay_butter_low_pass_vectorized(data, cutoff, fs, order=5):
+    bwf_once = butter_lowpass_filter(data, cutoff, fs)
+    bwf_twice = list(reversed(butter_lowpass_filter(list(reversed(bwf_once)), cutoff, fs)))
+    return bwf_twice
 
 
 def moving_average_filter_vectorized(data, maf_n):
@@ -18,21 +44,19 @@ def moving_average_filter(data, maf_n):
     assert type(maf_n) is int
     if not isinstance(data, list):
         data = [data]
-
     maf_n = np.min([np.max([maf_n, 1]), len(data)])
+
     latest_i = len(data)
     oldest_i = max([latest_i-maf_n, 0])
     data_in_window = data[oldest_i:latest_i+1]
-    if len(data_in_window) == 0:
-        return 0
-    return sum(data_in_window)/len(data_in_window)
+    maf = sum(data_in_window)/len(data_in_window)
+    return maf
 
 
 def no_delay_moving_average_filter_vectorized(data, maf_n):
     assert type(maf_n) is int
     if not isinstance(data, list):
         data = [data]
-
     maf_n_to_use = int(np.floor(maf_n/2))
     maf_once = moving_average_filter_vectorized(data, maf_n_to_use)
     maf_twice = list(reversed(moving_average_filter_vectorized(list(reversed(maf_once)), maf_n_to_use)))
@@ -43,7 +67,6 @@ def no_delay_moving_average_filter(data, maf_n):
     assert type(maf_n) is int
     if not isinstance(data, list):
         data = [data]
-
     maf = no_delay_moving_average_filter_vectorized(data, maf_n)
     return maf[-1]
 
@@ -53,31 +76,27 @@ def percentage_difference(from_here, to_here):
     return 100*(to_here - from_here)/np.abs(from_here)
 
 
-def slope(data):
+def slope(data, n):
     if not isinstance(data, list):
         data = [data]
-    if (len(data) < 2):
+    if (len(data) < 2) or (n < 2):
         return 0
+    n = np.min([np.max([n, 1]), len(data)])
+    return data[-1] - data[-n]
 
-    return data[-1] - data[-2]
 
-
-def curvature(data, n):
-    assert type(n) is int
+def curvature(data):
     if not isinstance(data, list):
         data = [data]
     if (len(data) < 3):
         return 0
-
-    d_data = [slope([data[-3], data[-2]], n), slope([data[-2], data[-1]], n)]
-    return slope(d_data, n)
+    d_data = [slope([data[-3], data[-2]], 2), slope([data[-2], data[-1]], 2)]
+    return slope(d_data, 2)
 
 
 def slope_vectorized(data, n):
-    assert type(n) is int
     if not isinstance(data, list):
         data = [data]
-
     slope_vec = []
     for i in range(0, len(data)):
         data_for_use = data[0:i+1]
@@ -85,13 +104,12 @@ def slope_vectorized(data, n):
     return slope_vec
 
 
-def curvature_vectorized(data, n):
-    assert type(n) is int
+def curvature_vectorized(data):
     if not isinstance(data, list):
         data = [data]
-
     curvature_vec = []
     for i in range(0, len(data)):
         data_for_use = data[0:i+1]
-        curvature_vec.append(curvature(data_for_use, n))
+        curvature_vec.append(curvature(data_for_use))
     return curvature_vec
+

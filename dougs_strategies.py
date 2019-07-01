@@ -43,8 +43,14 @@ def strategy_sinusoid_investment(trading_day):
 def strategy_maf_investment(trading_day):
     assert type(trading_day) is TradingDay, "trading_day is not of type TradingDay"
 
-    # mafshort = no_delay_moving_average_filter(trading_day.price_history, 20)
-    # maflong = no_delay_moving_average_filter(trading_day.price_history, 200)
+    mafshort = no_delay_moving_average_filter_vectorized(trading_day.price_history, 1)
+    maflong = no_delay_moving_average_filter_vectorized(trading_day.price_history, 50)
+    # slope_mafshort = no_delay_moving_average_filter_vectorized(slope_vectorized(mafshort), 10)
+    # curvature_mafshort = no_delay_moving_average_filter_vectorized(curvature_vectorized(mafshort), 10)
+    slope_mafshort = slope(trading_day.price_history, 2)
+    # slope_maflong = slope(maflong, 5)
+    # curvature_mafshort = curvature(mafshort)
+
     # if (mafshort < maflong):
     #     trading_day.buy_all_shares()
     # if (mafshort > maflong):
@@ -56,21 +62,34 @@ def strategy_maf_investment(trading_day):
     # if (percent_diff < -2):
     #     trading_day.sell_all_shares()
 
-    mafshort = no_delay_moving_average_filter_vectorized(trading_day.price_history, 40)
-    # maflong = no_delay_moving_average_filter_vectorized(trading_day.price_history, 200)
-    # slope_mafshort = slope_vectorized(mafshort, 2)
-    # slope_mafshort = no_delay_moving_average_filter_vectorized(slope_mafshort, 10)
-    # curvature_mafshort = curvature_vectorized(mafshort, 2)
-    # curvature_mafshort = no_delay_moving_average_filter_vectorized(curvature_mafshort, 6)
-    # if (curvature_mafshort[-1] > 0) and (slope_mafshort[-1] > 0) and (mafshort[-1] < maflong[-1]):
+    # if (curvature_mafshort > 0) and (slope_mafshort > 0) and (mafshort[-1] < maflong[-1]):
     #     trading_day.buy_all_shares()
-    # if (curvature_mafshort[-1] < 0) and (slope_mafshort[-1] < 0) and (mafshort[-1] > maflong[-1]):
+    # if (curvature_mafshort < 0) and (slope_mafshort < 0) and (mafshort[-1] > maflong[-1]):
     #     trading_day.sell_all_shares()
 
-    slope_mafshort = slope(mafshort, 2)
-    # slope_maflong = slope(maflong, 2)
-    # if (slope_mafshort < 0):
     trading_day.buy_all_shares()
-    if (slope_mafshort < 0):
+    if (mafshort[-1] < maflong[-1]) and (slope_mafshort < 0):
         trading_day.sell_all_shares()
+
+    # if (slope_mafshort < 0):
+    #     trading_day.buy_all_shares()
+    # if (slope_mafshort > 0):
+    #     trading_day.sell_all_shares()
+
+    # if (mafshort[-1] < maflong[-1]) and (slope_maflong < 0):
+    #     trading_day.sell_all_shares()
+    # if (mafshort[-1] > maflong[-1]):
+    #     trading_day.buy_all_shares()
+
+    # trading_day.buy_all_shares()
+    # if (slope_maflong < 0):
+    #     trading_day.sell_all_shares()
+    # if (slope_mafshort > 0):
+    #     trading_day.buy_all_shares()
+
+    # if (curvature_mafshort > 0) and (slope_mafshort > 0):
+    #     trading_day.buy_all_shares()
+    # if (curvature_mafshort < 0) and (slope_mafshort < 0):
+    #     trading_day.sell_all_shares()
+
     return trading_day
