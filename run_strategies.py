@@ -27,9 +27,9 @@ def run_some_strategies(initial_deposit, daily_investment, historic_data):
     # sinusoid_investment_trading_day = run_strat_over_full_time(strategy_sinusoid_investment, historic_data, daily_investment, initial_deposit)
     # sinusoid_investment_trading_day.add_port_value_to_plt('Sinusoid Strat')
 
-    # print("\n -- Strat = 100pt MAF --")
-    # maf_investment_trading_day = run_strat_over_full_time(strategy_maf_investment, historic_data, daily_investment, initial_deposit)
-    # maf_investment_trading_day.add_port_value_to_plt('MAF Strat')    
+    print("\n -- Strat = 100pt MAF --")
+    maf_investment_trading_day = run_strat_over_full_time(strategy_maf_investment, historic_data, daily_investment, initial_deposit)
+    maf_investment_trading_day.add_port_value_to_plt('MAF Strat')    
     
     plt.xlabel('Trading Days')
     plt.ylabel('Value ($)')
