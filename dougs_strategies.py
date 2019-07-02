@@ -47,7 +47,7 @@ def strategy_maf_investment(trading_day):
     mafshort_yesterday = no_delay_moving_average_filter(trading_day.price_history[0:-1], 10)
     maflong = no_delay_moving_average_filter(trading_day.price_history, 100)
 
-    slope_mafshort = slope([mafshort_yesterday, mafshort], 2)
+    slope_mafshort = slope([mafshort_yesterday, mafshort], 3)
 
     if (trading_day.price_history[-1] < mafshort):
         trading_day.buy_all_shares()
