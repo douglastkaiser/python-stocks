@@ -46,6 +46,8 @@ def moving_average_filter(data, maf_n):
         data = [data]
     maf_n = np.min([np.max([maf_n, 1]), len(data)])
 
+    data = data[-maf_n:]
+
     latest_i = len(data)
     oldest_i = max([latest_i-maf_n, 0])
     data_in_window = data[oldest_i:latest_i+1]
@@ -64,9 +66,11 @@ def no_delay_moving_average_filter_vectorized(data, maf_n):
 
 
 def no_delay_moving_average_filter(data, maf_n):
-    assert type(maf_n) is int
+    assert (type(maf_n) is int) or (type(maf_n) is np.int32)
     if not isinstance(data, list):
         data = [data]
+    maf_n = int(np.min([np.max([maf_n, 1]), len(data)]))
+    data = data[-maf_n:]
     maf = no_delay_moving_average_filter_vectorized(data, maf_n)
     return maf[-1]
 

@@ -35,9 +35,9 @@ class HistoricData:
         mafshort_curv = []
         for i in range(0, len(self.closing_prices)):
             data_for_use = self.closing_prices[0:i+1]
-            mafshort.append(no_delay_moving_average_filter(data_for_use[-20:], 10))
+            mafshort.append(no_delay_moving_average_filter(data_for_use, 10))
             # maflong.append(no_delay_moving_average_filter(data_for_use, 100))
-            maflong_exp.append(no_delay_moving_average_filter(data_for_use[-200:], 100))
+            maflong_exp.append(no_delay_moving_average_filter(data_for_use, 100))
             # mafshort_slope.append(no_delay_moving_average_filter(slope_vectorized(mafshort), 10))
             # mafshort_curv.append(no_delay_moving_average_filter(curvature_vectorized(mafshort), 10))
             mafshort_slope.append(slope(mafshort, 2))

@@ -50,7 +50,7 @@ with open(data_location) as csvfile:
     high_prices = list(reversed(high_prices))
     low_prices = list(reversed(low_prices))
 
-    # range_this_time = 250
+    # range_this_time = 1000
     range_this_time = len(dates)
 
     dates = dates[0:range_this_time]

@@ -45,7 +45,7 @@ class TestMathHelper(unittest.TestCase):
         # Multiple elements.
         self.assertEqual(6, no_delay_moving_average_filter([2, 4, 6], 2))  # n < length
         self.assertEqual(6, no_delay_moving_average_filter([2, 4, 6], 3))  # n == length
-        self.assertEqual(5, no_delay_moving_average_filter([2, 4, 6], 4))  # n > length
+        self.assertEqual(6, no_delay_moving_average_filter([2, 4, 6], 4))  # n > length
 
 
     def test_no_delay_maf_vectorized(self):
