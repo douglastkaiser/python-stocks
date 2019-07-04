@@ -5,7 +5,8 @@ from math_helper import *
 
 class HistoricData:
 
-    def __init__(self, dates, closing_prices, opening_prices, high_prices, low_prices):
+    def __init__(self, name, dates, closing_prices, opening_prices, high_prices, low_prices):
+        self.name = name
         self.closing_prices = closing_prices
         self.dates = dates
         self.opening_prices = opening_prices
