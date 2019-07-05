@@ -1,14 +1,14 @@
 
 import csv
-from HistoricData import HistoricData
+import sys
 import pandas as pd
 
-def load_into_historic_data_set(data_location, name):
+def load_into_stock_data_set(file_name):
     if sys.platform == 'Windows':
-        data_location = "raw_data\\" + stock_data_name + ".csv"  # https://www.nasdaq.com/symbol/spy/historical
+        data_location = "raw_data\\" + file_name + ".csv"
     else:
-        data_location = "raw_data/" + stock_data_name + ".csv"
+        data_location = "raw_data/" + file_name + ".csv"
 
-    df = pd.read_csv(data_location, parse_dates=["Dates"], index_col=["Dates"])
+    df = pd.read_csv(data_location, parse_dates=["Date"], index_col=["Date"])
 
-    return HistoricData(name, dates, closing_prices, opening_prices, high_prices, low_prices)
+    return df
