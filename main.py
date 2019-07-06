@@ -25,7 +25,7 @@ tickers_to_run.append('NDAQ')
 tickers_to_run.append('TQQQ')
 stock_history_data = StockData(tickers_to_run)
 ##### Cut down on timing.
-# stock_history_data.limit_timeframe('2007-01-01', '2019-01-01')
+# stock_history_data.limit_timeframe('2018-01-01', '2019-01-01')
 stock_history_data.add_external_investments(monthly_deposit, daily_deposit)
 
 ####### Run Strats #######

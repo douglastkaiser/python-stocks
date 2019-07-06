@@ -26,8 +26,9 @@ def strategy_marcus_2p25(trading_history):
     assert type(trading_history) is TradingHistory, "trading_history is not of type TradingHistory"
 
     interest = 2.25
-    trading_historys = 252
-    trading_history.bank_account_history[-1] += interest/100*trading_history.bank_account_history[-1]/trading_historys
+    trading_history_day = 365
+    daily_interest = interest/100/trading_history_day
+    trading_history.trading_history_df['bank_account'][-1] += daily_interest*trading_history.trading_history_df['bank_account'][-1]
 
     return trading_history
 

@@ -90,7 +90,8 @@ class TradingHistory:
     def printer(self):
         print('\nStrat: ' + self.name + ":")
         for ticker in self.stock_df_to_today.columns.levels[0]:
-            print("Shares of "+ticker+" Owned in end: " + str(self.trading_history_df[ticker][-1]))
+            if self.trading_history_df[ticker][-1] is not 0:
+                print("Shares of " + ticker + " Owned in the end: " + str(self.trading_history_df[ticker][-1]))
         print("Bank Account left over: " + "%.2f" % self.trading_history_df['bank_account'][-1])
         # protfolio_value = self.shares_history[-1]*self.price_history[-1] + self.bank_account_history[-1]
         port_val_hist = self.portfolio_value_history()
