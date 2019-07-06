@@ -81,7 +81,7 @@ class TradingHistory:
 
     def sell_all_shares(self, ticker_name):
         stock_price = self.stock_df_to_today[ticker_name]['Close'][-1]
-        if (not np.isnan(stock_price)) and :
+        if (not np.isnan(stock_price)):
             shares_to_sell = self.trading_history_df[ticker_name][-1]
             self.trading_history_df['bank_account'][-1] += shares_to_sell*stock_price
             self.trading_history_df[ticker_name][-1] = 0
@@ -101,3 +101,4 @@ class TradingHistory:
     def add_port_value_to_plt(self):
         portfolio_value_history = self.portfolio_value_history()
         plt.plot(self.trading_history_df.index, portfolio_value_history, label=self.name)
+        plt.legend()

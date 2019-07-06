@@ -2,6 +2,25 @@
 import numpy as np
 from scipy.signal import butter, lfilter, freqz
 
+def print_time(Time_sec):
+    hours = int(Time_sec/3600)
+    minutes = int(Time_sec/60)
+    seconds = int(Time_sec)
+    if hours >= 1:
+        remaining_minutes = minutes-hours*60
+        remaining_seconds = Time_sec-minutes*60
+        hour_str = "%.0f" % hours + " hours, "
+        min_str = "%.0f" % remaining_minutes + " minutes, and "
+        sec_str = "%.2f" % remaining_seconds + " seconds"
+        print("\nRuntime: " + hour_str + min_str + sec_str)
+    elif minutes >= 1:
+        remaining_seconds = Time_sec-minutes*60
+        min_str = "%.0f" % minutes + " minutes and "
+        sec_str = "%.2f" % remaining_seconds + " seconds"
+        print("\nRuntime: " + min_str + sec_str)
+    else:
+        print("\nRuntime: " + "%.2f" % Time_sec + " seconds")
+
 
 def butter_lowpass(cutoff, fs, order=5):
     nyq = 0.5 * fs
