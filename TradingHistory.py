@@ -44,7 +44,7 @@ class TradingHistory:
         for ticker in self.stock_df_to_today.columns.levels[0]:
             stock_prices = list(self.stock_df_to_today[ticker]['Close'])
             i = index
-            while np.isnan(stock_prices[i]) and i >= 0:
+            while np.isnan(stock_prices[i]) and (i >= 0):
                 i -= 1
             # Nothing found in history.
             if np.isnan(stock_prices[i]):
@@ -54,7 +54,10 @@ class TradingHistory:
             stock_value += valid_stock_price*self.trading_history_df[ticker][index]
         return self.trading_history_df['bank_account'][index] + stock_value
 
-    def portfolio_value_history(self):  # Can vectorize?
+    def portfolio_value_history(self):
+        # Can vectorize?
+        # Should return a Series object with timestamps.
+        # apply function?
         value_history = []
         for i in range(0, len(self.trading_history_df.index)):
             value_history.append(self.current_protfolio_value(i))
@@ -86,6 +89,19 @@ class TradingHistory:
             self.trading_history_df['bank_account'][-1] += shares_to_sell*stock_price
             self.trading_history_df[ticker_name][-1] = 0
 
+    def average_annual_percentage_change(self):
+        # Can filter out whenever "money invested" is 0 from both Series.
+        # https://www.fool.com/about/how-to-calculate-investment-returns/
+        holding_period_return = 1
+        port_val_hist = self.portfolio_value_history()
+        money_added = self.trading_history_df['money_invested']
+        total_money_add = money_added[0]
+        for i in range(1, len(self.trading_history_df.index)):
+            todays_change = port_val_hist[i]/(port_val_hist[i - 1] + money_added[i]) - 1
+            holding_period_return = holding_period_return*(1 + todays_change)
+        day_delta = self.trading_history_df.index[-1] - self.trading_history_df.index[0]
+        return (holding_period_return - 1)*100/(day_delta.days/365)
+
     #### DISPLAY HELP ####
     def printer(self):
         print('\nStrat: ' + self.name + ":")
@@ -96,8 +112,11 @@ class TradingHistory:
         # protfolio_value = self.shares_history[-1]*self.price_history[-1] + self.bank_account_history[-1]
         port_val_hist = self.portfolio_value_history()
         print("Total Value: " + "%.2f" % port_val_hist[-1])
-        # percentage_increase = percentage_difference(port_val_hist[0], port_val_hist[-1])
-        # print("Total Percentage Increase: " + "%.2f" % percentage_increase + "%")
+
+        percentage_increase = percentage_difference(port_val_hist[0], port_val_hist[-1])
+        print("Total Percentage Increase: " + "%.2f" % percentage_increase + "%")
+        ave_api = self.average_annual_percentage_change()
+        print("HPR Annual Percentage Change: " + "%.2f" % ave_api + "%")
 
     def add_port_value_to_plt(self):
         portfolio_value_history = self.portfolio_value_history()
