@@ -1,57 +1,55 @@
 
-from TradingDay import TradingDay
+from TradingHistory import TradingHistory
 from math_helper import *
 
-#### STRATEGIES
-def strategy_no_investment(trading_day):
-    assert type(trading_day) is TradingDay, "trading_day is not of type TradingDay"
+##### STRATEGIES
+def strategy_no_investment(trading_history):
+    return trading_history
 
-    return trading_day
+def strategy_spy_asap_investment(trading_history):
+    trading_history.buy_all_shares('SPY')
+    return trading_history
 
-def strategy_asap_investment(trading_day):
-    assert type(trading_day) is TradingDay, "trading_day is not of type TradingDay"
+def strategy_dia_asap_investment(trading_history):
+    trading_history.buy_all_shares('DIA')
+    return trading_history
 
-    trading_day.buy_all_shares()
-    return trading_day
+def strategy_ndaq_asap_investment(trading_history):
+    trading_history.buy_all_shares('NDAQ')
+    return trading_history
 
-def strategy_marcus_2p25(trading_day):
-    assert type(trading_day) is TradingDay, "trading_day is not of type TradingDay"
+def strategy_tqq_asap_investment(trading_history):
+    trading_history.buy_all_shares('TQQQ')
+    return trading_history
+
+def strategy_marcus_2p25(trading_history):
+    assert type(trading_history) is TradingHistory, "trading_history is not of type TradingHistory"
 
     interest = 2.25
-    trading_days = 252
-    trading_day.bank_account_history[-1] += interest/100*trading_day.bank_account_history[-1]/trading_days
+    trading_history_day = 365
+    daily_interest = interest/100/trading_history_day
+    trading_history.trading_history_df['bank_account'][-1] += daily_interest*trading_history.trading_history_df['bank_account'][-1]
 
-    return trading_day
+    return trading_history
 
-def strategy_sinusoid_investment(trading_day):
-    assert type(trading_day) is TradingDay, "trading_day is not of type TradingDay"
+def strategy_maf_investment(trading_history):
+    assert type(trading_history) is TradingHistory, "trading_history is not of type TradingHistory"
 
-    close_prices = trading_day.price_history
-
-    days_prev = len(close_prices)
-    prev_close_price_1 = close_prices[max([days_prev-3, 0])]
-    prev_close_price_2 = close_prices[max([days_prev-2, 0])]
-    prev_close_price_3 = close_prices[max([days_prev-1, 0])]
-    latest_close_price = close_prices[-1]
-
-    if (prev_close_price_1 <= latest_close_price) and (prev_close_price_1 <= prev_close_price_2) and (prev_close_price_2 <= prev_close_price_3):
-        trading_day.buy_all_shares()
-    elif (prev_close_price_1 >= latest_close_price) and (prev_close_price_1 >= prev_close_price_2) and (prev_close_price_2 >= prev_close_price_3):
-        trading_day.sell_one_share()
-    return trading_day
-
-def strategy_maf_investment(trading_day):
-    assert type(trading_day) is TradingDay, "trading_day is not of type TradingDay"
-
-    mafshort = no_delay_moving_average_filter(trading_day.price_history, 10)
-    mafshort_yesterday = no_delay_moving_average_filter(trading_day.price_history[0:-1], 10)
-    maflong = no_delay_moving_average_filter(trading_day.price_history, 100)
-
+    ##### Start with SPY.
+    spy_closing = trading_history.stock_df_to_today['SPY']['Close']
+    spy_closing = list(spy_closing[~spy_closing.isin([np.nan, np.inf, -np.inf])])
+    if len(spy_closing) < 2:
+        return trading_history
+    mafshort = no_delay_moving_average_filter(spy_closing, 10)
+    mafshort_yesterday = no_delay_moving_average_filter(spy_closing[0:-1], 10)
+    maflong = no_delay_moving_average_filter(spy_closing, 100)
+    maflong_yesterday = no_delay_moving_average_filter(spy_closing[0:-1], 100)
     slope_mafshort = slope([mafshort_yesterday, mafshort], 3)
+    slope_maflong = slope([maflong_yesterday, maflong], 3)
 
-    if (trading_day.price_history[-1] < mafshort):
-        trading_day.buy_all_shares()
-    if (mafshort > maflong) and (slope_mafshort < 0) and (trading_day.price_history[-1] > mafshort):
-        trading_day.sell_all_shares()
+    if (spy_closing[-1] < mafshort) and (slope_maflong > 0):
+        trading_history.buy_all_shares('SPY')
+    if (mafshort > maflong) and (slope_mafshort < 0) and (spy_closing[-1] > mafshort):
+        trading_history.sell_all_shares('SPY')
 
-    return trading_day
+    return trading_history

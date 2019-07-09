@@ -2,72 +2,41 @@
 import csv
 from run_strategies import *
 import matplotlib.pyplot as plt
-from HistoricData import HistoricData
-import sys
+from StockData import StockData
 import time
+from data_loading import *
+from math_helper import *
 
-## For plotting
+##### For plotting
 # python -m pip install -U matplotlib
 plt.close('all')
 
-t0 = time.time()
+start_time = time.time()
 
 initial_deposit = 10000
-daily_investment = 0  # 900/30
+daily_deposit = 0
+monthly_deposit = 100  # Adds at first of the month
 
-# https://www.nasdaq.com/quotes/historical-quotes.aspx
-if sys.platform == 'Windows':
-    print('For King and Country, get a Mac Doug')
-    data_location = 'raw_data\HistoricalQuotes_SPY.csv'  # https://www.nasdaq.com/symbol/spy/historical
-else:
-    data_location = 'raw_data/HistoricalQuotes_SPY.csv'
-
-# Load up daily closing prices
-with open(data_location) as csvfile:
-    reader = csv.DictReader(csvfile)
-    # Load in data to usable arrays.
-    dates = []
-    closing_prices = []
-    opening_prices = []
-    high_prices = []
-    low_prices = []
-
-    for row in reader:
-        date_today = (row["date"])
-        dates.append(date_today)
-        close_price = float(row["close"])
-        closing_prices.append(close_price)
-        opening = float(row["open"])
-        opening_prices.append(opening)
-        high = float(row["high"])
-        high_prices.append(high)
-        low = float(row["low"])
-        low_prices.append(low)
-    # Reverse order of arrays to be chronological.
-    dates = list(reversed(dates))
-    closing_prices = list(reversed(closing_prices))
-    opening_prices = list(reversed(opening_prices))
-    high_prices = list(reversed(high_prices))
-    low_prices = list(reversed(low_prices))
-
-    # range_this_time = 1000
-    range_this_time = len(dates)
-
-    dates = dates[0:range_this_time]
-    closing_prices = closing_prices[0:range_this_time]
-    opening_prices = opening_prices[0:range_this_time]
-    high_prices = high_prices[0:range_this_time]
-    low_prices = low_prices[0:range_this_time]
-
-historic_data = HistoricData(dates, closing_prices, opening_prices, high_prices, low_prices)
+##### https://finance.yahoo.com/quote/TQQQ/history?p=TQQQ&.tsrc=fin-srch
+tickers_to_run = []
+tickers_to_run.append('SPY')
+tickers_to_run.append('DIA')
+tickers_to_run.append('NDAQ')
+tickers_to_run.append('TQQQ')
+stock_history_data = StockData(tickers_to_run)
+##### Cut down on timing.
+# stock_history_data.limit_timeframe('2018-01-01', '2019-01-01')
+stock_history_data.add_external_investments(monthly_deposit, daily_deposit)
 
 ####### Run Strats #######
-run_some_strategies(initial_deposit, daily_investment, historic_data)
+run_some_strategies(initial_deposit, stock_history_data)
 
-historic_data.plot()
+stock_history_data.plot()
 
-t1 = time.time()
-Time = t1-t0
-print("\nTime: " + "%.2f" % Time + " seconds")
+##### Timing
+end_time = time.time()
+print_time(end_time - start_time)
 
+##### Display all plots.
 plt.show()
+
