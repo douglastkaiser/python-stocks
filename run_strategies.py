@@ -14,7 +14,7 @@ def run_some_strategies(initial_deposit, historic_data):
     th_list = []
     th_list.append(TradingHistory(ticker_list, initial_deposit, strategy_no_investment, 'None'))
     th_list.append(TradingHistory(ticker_list, initial_deposit, strategy_spy_asap_investment, 'SPY asap'))
-    th_list.append(TradingHistory(ticker_list, initial_deposit, strategy_dia_asap_investment, 'DIA asap'))
+    # th_list.append(TradingHistory(ticker_list, initial_deposit, strategy_dia_asap_investment, 'DIA asap'))
     # th_list.append(TradingHistory(ticker_list, initial_deposit, strategy_ndaq_asap_investment, 'NDAQ asap'))
     # th_list.append(TradingHistory(ticker_list, initial_deposit, strategy_tqq_asap_investment, 'TQQ asap'))
     # th_list.append(TradingHistory(ticker_list, initial_deposit, strategy_marcus_2p25, 'Marcus 2.25%'))

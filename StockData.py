@@ -51,8 +51,8 @@ class StockData:
             # sub_df.plot(kind='line', title=ticker+' Prices')
             data = list(sub_df)
             plt.plot(sub_df.index, data, label='Closing Prices')
-            plt.plot(sub_df.index, no_delay_moving_average_filter_vectorized(data, 10), label='Closing Prices - MAF 10')
             plt.plot(sub_df.index, no_delay_moving_average_filter_on_that_day_vectorized(data, 10), label='Closing Prices - on that day - MAF 10')
+            plt.plot(sub_df.index, no_delay_moving_average_filter_on_that_day_vectorized(data, 100), label='Closing Prices - on that day - MAF 100')
             plt.legend()
             plt.title(ticker + ' Stock')
 

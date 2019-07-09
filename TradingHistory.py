@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from math_helper import *
 import pandas as pd
+import math
 
 class TradingHistory:
 
@@ -99,8 +100,11 @@ class TradingHistory:
         for i in range(1, len(self.trading_history_df.index)):
             todays_change = port_val_hist[i]/(port_val_hist[i - 1] + money_added[i]) - 1
             holding_period_return = holding_period_return*(1 + todays_change)
-        day_delta = self.trading_history_df.index[-1] - self.trading_history_df.index[0]
-        return (holding_period_return - 1)*100/(day_delta.days/365)
+        time_delta = self.trading_history_df.index[-1] - self.trading_history_df.index[0]
+        time_weighted_return = holding_period_return - 1
+        # return ((holding_period_return - 1)*100)^(365/time_delta.days)
+        num_years = time_delta.days/365
+        return ((time_weighted_return + 1)**(1/num_years) - 1)*100
 
     #### DISPLAY HELP ####
     def printer(self):

@@ -13,19 +13,19 @@ plt.close('all')
 
 start_time = time.time()
 
-initial_deposit = 10000
-daily_deposit = 10
-monthly_deposit = 100  # Adds at first of the month
+initial_deposit = 50000
+daily_deposit = 0
+monthly_deposit = 0  # Adds at first of the month
 
 ##### https://finance.yahoo.com/quote/TQQQ/history?p=TQQQ&.tsrc=fin-srch
 tickers_to_run = []
 tickers_to_run.append('SPY')
-tickers_to_run.append('DIA')
+# tickers_to_run.append('DIA')
 # tickers_to_run.append('NDAQ')
 # tickers_to_run.append('TQQQ')
 stock_history_data = StockData(tickers_to_run)
 ##### Cut down on timing.
-# stock_history_data.limit_timeframe('2010-08-25', '2018-09-05')
+stock_history_data.limit_timeframe('2004-01-01', '2019-01-01')
 stock_history_data.add_external_investments(monthly_deposit, daily_deposit)
 
 ####### Run Strats #######
