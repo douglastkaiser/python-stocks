@@ -1,5 +1,7 @@
+
 import numpy as np
 import matplotlib.pyplot as plt
+from math_helper import *
 
 class TradingDay:
 
@@ -70,7 +72,7 @@ class TradingDay:
         protfolio_value = self.shares_history[-1]*self.price_history[-1] + self.bank_account_history[-1]
         print("Total Value: " + "%.2f" % protfolio_value)
         port_val_hist = self.portfolio_value_history()
-        percentage_increase = (port_val_hist[-1] - port_val_hist[0])/port_val_hist[0]*100/10
+        percentage_increase = percentage_difference(port_val_hist[0], port_val_hist[-1])
         print("Total Percentage Increase: " + "%.2f" % percentage_increase + "%")
 
     def add_port_value_to_plt(self, label_for_legend):
