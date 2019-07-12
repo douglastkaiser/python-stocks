@@ -8,6 +8,7 @@ import pandas as pd
 def run_some_strategies(initial_deposit, historic_data):
 
     ticker_list = historic_data.tickers()
+
     ticker_list.append('bank_account')
     ticker_list.append('money_invested')
 
@@ -18,7 +19,8 @@ def run_some_strategies(initial_deposit, historic_data):
     # th_list.append(TradingHistory(ticker_list, initial_deposit, strategy_ndaq_asap_investment, 'NDAQ asap'))
     # th_list.append(TradingHistory(ticker_list, initial_deposit, strategy_tqq_asap_investment, 'TQQ asap'))
     # th_list.append(TradingHistory(ticker_list, initial_deposit, strategy_marcus_2p25, 'Marcus 2.25%'))
-    th_list.append(TradingHistory(ticker_list, initial_deposit, strategy_maf_investment, 'MAF Strategy'))
+    # th_list.append(TradingHistory(ticker_list, initial_deposit, strategy_maf_investment, 'MAF Strategy'))
+    th_list.append(TradingHistory(ticker_list, initial_deposit, strategy_openclose_investment, 'Devangs OpenClose Strategy'))
 
     ##### Main loop through each day.
     for row_n in range(1, historic_data.total_days()):

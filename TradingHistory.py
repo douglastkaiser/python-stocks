@@ -70,9 +70,9 @@ class TradingHistory:
     #         self.shares_history[-1] += 1
     #         self.bank_account_history[-1] -= self.price_history[-1]
 
-    def buy_all_shares(self, ticker_name):
+    def buy_all_shares(self, ticker_name, whentobuy='Close'):
         ba = self.trading_history_df['bank_account'][-1]
-        stock_price = self.stock_df_to_today[ticker_name]['Close'][-1]
+        stock_price = self.stock_df_to_today[ticker_name][whentobuy][-1]
         if not np.isnan(stock_price):
             shares_to_buy = int(ba/stock_price)
             self.trading_history_df['bank_account'][-1] -= shares_to_buy*stock_price
@@ -83,8 +83,8 @@ class TradingHistory:
     #         self.shares_history[-1] = self.shares_history[-1] - 1
     #         self.bank_account_history[-1] += self.price_history[-1]
 
-    def sell_all_shares(self, ticker_name):
-        stock_price = self.stock_df_to_today[ticker_name]['Close'][-1]
+    def sell_all_shares(self, ticker_name, whentobuy='Close'):
+        stock_price = self.stock_df_to_today[ticker_name][whentobuy][-1]
         if (not np.isnan(stock_price)):
             shares_to_sell = self.trading_history_df[ticker_name][-1]
             self.trading_history_df['bank_account'][-1] += shares_to_sell*stock_price

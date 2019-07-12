@@ -9,6 +9,6 @@ def load_into_stock_data_set(file_name):
     else:
         data_location = "raw_data/" + file_name + ".csv"
 
-    df = pd.read_csv(data_location, parse_dates=["Date"], index_col=["Date"], usecols=["Date", "Close"])
+    df = pd.read_csv(data_location, parse_dates=["Date"], index_col=["Date"], usecols=["Date", "Close", "Open"])
 
     return df

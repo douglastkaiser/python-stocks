@@ -55,3 +55,20 @@ def strategy_maf_investment(trading_history):
         trading_history.sell_all_shares(ticker)
 
     return trading_history
+
+
+def strategy_openclose_investment(trading_history):
+    ticker = 'SPY'
+    spy_closing = trading_history.stock_df_to_today[ticker]['Close']
+    spy_closing = list(spy_closing[~spy_closing.isin([np.nan, np.inf, -np.inf])])
+    spy_opening = trading_history.stock_df_to_today[ticker]['Open']
+    spy_opening = list(spy_opening[~spy_opening.isin([np.nan, np.inf, -np.inf])])
+    if len(spy_closing) < 2:
+        return trading_history
+
+    if spy_closing[-2] < spy_opening[-1]:
+        trading_history.sell_all_shares(ticker, 'Open')
+    else:
+        trading_history.buy_all_shares(ticker, 'Open')
+
+    return trading_history
