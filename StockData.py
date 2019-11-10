@@ -17,7 +17,6 @@ class StockData:
         idx = pd.date_range(inn[0], inn[-1])
         df = df.reindex(idx, fill_value=np.NaN)
         self.data_frame = df
-
         self.monthly_deposit = monthly_deposit
         self.daily_deposit = daily_deposit
 
@@ -49,40 +48,11 @@ class StockData:
             fig = plt.figure()
             sub_df = df[ticker]['Close']  # [['Close', 'Open', 'High', 'Low']]
             sub_df = sub_df[~sub_df.isin([np.nan, np.inf, -np.inf])]
-            sub_df.plot(kind='line', title=ticker+' Prices')
-
-        # t = df['Date']
-        # print(t)
-        # plt.plot(t, self.closing_prices, label='Closing Prices')
-
-        # mafshort = []
-        # maflong = []
-        # mafshort_slope = []
-        # maflong_slope = []
-        # mafshort_curv = []
-        # for i in range(0, len(self.closing_prices)):
-        #     data_for_use = self.closing_prices[0:i+1]
-        #     mafshort.append(no_delay_moving_average_filter(data_for_use, 10))
-        #     maflong.append(no_delay_moving_average_filter(data_for_use, 100))
-            # mafshort_slope.append(no_delay_moving_average_filter(slope_vectorized(mafshort), 10))
-            # mafshort_curv.append(no_delay_moving_average_filter(curvature_vectorized(mafshort), 10))
-            # mafshort_slope.append(slope(mafshort, 2))
-            # mafshort_curv.append(curvature(mafshort))
-
-        # plt.plot(t, mafshort, label='Closing Prices - short day MAF')
-        # plt.plot(t, maflong, label='Closing Prices - long day MAF')
-        # plt.legend()
-        # plt.title('SPY Prices')
-
-        # fig = plt.figure()
-        # plt.plot(t, mafshort_slope, label='Slope of Prices - short day MAF')
-        # # plt.plot(t, maflong_slope, label='Slope of Prices - long day MAF')
-        # plt.legend()
-        # plt.title('SPY Prices - Slope')
-
-        # fig = plt.figure()
-        # plt.plot(t, mafshort_curv, label='Curv of Prices - short day MAF')
-        # # plt.plot(t, maflong_curv, label='Curv of long day MAF')
-        # plt.legend()
-        # plt.title('SPY Prices - Curvature')
+            # sub_df.plot(kind='line', title=ticker+' Prices')
+            data = list(sub_df)
+            plt.plot(sub_df.index, data, label='Closing Prices')
+            plt.plot(sub_df.index, no_delay_moving_average_filter_on_that_day_vectorized(data, 10), label='Closing Prices - on that day - MAF 10')
+            plt.plot(sub_df.index, no_delay_moving_average_filter_on_that_day_vectorized(data, 100), label='Closing Prices - on that day - MAF 100')
+            plt.legend()
+            plt.title(ticker + ' Stock')
 

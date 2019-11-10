@@ -94,6 +94,14 @@ def no_delay_moving_average_filter(data, maf_n):
     return maf[-1]
 
 
+def no_delay_moving_average_filter_on_that_day_vectorized(data, maf_n):
+    maf = []
+    for i in range(len(data)):
+        data_for_use = data[0:i+1]
+        maf.append(no_delay_moving_average_filter(data_for_use, maf_n))
+    return maf
+
+
 def percentage_difference(from_here, to_here):
     assert from_here != 0
     return 100*(to_here - from_here)/np.abs(from_here)

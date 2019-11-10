@@ -36,7 +36,9 @@ def strategy_maf_investment(trading_history):
     assert type(trading_history) is TradingHistory, "trading_history is not of type TradingHistory"
 
     ##### Start with SPY.
-    spy_closing = trading_history.stock_df_to_today['SPY']['Close']
+    ticker = 'SPY'
+    # ticker = 'TQQQ'
+    spy_closing = trading_history.stock_df_to_today[ticker]['Close']
     spy_closing = list(spy_closing[~spy_closing.isin([np.nan, np.inf, -np.inf])])
     if len(spy_closing) < 2:
         return trading_history
@@ -44,12 +46,29 @@ def strategy_maf_investment(trading_history):
     mafshort_yesterday = no_delay_moving_average_filter(spy_closing[0:-1], 10)
     maflong = no_delay_moving_average_filter(spy_closing, 100)
     maflong_yesterday = no_delay_moving_average_filter(spy_closing[0:-1], 100)
-    slope_mafshort = slope([mafshort_yesterday, mafshort], 3)
-    slope_maflong = slope([maflong_yesterday, maflong], 3)
+    slope_mafshort = slope([mafshort_yesterday, mafshort], 2)
+    slope_maflong = slope([maflong_yesterday, maflong], 2)
 
     if (spy_closing[-1] < mafshort) and (slope_maflong > 0):
-        trading_history.buy_all_shares('SPY')
+        trading_history.buy_all_shares(ticker)
     if (mafshort > maflong) and (slope_mafshort < 0) and (spy_closing[-1] > mafshort):
-        trading_history.sell_all_shares('SPY')
+        trading_history.sell_all_shares(ticker)
+
+    return trading_history
+
+
+def strategy_openclose_investment(trading_history):
+    ticker = 'SPY'
+    spy_closing = trading_history.stock_df_to_today[ticker]['Close']
+    spy_closing = list(spy_closing[~spy_closing.isin([np.nan, np.inf, -np.inf])])
+    spy_opening = trading_history.stock_df_to_today[ticker]['Open']
+    spy_opening = list(spy_opening[~spy_opening.isin([np.nan, np.inf, -np.inf])])
+    if len(spy_closing) < 2:
+        return trading_history
+
+    if spy_closing[-2] < spy_opening[-1]:
+        trading_history.sell_all_shares(ticker, 'Open')
+    else:
+        trading_history.buy_all_shares(ticker, 'Open')
 
     return trading_history
