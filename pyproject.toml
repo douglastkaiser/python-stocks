@@ -16,5 +16,9 @@ dependencies = [
     "scipy",
 ]
 
+[tool.setuptools.packages.find]
+include = ["python_stocks"]
+exclude = ["configs", "configs.*"]
+
 [project.scripts]
 python-stocks = "python_stocks.cli:main"
