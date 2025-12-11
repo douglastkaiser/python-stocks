@@ -1,9 +1,10 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
-from math_helper import *
 import pandas as pd
-from data_loading import *
+
+from .data_loading import load_into_stock_data_set
+from .math_helper import no_delay_moving_average_filter_on_that_day_vectorized
 
 class StockData:
 
@@ -40,7 +41,9 @@ class StockData:
         return list(self.data_frame.columns.levels[0])
 
     def limit_timeframe(self, start_date, end_date):
-        self.data_frame = self.data_frame.loc[start_date:end_date]
+        start = start_date or self.data_frame.index[0]
+        end = end_date or self.data_frame.index[-1]
+        self.data_frame = self.data_frame.loc[start:end]
 
     def plot(self):
         df = self.data_frame
