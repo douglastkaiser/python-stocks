@@ -1,10 +1,10 @@
 
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
 from .data_loading import load_into_stock_data_set
 from .math_helper import no_delay_moving_average_filter_on_that_day_vectorized
+from .plotting import plt
 
 class StockData:
 
@@ -16,7 +16,7 @@ class StockData:
         # Reindex to fill missing days - non-trading days.
         inn = df.index
         idx = pd.date_range(inn[0], inn[-1])
-        df = df.reindex(idx, fill_value=np.NaN)
+        df = df.reindex(idx, fill_value=np.nan)
         self.data_frame = df
         self.monthly_deposit = monthly_deposit
         self.daily_deposit = daily_deposit
@@ -48,7 +48,7 @@ class StockData:
     def plot(self):
         df = self.data_frame
         for ticker in self.tickers():
-            fig = plt.figure()
+            plt.figure()
             sub_df = df[ticker]['Close']  # [['Close', 'Open', 'High', 'Low']]
             sub_df = sub_df[~sub_df.isin([np.nan, np.inf, -np.inf])]
             # sub_df.plot(kind='line', title=ticker+' Prices')

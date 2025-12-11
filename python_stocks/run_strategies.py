@@ -1,7 +1,6 @@
 import json
 from typing import Dict, Iterable, List, Optional, Tuple
 
-import matplotlib.pyplot as plt
 import pandas as pd
 
 from .dougs_strategies import (

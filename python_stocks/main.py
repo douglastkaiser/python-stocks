@@ -1,7 +1,7 @@
 import time
 from typing import Iterable, Optional
 
-import matplotlib.pyplot as plt
+from .plotting import plt
 
 from .math_helper import print_time
 from .run_strategies import run_some_strategies
