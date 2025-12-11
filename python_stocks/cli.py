@@ -1,5 +1,5 @@
 import argparse
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from .main import run_simulation
 
@@ -10,6 +10,30 @@ DEFAULT_END_DATE = "2019-01-01"
 DEFAULT_INITIAL_DEPOSIT = 50_000
 DEFAULT_DAILY_DEPOSIT = 0
 DEFAULT_MONTHLY_DEPOSIT = 0
+
+
+def _parse_value(value: str):
+    try:
+        return int(value)
+    except ValueError:
+        try:
+            return float(value)
+        except ValueError:
+            return value
+
+
+def _parse_parameter_overrides(raw_overrides: List[str]) -> Dict[str, Dict[str, List[object]]]:
+    overrides: Dict[str, Dict[str, List[object]]] = {}
+    for raw in raw_overrides:
+        if "=" not in raw or "." not in raw:
+            continue
+        lhs, rhs = raw.split("=", 1)
+        strategy_name, param_name = lhs.split(".", 1)
+        values = [_parse_value(value) for value in rhs.split(",") if value]
+        if not values:
+            continue
+        overrides.setdefault(strategy_name, {})[param_name] = values
+    return overrides
 
 
 def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
@@ -28,6 +52,19 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     run_parser.add_argument("--initial", dest="initial_deposit", type=int, default=DEFAULT_INITIAL_DEPOSIT, help="Initial deposit")
     run_parser.add_argument("--daily", dest="daily_deposit", type=int, default=DEFAULT_DAILY_DEPOSIT, help="Daily deposit amount")
     run_parser.add_argument("--monthly", dest="monthly_deposit", type=int, default=DEFAULT_MONTHLY_DEPOSIT, help="Monthly deposit amount")
+    run_parser.add_argument(
+        "--strategies",
+        nargs="+",
+        default=None,
+        help="Registered strategies to run (default: all)",
+    )
+    run_parser.add_argument(
+        "--param",
+        dest="parameter_overrides",
+        action="append",
+        default=[],
+        help="Strategy parameter sweep overrides of the form strategy.param=1,2,3",
+    )
 
     return parser.parse_args(argv)
 
@@ -43,6 +80,8 @@ def main(argv: Optional[List[str]] = None) -> None:
             initial_deposit=args.initial_deposit,
             daily_deposit=args.daily_deposit,
             monthly_deposit=args.monthly_deposit,
+            strategies=args.strategies,
+            parameter_overrides=_parse_parameter_overrides(args.parameter_overrides),
         )
 
 
