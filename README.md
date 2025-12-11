@@ -26,3 +26,18 @@ python -m python_stocks run --tickers SPY --start 2015-01-01 --end 2019-01-01 \
 
 Then enable GitHub Pages in your repository settings (branch: `main`, folder: `/docs`). Assets will be served from
 `https://douglastkaiser.github.io/python-stocks/`.
+
+An automated workflow (`.github/workflows/publish-docs.yml`) rebuilds the `docs/` folder on every push to `main`, on pull
+requests (for preview deployments), and on a weekly schedule. It runs a lightweight SPY+DIA sample backtest in headless mode,
+uploads the generated CSV/JSON, PNG, and interactive HTML assets as a Pages artifact, and deploys without committing the
+artifacts back to the repository.
+
+## Preset scenarios
+
+Quick-start scripts live in `configs/` for common strategies:
+
+- `./configs/buy_and_hold.sh`: SPY and DIA buy-and-hold snapshot for GitHub Pages publishing.
+- `./configs/ma_crossover.sh`: Multi-parameter moving-average sweep on SPY.
+- `./configs/momentum.sh`: Single-ticker TQQQ momentum preset.
+
+Each script writes reports to `docs/` with `--no-show` enabled so the outputs are ready to publish to Pages.

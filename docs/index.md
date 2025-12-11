@@ -1,22 +1,46 @@
 # python-stocks dashboards
 
-You can publish static dashboards for this project using GitHub Pages (via the `docs/` folder) without adding any new infrastructure.
+Static dashboards under `/docs` are ready to publish directly to GitHub Pages. The `publish-docs` workflow rebuilds a small
+sample backtest (SPY + DIA, 2017–2018) on every push to `main`, every pull request (for Draft Preview deployments), and on a
+weekly schedule. Each run saves CSV/JSON summaries, PNG charts, and interactive HTML embeds so visitors always have something to
+browse without running the simulator themselves.
 
-## Quick start
-1. Run a simulation and tell the CLI to write reports and plots to `docs/`:
+## Starter dashboard (SPY + DIA)
+
+The assets published to GitHub Pages come from `python -m python_stocks run --tickers SPY DIA --start 2017-01-01 --end
+2018-01-01 --initial 50000 --monthly 500 --strategies buy_and_hold moving_average_filter --report-dir docs --no-show`. They are
+generated in CI and uploaded as a Pages artifact (they are not committed to the repository to avoid giant HTML diffs).
+
+- Strategy summaries: [strategy_summary.csv](./strategy_summary.csv) · [strategy_summary.json](./strategy_summary.json)
+- Static plots: [figure_1.png](./assets/figure_1.png), [figure_2.png](./assets/figure_2.png), [figure_3.png](./assets/figure_3.png)
+- Interactive price views: [SPY](./assets/spy_interactive.html) · [DIA](./assets/dia_interactive.html) (generated on the fly by
+  the Pages workflow)
+
+## Publish automatically
+
+The GitHub Actions workflow at `.github/workflows/publish-docs.yml` installs the project, runs the sample simulation with
+`--report-dir docs --no-show`, uploads the refreshed assets as a Pages artifact, and deploys them to GitHub Pages (including
+Draft Preview deployments on pull requests). Point GitHub Pages at the `docs/` folder (branch: `main`, folder: `/docs`) to serv
+e the dashboards at your Pages URL.
+
+## Run your own simulations
+
+1. Use the CLI directly:
    ```bash
-   python -m python_stocks run --tickers SPY AAPL --start 2015-01-01 --end 2020-01-01 \
+   python -m python_stocks run --tickers SPY DIA --start 2017-01-01 --end 2018-01-01 \
      --initial 50000 --monthly 500 --report-dir docs --no-show
    ```
-   * `--report-dir docs` writes `strategy_summary.csv`, `strategy_summary.json`, and PNG charts under `docs/assets/`.
-   * `--no-show` keeps the run non-interactive so it works in CI.
+   This writes the summary CSV/JSON and PNG/HTML assets under `docs/` for GitHub Pages.
 
-2. Commit the generated `docs/` contents and push to GitHub.
+2. Or run one of the presets from the repo root:
+   ```bash
+   ./configs/buy_and_hold.sh
+   ./configs/ma_crossover.sh
+   ./configs/momentum.sh
+   ```
 
-3. In your repository settings, enable **GitHub Pages** with the **Source** set to `Deploy from a branch` → `main` → `/docs`. The dashboards will be available at `https://douglastkaiser.github.io/python-stocks/`.
+3. Push your branch and open a pull request to get an automatic Draft Preview, or push to `main` to refresh the published
+   dashboard.
 
-## What gets published?
-- Static plots for the portfolio curve and each ticker (PNG files under `docs/assets/figure_*.png`).
-- Strategy performance summaries in both CSV and JSON formats.
-
-You can customize or add richer dashboards (e.g., embed Plotly or Vega-Lite visuals) by replacing `docs/index.md` with your own content and linking to the generated assets.
+Feel free to customize the markdown content here, swap in your own visuals, or tweak the presets for different portfolios or
+timeframes.
