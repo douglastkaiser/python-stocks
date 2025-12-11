@@ -65,6 +65,18 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
         default=[],
         help="Strategy parameter sweep overrides of the form strategy.param=1,2,3",
     )
+    run_parser.add_argument(
+        "--report-dir",
+        dest="report_dir",
+        default=None,
+        help="Directory to write static reports (CSV/JSON) and saved plots for GitHub Pages hosting",
+    )
+    run_parser.add_argument(
+        "--no-show",
+        dest="show_plots",
+        action="store_false",
+        help="Skip interactive plot display (useful for GitHub Pages artifact generation)",
+    )
 
     return parser.parse_args(argv)
 
@@ -82,6 +94,8 @@ def main(argv: Optional[List[str]] = None) -> None:
             monthly_deposit=args.monthly_deposit,
             strategies=args.strategies,
             parameter_overrides=_parse_parameter_overrides(args.parameter_overrides),
+            report_dir=args.report_dir,
+            show_plots=args.show_plots,
         )
 
 

@@ -1,4 +1,5 @@
 import time
+from pathlib import Path
 from typing import Iterable, Optional
 
 from .plotting import plt
@@ -17,9 +18,13 @@ def run_simulation(
     monthly_deposit: int,
     strategies: Optional[Iterable[str]] = None,
     parameter_overrides: Optional[dict] = None,
+    report_dir: Optional[str] = None,
+    show_plots: bool = True,
 ) -> None:
     plt.close("all")
     start_time = time.time()
+    portfolio_fig = plt.figure()
+    portfolio_fig.suptitle("Portfolio performance")
 
     stock_history_data = StockData(list(tickers))
 
@@ -39,7 +44,20 @@ def run_simulation(
 
     stock_history_data.plot()
 
+    if report_dir:
+        report_path = Path(report_dir)
+        assets_path = report_path / "assets"
+        assets_path.mkdir(parents=True, exist_ok=True)
+
+        report_df.to_csv(report_path / "strategy_summary.csv", index=False)
+        report_df.to_json(report_path / "strategy_summary.json", orient="records", indent=2)
+
+        for idx, fig_num in enumerate(sorted(plt.get_fignums()), start=1):
+            fig = plt.figure(fig_num)
+            fig.savefig(assets_path / f"figure_{idx}.png", bbox_inches="tight")
+
     end_time = time.time()
     print_time(end_time - start_time)
 
-    plt.show()
+    if show_plots:
+        plt.show()
