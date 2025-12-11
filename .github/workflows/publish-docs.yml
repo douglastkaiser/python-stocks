@@ -49,6 +49,15 @@ jobs:
           mkdir -p "$SITE_DIR"
           rsync -av --delete docs/ "$SITE_DIR"/
 
+      - name: Remove preview artifacts on main
+        if: github.event_name != 'pull_request'
+        env:
+          SITE_DIR: ${{ env.SITE_DIR }}
+        run: |
+          if [ -d "$SITE_DIR" ]; then
+            find "$SITE_DIR" -maxdepth 1 -type d -name 'pr-*' -exec rm -rf {} +
+          fi
+
       - name: Generate sample dashboards
         run: |
           python -m python_stocks run --tickers SPY DIA --start 2017-01-01 --end 2018-01-01 \
@@ -127,6 +136,8 @@ jobs:
       - name: Deploy preview to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          preview: true
 
   comment-preview:
     if: github.event_name == 'pull_request'
@@ -141,7 +152,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const prNumber = context.payload.pull_request.number;
-            const pageUrl = `${{ needs.deploy-preview.outputs.page_url }}pr-${prNumber}/`;
+            const pageUrl = `${{ needs.deploy-preview.outputs.page_url }}`;
             const body = `📊 Preview available at ${pageUrl}`;
             await github.rest.issues.createComment({
               owner: context.repo.owner,
