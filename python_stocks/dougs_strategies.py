@@ -1,6 +1,8 @@
 
-from TradingHistory import TradingHistory
-from math_helper import *
+import numpy as np
+
+from .math_helper import no_delay_moving_average_filter, slope
+from .trading_history import TradingHistory
 
 ##### STRATEGIES
 def strategy_no_investment(trading_history):

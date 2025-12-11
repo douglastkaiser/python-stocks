@@ -1,6 +1,18 @@
 
 import unittest
-from math_helper import *
+
+from python_stocks.math_helper import (
+    curvature,
+    curvature_vectorized,
+    moving_average_filter,
+    moving_average_filter_vectorized,
+    no_delay_moving_average_filter,
+    no_delay_moving_average_filter_vectorized,
+    no_delay_moving_average_filter_on_that_day_vectorized,
+    percentage_difference,
+    slope,
+    slope_vectorized,
+)
 
 class TestMathHelper(unittest.TestCase):
 

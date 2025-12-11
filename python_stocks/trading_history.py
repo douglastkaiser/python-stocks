@@ -1,9 +1,11 @@
 
-import numpy as np
-import matplotlib.pyplot as plt
-from math_helper import *
-import pandas as pd
 import math
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+
+from .math_helper import percentage_difference
 
 class TradingHistory:
 

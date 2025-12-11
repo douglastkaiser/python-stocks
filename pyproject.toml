@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "python-stocks"
+version = "0.1.0"
+description = "Trading strategy simulations on historical stock data"
+authors = [{ name = "Unknown" }]
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "scipy",
+]
+
+[project.scripts]
+python-stocks = "python_stocks.cli:main"

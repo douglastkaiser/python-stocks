@@ -1,9 +1,17 @@
 
-from TradingHistory import TradingHistory
-import numpy as np
-from dougs_strategies import *
 import matplotlib.pyplot as plt
-import pandas as pd
+
+from .dougs_strategies import (
+    strategy_dia_asap_investment,
+    strategy_maf_investment,
+    strategy_marcus_2p25,
+    strategy_ndaq_asap_investment,
+    strategy_no_investment,
+    strategy_openclose_investment,
+    strategy_spy_asap_investment,
+    strategy_tqq_asap_investment,
+)
+from .trading_history import TradingHistory
 
 def run_some_strategies(initial_deposit, historic_data):
 
