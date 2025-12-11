@@ -5,6 +5,7 @@ from typing import Iterable, Optional
 from .plotting import plt
 
 from .math_helper import print_time
+from .interactive_charts import export_interactive_price_charts
 from .run_strategies import run_some_strategies
 from .stock_data import StockData
 
@@ -54,7 +55,9 @@ def run_simulation(
 
         for idx, fig_num in enumerate(sorted(plt.get_fignums()), start=1):
             fig = plt.figure(fig_num)
-            fig.savefig(assets_path / f"figure_{idx}.png", bbox_inches="tight")
+            fig.savefig(assets_path / f"figure_{idx}.png", bbox_inches="tight", metadata={"Date": None})
+
+        export_interactive_price_charts(stock_history_data.tickers(), stock_history_data.data_frame, assets_path)
 
     end_time = time.time()
     print_time(end_time - start_time)
