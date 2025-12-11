@@ -1,9 +1,9 @@
 # python-stocks dashboards
 
 Static dashboards under `/docs` are ready to publish directly to GitHub Pages. The `publish-docs` workflow rebuilds a small
-sample backtest (SPY + DIA, 2017–2018) on every push to `main`, every pull request (for Draft Preview deployments), and on a
-weekly schedule. Each run saves CSV/JSON summaries, PNG charts, and interactive HTML embeds so visitors always have something to
-browse without running the simulator themselves.
+sample backtest (SPY + DIA, 2017–2018) on every push to `main` and every pull request (for Draft Preview deployments). Each run
+saves CSV/JSON summaries, PNG charts, and interactive HTML embeds so visitors always have something to browse without running the
+simulator themselves.
 
 ## Starter dashboard (SPY + DIA)
 
@@ -19,9 +19,9 @@ generated in CI and uploaded as a Pages artifact (they are not committed to the 
 ## Publish automatically
 
 The GitHub Actions workflow at `.github/workflows/publish-docs.yml` installs the project, runs the sample simulation with
-`--report-dir docs --no-show`, uploads the refreshed assets as a Pages artifact, and deploys them to GitHub Pages (including
-Draft Preview deployments on pull requests). Point GitHub Pages at the `docs/` folder (branch: `main`, folder: `/docs`) to serv
-e the dashboards at your Pages URL.
+`--report-dir docs --no-show`, uploads the refreshed assets as a Pages artifact, posts a PR comment with the preview link, and
+deploys the site to GitHub Pages (including Draft Preview deployments on pull requests). Point GitHub Pages at the `docs/`
+folder (branch: `main`, folder: `/docs`) to serve the dashboards at your Pages URL.
 
 ## Run your own simulations
 
