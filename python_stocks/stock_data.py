@@ -48,7 +48,7 @@ class StockData:
     def plot(self):
         df = self.data_frame
         for ticker in self.tickers():
-            fig = plt.figure()
+            plt.figure()
             sub_df = df[ticker]['Close']  # [['Close', 'Open', 'High', 'Low']]
             sub_df = sub_df[~sub_df.isin([np.nan, np.inf, -np.inf])]
             # sub_df.plot(kind='line', title=ticker+' Prices')

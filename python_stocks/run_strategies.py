@@ -3,8 +3,6 @@ from typing import Dict, Iterable, List, Optional, Tuple
 
 import pandas as pd
 
-from .plotting import plt
-
 from .dougs_strategies import (
     strategy_buy_and_hold,
     strategy_maf_investment,

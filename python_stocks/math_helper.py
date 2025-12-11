@@ -1,11 +1,10 @@
 
 import numpy as np
-from scipy.signal import butter, lfilter, freqz
+from scipy.signal import butter, lfilter
 
 def print_time(Time_sec):
     hours = int(Time_sec/3600)
     minutes = int(Time_sec/60)
-    seconds = int(Time_sec)
     if hours >= 1:
         remaining_minutes = minutes-hours*60
         remaining_seconds = Time_sec-minutes*60
