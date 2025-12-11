@@ -126,9 +126,10 @@ jobs:
     needs: build
     environment:
       name: github-pages-preview
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.preview_url.outputs.url || steps.deployment.outputs.page_url }}
     outputs:
       page_url: ${{ steps.deployment.outputs.page_url }}
+      preview_page_url: ${{ steps.preview_url.outputs.url }}
     permissions:
       pages: write
       id-token: write
@@ -138,6 +139,14 @@ jobs:
         uses: actions/deploy-pages@v4
         with:
           preview: true
+
+      - name: Compute PR preview URL
+        id: preview_url
+        env:
+          BASE_URL: ${{ steps.deployment.outputs.page_url }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          echo "url=${BASE_URL}pr-${PR_NUMBER}/" >> "$GITHUB_OUTPUT"
 
   comment-preview:
     if: github.event_name == 'pull_request'
@@ -152,8 +161,8 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const prNumber = context.payload.pull_request.number;
-            const pageUrl = `${{ needs.deploy-preview.outputs.page_url }}`;
-            const body = `📊 Preview available at ${pageUrl}`;
+            const previewUrl = `${{ needs.deploy-preview.outputs.preview_page_url || needs.deploy-preview.outputs.page_url }}`;
+            const body = `📊 Preview available at ${previewUrl}`;
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
