@@ -1,9 +1,9 @@
 
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
 from .math_helper import percentage_difference
+from .plotting import plt
 
 class TradingHistory:
 
@@ -163,8 +163,8 @@ class TradingHistory:
         cash_flows = [-float(money) for money in money_added]
         cash_flows.append(port_val_hist[-1])
 
-        irr = np.irr(cash_flows)
-        if irr is None or np.isnan(irr):
+        irr = self._internal_irr(cash_flows)
+        if irr is None or not np.isfinite(irr):
             return 0
 
         time_delta = self.trading_history_df.index[-1] - self.trading_history_df.index[0]
@@ -173,6 +173,23 @@ class TradingHistory:
 
         num_years = time_delta.days / 365
         return (1 + irr) ** (1 / num_years) - 1
+
+    def _internal_irr(self, cash_flows: list[float], *, guess: float = 0.1) -> float:
+        rate = guess
+        for _ in range(100):
+            npv = sum(cf / (1 + rate) ** i for i, cf in enumerate(cash_flows))
+            derivative = sum(-i * cf / (1 + rate) ** (i + 1) for i, cf in enumerate(cash_flows))
+            if abs(derivative) < 1e-12:
+                break
+
+            new_rate = rate - npv / derivative
+            if not np.isfinite(new_rate):
+                break
+            if abs(new_rate - rate) < 1e-6:
+                return new_rate
+            rate = new_rate
+
+        return rate
 
     def drawdown_series(self):
         portfolio_values = pd.Series(self.portfolio_value_history(), index=self.trading_history_df.index)
