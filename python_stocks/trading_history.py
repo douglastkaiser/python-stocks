@@ -27,6 +27,8 @@ class TradingHistory:
         self.name = name
         self.transaction_cost_rate = max(0.0, transaction_cost_rate)
         self.slippage_pct = max(0.0, slippage_pct)
+        self.total_fees: float = 0.0
+        self.total_slippage_cost: float = 0.0
 
     #### STRATS ####
     # def strat1(self):
@@ -111,11 +113,14 @@ class TradingHistory:
 
         trade_value = shares_to_buy * stock_price
         transaction_cost = trade_value * self.transaction_cost_rate
+        slippage_cost = shares_to_buy * (stock_price - base_price)
         updated_bank = bank_account - trade_value - transaction_cost
         updated_position = self.trading_history_df.at[self.trading_history_df.index[-1], ticker_name] + shares_to_buy
 
         self.trading_history_df.at[self.trading_history_df.index[-1], "bank_account"] = max(0.0, updated_bank)
         self.trading_history_df.at[self.trading_history_df.index[-1], ticker_name] = updated_position
+        self.total_fees += transaction_cost
+        self.total_slippage_cost += max(0.0, slippage_cost)
 
     # def sell_one_share(self):
     #     if self.shares_history[-1] > 0:
@@ -135,10 +140,13 @@ class TradingHistory:
         stock_price = self._price_with_slippage(base_price, False)
         trade_value = shares_to_sell * stock_price
         transaction_cost = trade_value * self.transaction_cost_rate
+        slippage_cost = shares_to_sell * (base_price - stock_price)
         updated_bank = self.trading_history_df.at[self.trading_history_df.index[-1], "bank_account"] + trade_value - transaction_cost
 
         self.trading_history_df.at[self.trading_history_df.index[-1], "bank_account"] = max(0.0, updated_bank)
         self.trading_history_df.at[self.trading_history_df.index[-1], ticker_name] = 0
+        self.total_fees += transaction_cost
+        self.total_slippage_cost += max(0.0, slippage_cost)
 
     def time_weighted_return(self, annualize: bool = True):
         holding_period_return = 1
