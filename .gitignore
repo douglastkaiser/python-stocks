@@ -1,3 +1,6 @@
 # Generated dashboard assets
 docs/assets/*_interactive.html
 docs/assets/*.png
+
+# Local CI artifact runs
+artifacts/

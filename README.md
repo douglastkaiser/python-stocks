@@ -15,6 +15,18 @@ pip install pre-commit
 pre-commit install
 ```
 
+### Automation and CI
+
+Local commands mirror the GitHub Actions workflow:
+
+- `make lint` runs Ruff checks.
+- `make test` executes the regression suite with `PYTHON_STOCKS_TEST_MODE=1` (headless matplotlib).
+- `make dash-smoke` runs the Dash layout smoke tests.
+- `make artifacts` rebuilds the sample simulations and Plotly snapshots used as CI build artifacts.
+
+The CI job uses `scripts/generate_artifacts.py` to produce PNG/HTML exports from the dashboard demo and CSV/JSON
+outputs from a lightweight buy-and-hold simulation. Artifacts are published in the workflow run for download.
+
 ## Publish dashboards to GitHub Pages
 
 Generate static plots and reports into the `docs/` folder and point GitHub Pages at that directory:

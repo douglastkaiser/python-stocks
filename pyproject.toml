@@ -16,6 +16,7 @@ dependencies = [
     "scipy",
     "dash",
     "plotly",
+    "kaleido",
 ]
 
 [tool.setuptools.packages.find]
