@@ -24,7 +24,7 @@ python -m python_stocks run --tickers SPY --start 2015-01-01 --end 2019-01-01 \
   --initial 50000 --report-dir docs --no-show
 ```
 
-Then enable GitHub Pages in your repository settings (branch: `main`, folder: `/docs`). Assets will be served from
+Then enable GitHub Pages in your repository settings (branch: `main` or `master`, folder: `/docs`). Assets will be served from
 `https://douglastkaiser.github.io/python-stocks/`.
 
 An automated workflow (`.github/workflows/publish-docs.yml`) rebuilds the `docs/` folder on every push to `main` and on pull

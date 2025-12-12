@@ -2,7 +2,7 @@ name: Publish dashboards to Pages
 
 on:
   push:
-    branches: [main]
+    branches: [main, master]
   pull_request:
   workflow_dispatch:
 
@@ -181,7 +181,7 @@ jobs:
             });
 
   deploy:
-    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.event.ref == 'refs/heads/main')
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && (github.event.ref == 'refs/heads/main' || github.event.ref == 'refs/heads/master'))
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
