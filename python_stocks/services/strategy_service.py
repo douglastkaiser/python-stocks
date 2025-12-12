@@ -39,6 +39,10 @@ class StrategyResult:
     volatility: float
     sharpe_ratio: float
     trade_count: int
+    total_fees: float
+    slippage_cost: float
+    tracking_error: float
+    time_in_market_penalty: float
 
     def as_dict(self) -> Dict[str, Any]:
         return {
@@ -49,6 +53,10 @@ class StrategyResult:
             "volatility": self.volatility,
             "sharpe_ratio": self.sharpe_ratio,
             "trade_count": self.trade_count,
+            "total_fees": self.total_fees,
+            "slippage_cost": self.slippage_cost,
+            "tracking_error": self.tracking_error,
+            "time_in_market_penalty": self.time_in_market_penalty,
         }
 
 
