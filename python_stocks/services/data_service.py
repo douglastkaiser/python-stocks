@@ -10,6 +10,7 @@ import pandas as pd
 
 from ..data_loading import load_into_stock_data_set
 from ..stock_data import StockData
+from .runtime_flags import prefer_cached_results
 
 
 class DataService:
@@ -28,6 +29,7 @@ class DataService:
 
         self._dataset_cache.clear()
         self._cached_loader.cache_clear()
+        self._memoized_disk_load.cache_clear()
 
     def load_dataset(
         self,
@@ -40,9 +42,18 @@ class DataService:
 
         Results are cached by ticker symbol unless ``force_refresh`` is set.
         """
+        use_cache = prefer_cached_results() and not force_refresh and fetcher is None
 
-        if force_refresh or ticker not in self._dataset_cache:
+        if force_refresh:
+            self._dataset_cache.pop(ticker, None)
+
+        if not use_cache:
             df = load_into_stock_data_set(ticker, data_dir=self.data_dir, fetcher=fetcher)
+            self._dataset_cache[ticker] = df
+            return df.copy(deep=True)
+
+        if ticker not in self._dataset_cache:
+            df = self._memoized_disk_load(ticker, str(self.data_dir))
             self._dataset_cache[ticker] = df
         return self._dataset_cache[ticker].copy(deep=True)
 
@@ -63,6 +74,13 @@ class DataService:
         """Lazily cache datasets for use inside :class:`StockData`."""
 
         return self.load_dataset(ticker)
+
+    @staticmethod
+    @lru_cache(maxsize=128)
+    def _memoized_disk_load(ticker: str, data_dir: str) -> pd.DataFrame:
+        """Memoize disk-backed loads across service instances."""
+
+        return load_into_stock_data_set(ticker, data_dir=Path(data_dir))
 
 
 __all__ = ["DataService"]
