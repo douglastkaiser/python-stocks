@@ -7,11 +7,15 @@ from dash import Dash, Input, Output, dcc, html
 
 from python_stocks.dashboard.components import (
     MarketSample,
+    comparison_matrix_figure,
     cost_impact_figure,
     diagnostics_figure,
+    guidance_tooltips,
+    myth_busting_callouts,
     price_trend_figure,
     strategy_signal_figure,
     time_in_market_figure,
+    timeline_overlay_figure,
 )
 from python_stocks.dashboard.theme import DEFAULT_THEME_KEY, get_theme, page_style, surface_style
 
@@ -118,6 +122,31 @@ def _time_in_market_tab(theme_key: str) -> html.Div:
     )
 
 
+def _comparison_tab(theme_key: str) -> html.Div:
+    tips = guidance_tooltips()
+    return html.Div(
+        style={"display": "grid", "gridTemplateColumns": "2fr 1fr", "gap": "16px"},
+        children=[
+            _build_card(
+                "Return / Volatility / Cost Matrix",
+                [
+                    dcc.Graph(id="comparison-matrix", style={"height": "420px"}, config={"displayModeBar": False}),
+                    html.Div(tips, style={"display": "flex", "gap": "12px", "flexWrap": "wrap"}),
+                ],
+                theme_key,
+            ),
+            _build_card(
+                "Timeline Overlay",
+                [
+                    dcc.Graph(id="timeline-overlay", style={"height": "420px"}, config={"displayModeBar": False}),
+                    myth_busting_callouts(),
+                ],
+                theme_key,
+            ),
+        ],
+    )
+
+
 def _diagnostics_tab(theme_key: str) -> html.Div:
     return html.Div(
         children=[
@@ -189,6 +218,51 @@ def build_app() -> Dash:
                             ),
                         ]
                     ),
+                    html.Div(
+                        [
+                            html.Label("Lookback window (days)"),
+                            dcc.Slider(
+                                id="window-slider",
+                                min=30,
+                                max=180,
+                                step=10,
+                                value=90,
+                                marks={30: "30", 90: "90", 180: "180"},
+                            ),
+                        ],
+                        style={"minWidth": "220px"},
+                    ),
+                    html.Div(
+                        [
+                            html.Label("Cost drag (bps)"),
+                            dcc.Slider(
+                                id="cost-slider",
+                                min=0,
+                                max=100,
+                                step=5,
+                                value=25,
+                                marks={0: "0", 50: "50", 100: "100"},
+                                tooltip={"placement": "bottom"},
+                            ),
+                        ],
+                        style={"minWidth": "220px"},
+                    ),
+                    html.Div(
+                        [
+                            html.Label("Timeline horizon"),
+                            dcc.Dropdown(
+                                id="horizon-dropdown",
+                                options=[
+                                    {"label": "3 months", "value": 60},
+                                    {"label": "6 months", "value": 120},
+                                    {"label": "12 months", "value": 252},
+                                ],
+                                value=120,
+                                clearable=False,
+                                style={"minWidth": "160px"},
+                            ),
+                        ],
+                    ),
                 ],
             ),
             dcc.Tabs(
@@ -198,6 +272,7 @@ def build_app() -> Dash:
                     dcc.Tab(label="Overview", value="overview", children=[_overview_tab(DEFAULT_THEME_KEY)]),
                     dcc.Tab(label="Strategy Lab", value="strategy", children=[_strategy_tab(DEFAULT_THEME_KEY)]),
                     dcc.Tab(label="Cost/Impact Analysis", value="cost", children=[_cost_tab(DEFAULT_THEME_KEY)]),
+                    dcc.Tab(label="Comparisons", value="comparisons", children=[_comparison_tab(DEFAULT_THEME_KEY)]),
                     dcc.Tab(label="Time in Market", value="timelesson", children=[_time_in_market_tab(DEFAULT_THEME_KEY)]),
                     dcc.Tab(label="Data Diagnostics", value="diagnostics", children=[_diagnostics_tab(DEFAULT_THEME_KEY)]),
                 ],
@@ -215,11 +290,19 @@ def build_app() -> Dash:
         Output("price-chart-secondary", "figure"),
         Output("strategy-chart-secondary", "figure"),
         Output("cost-impact-chart-secondary", "figure"),
+        Output("comparison-matrix", "figure"),
+        Output("timeline-overlay", "figure"),
         Input("ticker-dropdown", "value"),
         Input("theme-toggle", "value"),
+        Input("window-slider", "value"),
+        Input("cost-slider", "value"),
+        Input("horizon-dropdown", "value"),
     )
-    def _update_charts(ticker: str, theme_key: str):
+    def _update_charts(ticker: str, theme_key: str, window: int, cost_bps: int, horizon: int):
         theme = get_theme(theme_key)
+        cost_penalty = (cost_bps or 0) / 10_000
+        window = window or 60
+        horizon = horizon or 120
         return (
             page_style(theme),
             price_trend_figure(_SAMPLE, ticker, theme),
@@ -230,6 +313,8 @@ def build_app() -> Dash:
             price_trend_figure(_SAMPLE, ticker, theme),
             strategy_signal_figure(_SAMPLE, ticker, theme),
             cost_impact_figure(_SAMPLE, ticker, theme),
+            comparison_matrix_figure(_SAMPLE, ticker, theme, window=window, cost_penalty=cost_penalty),
+            timeline_overlay_figure(_SAMPLE, ticker, theme, horizon=horizon),
         )
 
     return app
