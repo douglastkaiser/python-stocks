@@ -1,22 +1,36 @@
 import numpy as np
 
 from .math_helper import no_delay_moving_average_filter, slope
+from .services.strategy_service import StrategyContext
+from .trading_history import TradingHistory
 
 
 ##### STRATEGIES
 
-def strategy_no_investment(trading_history, params):
-    return trading_history
+
+def _resolve_context(
+    context: StrategyContext | TradingHistory, params: dict | None
+) -> tuple[TradingHistory, dict]:
+    if isinstance(context, StrategyContext):
+        return context.history, context.params
+    return context, params or {}
 
 
-def strategy_buy_and_hold(trading_history, params):
+def strategy_no_investment(context: StrategyContext | TradingHistory, params: dict | None = None):
+    history, _ = _resolve_context(context, params)
+    return history
+
+
+def strategy_buy_and_hold(context: StrategyContext | TradingHistory, params: dict | None = None):
+    trading_history, params = _resolve_context(context, params)
     ticker = params.get("ticker", "SPY")
     when_to_buy = params.get("when", "Close")
     trading_history.buy_all_shares(ticker, when_to_buy)
     return trading_history
 
 
-def strategy_marcus_2p25(trading_history, params):
+def strategy_marcus_2p25(context: StrategyContext | TradingHistory, params: dict | None = None):
+    trading_history, params = _resolve_context(context, params)
     interest = params.get("interest_rate", 2.25)
     trading_history_day = 365
     daily_interest = interest / 100 / trading_history_day
@@ -27,7 +41,8 @@ def strategy_marcus_2p25(trading_history, params):
     return trading_history
 
 
-def strategy_maf_investment(trading_history, params):
+def strategy_maf_investment(context: StrategyContext | TradingHistory, params: dict | None = None):
+    trading_history, params = _resolve_context(context, params)
     ticker = params.get("ticker", "SPY")
     short_window = params.get("short_window", 10)
     long_window = params.get("long_window", 100)
@@ -52,7 +67,8 @@ def strategy_maf_investment(trading_history, params):
     return trading_history
 
 
-def strategy_openclose_investment(trading_history, params):
+def strategy_openclose_investment(context: StrategyContext | TradingHistory, params: dict | None = None):
+    trading_history, params = _resolve_context(context, params)
     ticker = params.get("ticker", "SPY")
     closing_prices = trading_history.stock_df_to_today[ticker]["Close"]
     closing_prices = list(closing_prices[~closing_prices.isin([np.nan, np.inf, -np.inf])])

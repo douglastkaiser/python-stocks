@@ -7,7 +7,7 @@ from .plotting import plt
 from .math_helper import print_time
 from .interactive_charts import export_interactive_price_charts
 from .run_strategies import run_some_strategies
-from .stock_data import StockData
+from .services.data_service import DataService
 
 
 def run_simulation(
@@ -27,7 +27,8 @@ def run_simulation(
     portfolio_fig = plt.figure()
     portfolio_fig.suptitle("Portfolio performance")
 
-    stock_history_data = StockData(list(tickers))
+    data_service = DataService()
+    stock_history_data = data_service.build_stock_data(list(tickers))
 
     if start_date or end_date:
         stock_history_data.limit_timeframe(start_date, end_date)
