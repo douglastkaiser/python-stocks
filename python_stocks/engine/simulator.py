@@ -143,7 +143,6 @@ class SimulationEngine:
         parameter_overrides: Optional[Dict[str, Dict[str, Iterable[object]]]],
     ) -> List[Tuple[TradingHistory, Strategy, Dict[str, object]]]:
         ticker_list = list(self.historic_data.tickers())
-        tracked_tickers = list(ticker_list)
 
         ticker_list.append("bank_account")
         ticker_list.append("money_invested")
