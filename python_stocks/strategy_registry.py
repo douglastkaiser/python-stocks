@@ -3,9 +3,10 @@ from itertools import product
 from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Tuple
 
 from .trading_history import TradingHistory
+from .services.strategy_service import StrategyContext
 
 
-StrategyCallable = Callable[[TradingHistory, Dict[str, Any]], TradingHistory]
+StrategyCallable = Callable[[StrategyContext], TradingHistory]
 
 
 @dataclass(frozen=True)
@@ -42,7 +43,8 @@ class Strategy:
         """Return a callable consumable by TradingHistory.new_day."""
 
         def runner(history: TradingHistory) -> TradingHistory:
-            return self.apply(history, params)
+            context = StrategyContext(history=history, params=params)
+            return self.apply(context)
 
         return runner
 

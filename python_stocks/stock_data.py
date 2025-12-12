@@ -1,6 +1,7 @@
 
 import numpy as np
 import pandas as pd
+from typing import Callable
 
 from .data_loading import load_into_stock_data_set
 from .math_helper import no_delay_moving_average_filter_on_that_day_vectorized
@@ -8,10 +9,17 @@ from .plotting import plt
 
 class StockData:
 
-    def __init__(self, list_of_tickers, monthly_deposit=0, daily_deposit=0):
-        data_frame_list=[]
+    def __init__(
+        self,
+        list_of_tickers,
+        monthly_deposit=0,
+        daily_deposit=0,
+        loader: Callable[[str], pd.DataFrame] | None = None,
+    ):
+        loader = loader or load_into_stock_data_set
+        data_frame_list = []
         for ticker in list_of_tickers:
-            data_frame_list.append(load_into_stock_data_set(ticker))
+            data_frame_list.append(loader(ticker))
         df = pd.concat(data_frame_list, axis=1, keys=(list_of_tickers))
         # Reindex to fill missing days - non-trading days.
         inn = df.index

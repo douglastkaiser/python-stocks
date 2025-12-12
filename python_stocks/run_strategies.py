@@ -11,6 +11,7 @@ from .dougs_strategies import (
     strategy_openclose_investment,
 )
 from .strategy_registry import Strategy, StrategyRegistry
+from .services.strategy_service import StrategyResult
 from .trading_history import TradingHistory
 
 
@@ -112,7 +113,7 @@ def run_some_strategies(
     historic_data,
     enabled_strategies: Optional[List[str]] = None,
     parameter_overrides: Optional[Dict[str, Dict[str, Iterable[object]]]] = None,
-) -> Tuple[pd.DataFrame, List[Dict[str, object]]]:
+) -> Tuple[pd.DataFrame, List[StrategyResult]]:
     ticker_list = list(historic_data.tickers())
     tracked_tickers = list(ticker_list)
 
@@ -133,19 +134,23 @@ def run_some_strategies(
         for th, _, _ in th_list:
             th.new_day(stock_df_to_today, money_to_add)
 
-    report_rows: List[Dict[str, object]] = []
+    results: List[StrategyResult] = []
     for th, strategy, params in th_list:
         th.add_port_value_to_plt()
         th.printer()
 
         metrics = _compute_metrics(th, tracked_tickers)
-        report_rows.append(
-            {
-                "strategy": strategy.name,
-                "parameters": params,
-                **metrics,
-            }
+        results.append(
+            StrategyResult(
+                strategy=strategy.name,
+                parameters=params,
+                cagr=metrics["cagr"],
+                max_drawdown=metrics["max_drawdown"],
+                volatility=metrics["volatility"],
+                sharpe_ratio=metrics["sharpe_ratio"],
+                trade_count=metrics["trade_count"],
+            )
         )
 
-    report_df = pd.DataFrame(report_rows)
-    return report_df, report_df.to_dict(orient="records")
+    report_df = pd.DataFrame([result.as_dict() for result in results])
+    return report_df, results
