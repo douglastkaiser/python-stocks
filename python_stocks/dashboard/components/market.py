@@ -20,8 +20,10 @@ class MarketSample:
         index = pd.date_range(end=pd.Timestamp.today(), periods=periods, freq="B")
         frames = {}
         for ticker in tickers:
-            noise = pd.Series(np.random.normal(0, 1.2, periods)).cumsum()
+            noise = pd.Series(np.random.normal(0, 1.2, periods), index=index).cumsum()
             drift = pd.Series(np.linspace(0.1, 4, periods), index=index)
             close = (100 + noise + drift).apply(lambda v: max(1, v))
-            frames[ticker] = pd.DataFrame({"Close": close, "Volume": (close * 1_000).round(0)})
+            frames[ticker] = pd.DataFrame(
+                {"Close": close, "Volume": (close * 1_000).round(0)}, index=index
+            )
         return cls(tickers=list(tickers), history=pd.concat(frames, axis=1))
