@@ -1,4 +1,5 @@
 """Narrative helpers and guided tooltips for the dashboard."""
+
 from __future__ import annotations
 
 from typing import List
@@ -23,8 +24,12 @@ def myth_busting_callouts() -> html.Div:
             ),
             html.Ul(
                 [
-                    html.Li("Slower drawdowns often recover faster when costs stay contained."),
-                    html.Li("Staying invested through noisy stretches keeps compounding intact."),
+                    html.Li(
+                        "Slower drawdowns often recover faster when costs stay contained."
+                    ),
+                    html.Li(
+                        "Staying invested through noisy stretches keeps compounding intact."
+                    ),
                     html.Li("Execution discipline can matter as much as entry timing."),
                 ],
                 style={"margin": 0, "paddingLeft": "18px"},

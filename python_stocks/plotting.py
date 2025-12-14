@@ -4,10 +4,15 @@ This module switches matplotlib to a non-interactive backend when running in
 CI/test mode to avoid GUI requirements. Import ``plt`` from here instead of
 ``matplotlib.pyplot`` directly so the backend is configured consistently.
 """
+
 import os
 from types import SimpleNamespace
 
-TEST_MODE_FLAG = os.getenv("PYTHON_STOCKS_TEST_MODE", "").lower() in {"1", "true", "yes"}
+TEST_MODE_FLAG = os.getenv("PYTHON_STOCKS_TEST_MODE", "").lower() in {
+    "1",
+    "true",
+    "yes",
+}
 
 
 def _fallback_plt():

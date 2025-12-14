@@ -1,4 +1,3 @@
-
 from pathlib import Path
 from typing import Callable, Iterable, Optional
 
@@ -61,7 +60,10 @@ def load_into_stock_data_set(
         if optional_column not in available_optional:
             df[optional_column] = pd.NA
 
-    df = df[desired_columns + [column for column in OPTIONAL_COLUMNS if column not in available_optional]]
+    df = df[
+        desired_columns
+        + [column for column in OPTIONAL_COLUMNS if column not in available_optional]
+    ]
     df["Date"] = pd.to_datetime(df["Date"], errors="raise")
     df = df.set_index("Date")
 

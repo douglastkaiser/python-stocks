@@ -19,7 +19,9 @@ class Strategy:
     parameters: Dict[str, Sequence[Any]] = field(default_factory=dict)
     description: str = ""
 
-    def expand_parameters(self, overrides: Optional[Dict[str, Iterable[Any]]] = None) -> List[Dict[str, Any]]:
+    def expand_parameters(
+        self, overrides: Optional[Dict[str, Iterable[Any]]] = None
+    ) -> List[Dict[str, Any]]:
         """Expand the parameter grid into a list of concrete parameter dictionaries."""
 
         overrides = overrides or {}
@@ -39,7 +41,9 @@ class Strategy:
         combinations = [dict(zip(keys, combo)) for combo in product(*values)]
         return combinations
 
-    def build_runner(self, params: Dict[str, Any]) -> Callable[[TradingHistory], TradingHistory]:
+    def build_runner(
+        self, params: Dict[str, Any]
+    ) -> Callable[[TradingHistory], TradingHistory]:
         """Return a callable consumable by TradingHistory.new_day."""
 
         def runner(history: TradingHistory) -> TradingHistory:

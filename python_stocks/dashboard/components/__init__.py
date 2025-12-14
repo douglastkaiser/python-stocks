@@ -1,6 +1,13 @@
 """Dashboard components package."""
-from python_stocks.dashboard.components.comparison import comparison_matrix_figure, timeline_overlay_figure
-from python_stocks.dashboard.components.education import guidance_tooltips, myth_busting_callouts
+
+from python_stocks.dashboard.components.comparison import (
+    comparison_matrix_figure,
+    timeline_overlay_figure,
+)
+from python_stocks.dashboard.components.education import (
+    guidance_tooltips,
+    myth_busting_callouts,
+)
 from python_stocks.dashboard.components.figures import (
     cost_impact_figure,
     diagnostics_figure,

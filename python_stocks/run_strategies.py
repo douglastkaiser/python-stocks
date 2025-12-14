@@ -16,15 +16,21 @@ SimulationCacheKey = Tuple[
     int,
 ]
 
-_SIMULATION_CACHE: Dict[SimulationCacheKey, Tuple[pd.DataFrame, List[StrategyResult]]] = {}
+_SIMULATION_CACHE: Dict[
+    SimulationCacheKey, Tuple[pd.DataFrame, List[StrategyResult]]
+] = {}
 
 
-def _normalize_overrides(parameter_overrides: Optional[Dict[str, Dict[str, Iterable[object]]]]) -> Tuple[str, ...]:
+def _normalize_overrides(
+    parameter_overrides: Optional[Dict[str, Dict[str, Iterable[object]]]],
+) -> Tuple[str, ...]:
     if not parameter_overrides:
         return tuple()
     normalized = []
     for strategy, params in sorted(parameter_overrides.items()):
-        flattened_params = [f"{param}={tuple(values)}" for param, values in sorted(params.items())]
+        flattened_params = [
+            f"{param}={tuple(values)}" for param, values in sorted(params.items())
+        ]
         normalized.append(f"{strategy}:{'|'.join(flattened_params)}")
     return tuple(normalized)
 
@@ -49,6 +55,7 @@ def _build_cache_key(
         historic_data.daily_deposit,
     )
 
+
 def run_some_strategies(
     initial_deposit: int,
     historic_data,
@@ -56,7 +63,9 @@ def run_some_strategies(
     parameter_overrides: Optional[Dict[str, Dict[str, Iterable[object]]]] = None,
     prefer_cache: Optional[bool] = None,
 ) -> Tuple[pd.DataFrame, List[StrategyResult]]:
-    cache_key = _build_cache_key(initial_deposit, historic_data, enabled_strategies, parameter_overrides)
+    cache_key = _build_cache_key(
+        initial_deposit, historic_data, enabled_strategies, parameter_overrides
+    )
     use_cache = prefer_cached_results(prefer_cache)
 
     if use_cache and cache_key in _SIMULATION_CACHE:
@@ -71,6 +80,9 @@ def run_some_strategies(
     )
 
     if use_cache:
-        _SIMULATION_CACHE[cache_key] = (output.report_df.copy(deep=True), list(output.results))
+        _SIMULATION_CACHE[cache_key] = (
+            output.report_df.copy(deep=True),
+            list(output.results),
+        )
 
     return output.report_df, output.results

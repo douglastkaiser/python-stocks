@@ -1,4 +1,3 @@
-
 import numpy as np
 import pandas as pd
 from typing import Callable
@@ -6,6 +5,7 @@ from typing import Callable
 from .data_loading import load_into_stock_data_set
 from .math_helper import no_delay_moving_average_filter_on_that_day_vectorized
 from .plotting import plt
+
 
 class StockData:
 
@@ -57,13 +57,20 @@ class StockData:
         df = self.data_frame
         for ticker in self.tickers():
             plt.figure()
-            sub_df = df[ticker]['Close']  # [['Close', 'Open', 'High', 'Low']]
+            sub_df = df[ticker]["Close"]  # [['Close', 'Open', 'High', 'Low']]
             sub_df = sub_df[~sub_df.isin([np.nan, np.inf, -np.inf])]
             # sub_df.plot(kind='line', title=ticker+' Prices')
             data = list(sub_df)
-            plt.plot(sub_df.index, data, label='Closing Prices')
-            plt.plot(sub_df.index, no_delay_moving_average_filter_on_that_day_vectorized(data, 10), label='Closing Prices - on that day - MAF 10')
-            plt.plot(sub_df.index, no_delay_moving_average_filter_on_that_day_vectorized(data, 100), label='Closing Prices - on that day - MAF 100')
+            plt.plot(sub_df.index, data, label="Closing Prices")
+            plt.plot(
+                sub_df.index,
+                no_delay_moving_average_filter_on_that_day_vectorized(data, 10),
+                label="Closing Prices - on that day - MAF 10",
+            )
+            plt.plot(
+                sub_df.index,
+                no_delay_moving_average_filter_on_that_day_vectorized(data, 100),
+                label="Closing Prices - on that day - MAF 100",
+            )
             plt.legend()
-            plt.title(ticker + ' Stock')
-
+            plt.title(ticker + " Stock")

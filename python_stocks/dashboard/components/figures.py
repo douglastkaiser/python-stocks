@@ -1,4 +1,5 @@
 """Reusable Plotly figures for the dashboard."""
+
 from __future__ import annotations
 
 import plotly.graph_objects as go
@@ -49,7 +50,9 @@ def price_trend_figure(sample: MarketSample, ticker: str, theme: Theme) -> go.Fi
     return apply_layout(fig, theme)
 
 
-def strategy_signal_figure(sample: MarketSample, ticker: str, theme: Theme) -> go.Figure:
+def strategy_signal_figure(
+    sample: MarketSample, ticker: str, theme: Theme
+) -> go.Figure:
     close_series = sample.history[ticker]["Close"].sort_index()
     ma_short = _moving_average(close_series, 20)
     ma_long = _moving_average(close_series, 60)
@@ -144,7 +147,9 @@ def time_in_market_figure(sample: MarketSample, ticker: str, theme: Theme) -> go
             )
         ]
     )
-    fig.update_layout(showlegend=False, annotations=[{"text": ticker, "font": {"size": 16}}])
+    fig.update_layout(
+        showlegend=False, annotations=[{"text": ticker, "font": {"size": 16}}]
+    )
     return apply_layout(fig, theme)
 
 

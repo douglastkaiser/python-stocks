@@ -1,3 +1,7 @@
+from __future__ import annotations
+
+# mypy: ignore-errors
+
 from python_stocks.dashboard.app import build_app
 from dash import dcc
 
@@ -41,10 +45,16 @@ def test_dashboard_layout_contains_expected_graphs():
 
 def test_dashboard_callback_registered():
     app = build_app()
-    assert app.callback_map, "Expected at least one callback registered for the dashboard"
+    assert (
+        app.callback_map
+    ), "Expected at least one callback registered for the dashboard"
     for callback in app.callback_map.values():
-        assert callback.get("inputs"), "Callback should define inputs for interactive updates"
+        assert callback.get(
+            "inputs"
+        ), "Callback should define inputs for interactive updates"
         has_outputs = bool(
-            callback.get("outputs") or callback.get("outputs_list") or callback.get("output")
+            callback.get("outputs")
+            or callback.get("outputs_list")
+            or callback.get("output")
         )
         assert has_outputs, "Callback should define outputs for interactive updates"

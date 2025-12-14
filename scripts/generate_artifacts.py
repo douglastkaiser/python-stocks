@@ -1,4 +1,5 @@
 """Generate simulation outputs and Plotly snapshots for CI artifacts."""
+
 from __future__ import annotations
 
 import argparse
@@ -44,7 +45,9 @@ def _run_core_simulation(output_dir: Path) -> None:
     )
 
 
-def _plotly_snapshots(sample: MarketSample, ticker: str, output_dir: Path) -> Iterable[Tuple[str, Path]]:
+def _plotly_snapshots(
+    sample: MarketSample, ticker: str, output_dir: Path
+) -> Iterable[Tuple[str, Path]]:
     """Build Plotly HTML/PNG exports for the dashboard demo figures."""
 
     theme = get_theme(DEFAULT_THEME_KEY)

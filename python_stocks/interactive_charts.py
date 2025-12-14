@@ -1,4 +1,5 @@
 """Export lightweight interactive charts for GitHub Pages."""
+
 import json
 from pathlib import Path
 from typing import Iterable, List
@@ -34,11 +35,17 @@ def _build_spec(ticker: str, table: pd.DataFrame) -> dict:
             },
             {
                 "mark": {"type": "line", "color": "#16a34a"},
-                "encoding": {"x": {"field": "date", "type": "temporal"}, "y": {"field": "ma10", "type": "quantitative"}},
+                "encoding": {
+                    "x": {"field": "date", "type": "temporal"},
+                    "y": {"field": "ma10", "type": "quantitative"},
+                },
             },
             {
                 "mark": {"type": "line", "color": "#f97316"},
-                "encoding": {"x": {"field": "date", "type": "temporal"}, "y": {"field": "ma100", "type": "quantitative"}},
+                "encoding": {
+                    "x": {"field": "date", "type": "temporal"},
+                    "y": {"field": "ma100", "type": "quantitative"},
+                },
             },
         ],
         "resolve": {"scale": {"y": "shared"}},
@@ -50,14 +57,20 @@ def _build_html(ticker: str, spec: dict) -> str:
     container_id = f"{ticker}-chart"
     return (
         "<!doctype html>\n"
-        "<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\" />\n"
+        '<html lang="en">\n<head>\n<meta charset="utf-8" />\n'
         "<title>{title}</title>\n{scripts}\n</head>\n<body>\n"
-        "<div id=\"{container}\" style=\"max-width:900px;margin:auto;\"></div>\n"
-        "<script type=\"application/json\" id=\"{spec_id}\">{spec}</script>\n"
+        '<div id="{container}" style="max-width:900px;margin:auto;"></div>\n'
+        '<script type="application/json" id="{spec_id}">{spec}</script>\n'
         "<script>const spec = JSON.parse(document.getElementById('{spec_id}').textContent);"
         "vegaEmbed('#{container}', spec, {{actions:false}});</script>\n"
         "</body>\n</html>\n"
-    ).format(title=f"{ticker} interactive chart", scripts=VEGA_SCRIPTS, container=container_id, spec_id=spec_id, spec=json.dumps(spec))
+    ).format(
+        title=f"{ticker} interactive chart",
+        scripts=VEGA_SCRIPTS,
+        container=container_id,
+        spec_id=spec_id,
+        spec=json.dumps(spec),
+    )
 
 
 def export_interactive_price_charts(
@@ -79,7 +92,9 @@ def export_interactive_price_charts(
     saved_paths: List[Path] = []
 
     for ticker in tickers:
-        close_series = stock_history[ticker]["Close"].replace([np.inf, -np.inf], np.nan).dropna()
+        close_series = (
+            stock_history[ticker]["Close"].replace([np.inf, -np.inf], np.nan).dropna()
+        )
         if close_series.empty:
             continue
 

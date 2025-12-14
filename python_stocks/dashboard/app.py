@@ -1,4 +1,5 @@
 """Dash dashboard entrypoint for python-stocks."""
+
 from __future__ import annotations
 
 from typing import List
@@ -17,13 +18,20 @@ from python_stocks.dashboard.components import (
     time_in_market_figure,
     timeline_overlay_figure,
 )
-from python_stocks.dashboard.theme import DEFAULT_THEME_KEY, get_theme, page_style, surface_style
+from python_stocks.dashboard.theme import (
+    DEFAULT_THEME_KEY,
+    get_theme,
+    page_style,
+    surface_style,
+)
 
 
 _SAMPLE = MarketSample.demo(["AAPL", "MSFT", "SPY", "QQQ"])
 
 
-def _build_card(title: str, body: List[html.Div | dcc.Graph], theme_key: str) -> html.Div:
+def _build_card(
+    title: str, body: List[html.Div | dcc.Graph], theme_key: str
+) -> html.Div:
     theme = get_theme(theme_key)
     return html.Div(
         style=surface_style(theme),
@@ -34,26 +42,36 @@ def _build_card(title: str, body: List[html.Div | dcc.Graph], theme_key: str) ->
     )
 
 
+def _graph_container(graph_id: str, label: str, height: str) -> html.Div:
+    return html.Div(
+        role="img",
+        **{"aria-label": label},
+        children=[
+            dcc.Graph(
+                id=graph_id,
+                config={"displayModeBar": False},
+                style={"height": height},
+            )
+        ],
+    )
+
+
 def _overview_tab(theme_key: str) -> html.Div:
     return html.Div(
         className="grid",
         children=[
             _build_card(
                 "Price Overview",
-                [
-                    dcc.Graph(
-                        id="price-chart",
-                        config={"displayModeBar": False},
-                        style={"height": "360px"},
-                    )
-                ],
+                [_graph_container("price-chart", "Price overview chart", "360px")],
                 theme_key,
             ),
             _build_card(
                 "Strategy Lab",
                 [
                     html.P("Moving average crossover vs. buy and hold."),
-                    dcc.Graph(id="strategy-chart", style={"height": "360px"}, config={"displayModeBar": False}),
+                    _graph_container(
+                        "strategy-chart", "Strategy lab performance chart", "360px"
+                    ),
                 ],
                 theme_key,
             ),
@@ -69,7 +87,11 @@ def _strategy_tab(theme_key: str) -> html.Div:
             _build_card(
                 "Strategy Comparison",
                 [
-                    dcc.Graph(id="strategy-chart-secondary", style={"height": "400px"}, config={"displayModeBar": False}),
+                    _graph_container(
+                        "strategy-chart-secondary",
+                        "Secondary strategy comparison chart",
+                        "400px",
+                    ),
                     html.P("Signals derived from interactive moving-average helpers."),
                 ],
                 theme_key,
@@ -77,7 +99,11 @@ def _strategy_tab(theme_key: str) -> html.Div:
             _build_card(
                 "Execution Context",
                 [
-                    dcc.Graph(id="cost-impact-chart-secondary", style={"height": "400px"}, config={"displayModeBar": False}),
+                    _graph_container(
+                        "cost-impact-chart-secondary",
+                        "Secondary cost impact chart",
+                        "400px",
+                    ),
                 ],
                 theme_key,
             ),
@@ -92,7 +118,9 @@ def _cost_tab(theme_key: str) -> html.Div:
             _build_card(
                 "Cost & Impact Analysis",
                 [
-                    dcc.Graph(id="cost-impact-chart", style={"height": "400px"}, config={"displayModeBar": False}),
+                    _graph_container(
+                        "cost-impact-chart", "Cost and impact analysis chart", "400px"
+                    ),
                     html.P("Liquidity scaled against estimated execution slippage."),
                 ],
                 theme_key,
@@ -108,14 +136,20 @@ def _time_in_market_tab(theme_key: str) -> html.Div:
             _build_card(
                 "Time in Market Lesson",
                 [
-                    dcc.Graph(id="time-in-market-chart", style={"height": "360px"}, config={"displayModeBar": False}),
+                    _graph_container(
+                        "time-in-market-chart", "Time in market pie chart", "360px"
+                    ),
                     html.P("Estimate of time spent participating in positive trends."),
                 ],
                 theme_key,
             ),
             _build_card(
                 "Price Context",
-                [dcc.Graph(id="price-chart-secondary", style={"height": "360px"}, config={"displayModeBar": False})],
+                [
+                    _graph_container(
+                        "price-chart-secondary", "Secondary price chart", "360px"
+                    )
+                ],
                 theme_key,
             ),
         ],
@@ -130,15 +164,24 @@ def _comparison_tab(theme_key: str) -> html.Div:
             _build_card(
                 "Return / Volatility / Cost Matrix",
                 [
-                    dcc.Graph(id="comparison-matrix", style={"height": "420px"}, config={"displayModeBar": False}),
-                    html.Div(tips, style={"display": "flex", "gap": "12px", "flexWrap": "wrap"}),
+                    _graph_container(
+                        "comparison-matrix",
+                        "Return volatility and cost matrix",
+                        "420px",
+                    ),
+                    html.Div(
+                        tips,
+                        style={"display": "flex", "gap": "12px", "flexWrap": "wrap"},
+                    ),
                 ],
                 theme_key,
             ),
             _build_card(
                 "Timeline Overlay",
                 [
-                    dcc.Graph(id="timeline-overlay", style={"height": "420px"}, config={"displayModeBar": False}),
+                    _graph_container(
+                        "timeline-overlay", "Timeline overlay chart", "420px"
+                    ),
                     myth_busting_callouts(),
                 ],
                 theme_key,
@@ -153,7 +196,9 @@ def _diagnostics_tab(theme_key: str) -> html.Div:
             _build_card(
                 "Data Diagnostics",
                 [
-                    dcc.Graph(id="diagnostics-chart", style={"height": "400px"}, config={"displayModeBar": False}),
+                    _graph_container(
+                        "diagnostics-chart", "Diagnostics histogram", "400px"
+                    ),
                     html.P("Distribution of daily returns for sanity checks."),
                 ],
                 theme_key,
@@ -163,7 +208,9 @@ def _diagnostics_tab(theme_key: str) -> html.Div:
 
 
 def build_app() -> Dash:
-    app = Dash(__name__, title="python-stocks dashboard", suppress_callback_exceptions=True)
+    app = Dash(
+        __name__, title="python-stocks dashboard", suppress_callback_exceptions=True
+    )
 
     app.layout = html.Div(
         id="page-root",
@@ -182,13 +229,20 @@ def build_app() -> Dash:
                             html.H1("Python Stocks Dashboard", style={"margin": 0}),
                             html.P(
                                 "Interactive exploration built on Plotly + Dash",
-                                style={"margin": 0, "color": get_theme(DEFAULT_THEME_KEY)["muted_text"]},
+                                style={
+                                    "margin": 0,
+                                    "color": get_theme(DEFAULT_THEME_KEY)["muted_text"],
+                                },
                             ),
                         ]
                     ),
                     html.Div(
                         [
-                            html.Label("Theme", htmlFor="theme-toggle", style={"marginRight": "8px"}),
+                            html.Label(
+                                "Theme",
+                                htmlFor="theme-toggle",
+                                style={"marginRight": "8px"},
+                            ),
                             dcc.RadioItems(
                                 id="theme-toggle",
                                 options=[
@@ -200,6 +254,8 @@ def build_app() -> Dash:
                             ),
                         ],
                         style={"display": "flex", "alignItems": "center", "gap": "4px"},
+                        role="group",
+                        **{"aria-label": "Theme selector"},
                     ),
                 ],
             ),
@@ -208,10 +264,16 @@ def build_app() -> Dash:
                 children=[
                     html.Div(
                         [
-                            html.Label("Ticker"),
+                            html.Label(
+                                "Ticker",
+                                htmlFor="ticker-dropdown",
+                                **{"aria-label": "Ticker selector"},
+                            ),
                             dcc.Dropdown(
                                 id="ticker-dropdown",
-                                options=[{"label": t, "value": t} for t in _SAMPLE.tickers],
+                                options=[
+                                    {"label": t, "value": t} for t in _SAMPLE.tickers
+                                ],
                                 value=_SAMPLE.tickers[0],
                                 clearable=False,
                                 style={"minWidth": "180px"},
@@ -220,7 +282,11 @@ def build_app() -> Dash:
                     ),
                     html.Div(
                         [
-                            html.Label("Lookback window (days)"),
+                            html.Label(
+                                "Lookback window (days)",
+                                htmlFor="window-slider",
+                                **{"aria-label": "Lookback window slider"},
+                            ),
                             dcc.Slider(
                                 id="window-slider",
                                 min=30,
@@ -234,7 +300,11 @@ def build_app() -> Dash:
                     ),
                     html.Div(
                         [
-                            html.Label("Cost drag (bps)"),
+                            html.Label(
+                                "Cost drag (bps)",
+                                htmlFor="cost-slider",
+                                **{"aria-label": "Cost drag slider"},
+                            ),
                             dcc.Slider(
                                 id="cost-slider",
                                 min=0,
@@ -249,7 +319,11 @@ def build_app() -> Dash:
                     ),
                     html.Div(
                         [
-                            html.Label("Timeline horizon"),
+                            html.Label(
+                                "Timeline horizon",
+                                htmlFor="horizon-dropdown",
+                                **{"aria-label": "Timeline horizon selector"},
+                            ),
                             dcc.Dropdown(
                                 id="horizon-dropdown",
                                 options=[
@@ -269,12 +343,36 @@ def build_app() -> Dash:
                 id="dashboard-tabs",
                 value="overview",
                 children=[
-                    dcc.Tab(label="Overview", value="overview", children=[_overview_tab(DEFAULT_THEME_KEY)]),
-                    dcc.Tab(label="Strategy Lab", value="strategy", children=[_strategy_tab(DEFAULT_THEME_KEY)]),
-                    dcc.Tab(label="Cost/Impact Analysis", value="cost", children=[_cost_tab(DEFAULT_THEME_KEY)]),
-                    dcc.Tab(label="Comparisons", value="comparisons", children=[_comparison_tab(DEFAULT_THEME_KEY)]),
-                    dcc.Tab(label="Time in Market", value="timelesson", children=[_time_in_market_tab(DEFAULT_THEME_KEY)]),
-                    dcc.Tab(label="Data Diagnostics", value="diagnostics", children=[_diagnostics_tab(DEFAULT_THEME_KEY)]),
+                    dcc.Tab(
+                        label="Overview",
+                        value="overview",
+                        children=[_overview_tab(DEFAULT_THEME_KEY)],
+                    ),
+                    dcc.Tab(
+                        label="Strategy Lab",
+                        value="strategy",
+                        children=[_strategy_tab(DEFAULT_THEME_KEY)],
+                    ),
+                    dcc.Tab(
+                        label="Cost/Impact Analysis",
+                        value="cost",
+                        children=[_cost_tab(DEFAULT_THEME_KEY)],
+                    ),
+                    dcc.Tab(
+                        label="Comparisons",
+                        value="comparisons",
+                        children=[_comparison_tab(DEFAULT_THEME_KEY)],
+                    ),
+                    dcc.Tab(
+                        label="Time in Market",
+                        value="timelesson",
+                        children=[_time_in_market_tab(DEFAULT_THEME_KEY)],
+                    ),
+                    dcc.Tab(
+                        label="Data Diagnostics",
+                        value="diagnostics",
+                        children=[_diagnostics_tab(DEFAULT_THEME_KEY)],
+                    ),
                 ],
             ),
         ],
@@ -298,7 +396,9 @@ def build_app() -> Dash:
         Input("cost-slider", "value"),
         Input("horizon-dropdown", "value"),
     )
-    def _update_charts(ticker: str, theme_key: str, window: int, cost_bps: int, horizon: int):
+    def _update_charts(
+        ticker: str, theme_key: str, window: int, cost_bps: int, horizon: int
+    ):
         theme = get_theme(theme_key)
         cost_penalty = (cost_bps or 0) / 10_000
         window = window or 60
@@ -313,7 +413,9 @@ def build_app() -> Dash:
             price_trend_figure(_SAMPLE, ticker, theme),
             strategy_signal_figure(_SAMPLE, ticker, theme),
             cost_impact_figure(_SAMPLE, ticker, theme),
-            comparison_matrix_figure(_SAMPLE, ticker, theme, window=window, cost_penalty=cost_penalty),
+            comparison_matrix_figure(
+                _SAMPLE, ticker, theme, window=window, cost_penalty=cost_penalty
+            ),
             timeline_overlay_figure(_SAMPLE, ticker, theme, horizon=horizon),
         )
 

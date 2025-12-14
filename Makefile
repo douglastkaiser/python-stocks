@@ -1,7 +1,10 @@
 .PHONY: lint test dash-smoke artifacts
 
 lint:
-	python -m ruff check .
+	black --check .
+	ruff check .
+	mypy .
+	pyright
 
 test:
 	PYTHONPATH=. PYTHON_STOCKS_TEST_MODE=1 pytest tests
