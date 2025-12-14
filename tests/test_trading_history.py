@@ -67,7 +67,11 @@ def test_returns_and_drawdown_calculations():
     )
     trading_history.stock_df_to_today = stock_df
     trading_history.trading_history_df = pd.DataFrame(
-        {"AAA": [0, 5, 5], "bank_account": [100.0, 45.0, 45.0], "money_invested": [100.0, 0.0, 0.0]},
+        {
+            "AAA": [0, 5, 5],
+            "bank_account": [100.0, 45.0, 45.0],
+            "money_invested": [100.0, 0.0, 0.0],
+        },
         index=dates,
     )
 
@@ -122,5 +126,8 @@ def test_sell_all_shares_applies_slippage_and_costs():
     expected_sale_price = 10.0 * (1 - 0.01)
     expected_trade_value = expected_sale_price * 2
     expected_cost = expected_trade_value * 0.05
-    assert trading_history.trading_history_df.at[dates[0], "bank_account"] == expected_trade_value - expected_cost
+    assert (
+        trading_history.trading_history_df.at[dates[0], "bank_account"]
+        == expected_trade_value - expected_cost
+    )
     assert trading_history.trading_history_df.at[dates[0], "AAA"] == 0

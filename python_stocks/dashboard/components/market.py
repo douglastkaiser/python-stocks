@@ -1,4 +1,5 @@
 """Market sample scaffolding used across interactive components."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass

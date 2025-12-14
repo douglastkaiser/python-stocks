@@ -1,9 +1,9 @@
-
 import numpy as np
 import pandas as pd
 
 from .math_helper import percentage_difference
 from .plotting import plt
+
 
 class TradingHistory:
 
@@ -56,7 +56,9 @@ class TradingHistory:
         strat = self.strat_function
         self = strat(self)
 
-    def _get_effective_price(self, ticker: str, column: str, index: int) -> float | None:
+    def _get_effective_price(
+        self, ticker: str, column: str, index: int
+    ) -> float | None:
         prices = self.stock_df_to_today[ticker][column]
         if index >= len(prices):
             return None
@@ -77,8 +79,18 @@ class TradingHistory:
             valid_stock_price = self._get_effective_price(ticker, "Close", index)
             if valid_stock_price is None:
                 continue
-            stock_value += valid_stock_price * self.trading_history_df.at[self.trading_history_df.index[index], ticker]
-        return self.trading_history_df.at[self.trading_history_df.index[index], "bank_account"] + stock_value
+            stock_value += (
+                valid_stock_price
+                * self.trading_history_df.at[
+                    self.trading_history_df.index[index], ticker
+                ]
+            )
+        return (
+            self.trading_history_df.at[
+                self.trading_history_df.index[index], "bank_account"
+            ]
+            + stock_value
+        )
 
     def current_protfolio_value(self, index):
         return self.current_portfolio_value(index)
@@ -98,9 +110,11 @@ class TradingHistory:
     #         self.shares_history[-1] += 1
     #         self.bank_account_history[-1] -= self.price_history[-1]
 
-    def buy_all_shares(self, ticker_name, whentobuy='Close'):
+    def buy_all_shares(self, ticker_name, whentobuy="Close"):
         latest_index = len(self.trading_history_df.index) - 1
-        bank_account = self.trading_history_df.at[self.trading_history_df.index[-1], "bank_account"]
+        bank_account = self.trading_history_df.at[
+            self.trading_history_df.index[-1], "bank_account"
+        ]
         base_price = self._get_effective_price(ticker_name, whentobuy, latest_index)
         if base_price is None or bank_account <= 0:
             return
@@ -115,10 +129,17 @@ class TradingHistory:
         transaction_cost = trade_value * self.transaction_cost_rate
         slippage_cost = shares_to_buy * (stock_price - base_price)
         updated_bank = bank_account - trade_value - transaction_cost
-        updated_position = self.trading_history_df.at[self.trading_history_df.index[-1], ticker_name] + shares_to_buy
+        updated_position = (
+            self.trading_history_df.at[self.trading_history_df.index[-1], ticker_name]
+            + shares_to_buy
+        )
 
-        self.trading_history_df.at[self.trading_history_df.index[-1], "bank_account"] = max(0.0, updated_bank)
-        self.trading_history_df.at[self.trading_history_df.index[-1], ticker_name] = updated_position
+        self.trading_history_df.at[
+            self.trading_history_df.index[-1], "bank_account"
+        ] = max(0.0, updated_bank)
+        self.trading_history_df.at[self.trading_history_df.index[-1], ticker_name] = (
+            updated_position
+        )
         self.total_fees += transaction_cost
         self.total_slippage_cost += max(0.0, slippage_cost)
 
@@ -127,9 +148,11 @@ class TradingHistory:
     #         self.shares_history[-1] = self.shares_history[-1] - 1
     #         self.bank_account_history[-1] += self.price_history[-1]
 
-    def sell_all_shares(self, ticker_name, whentobuy='Close'):
+    def sell_all_shares(self, ticker_name, whentobuy="Close"):
         latest_index = len(self.trading_history_df.index) - 1
-        shares_to_sell = self.trading_history_df.at[self.trading_history_df.index[-1], ticker_name]
+        shares_to_sell = self.trading_history_df.at[
+            self.trading_history_df.index[-1], ticker_name
+        ]
         if shares_to_sell <= 0:
             return
 
@@ -141,9 +164,17 @@ class TradingHistory:
         trade_value = shares_to_sell * stock_price
         transaction_cost = trade_value * self.transaction_cost_rate
         slippage_cost = shares_to_sell * (base_price - stock_price)
-        updated_bank = self.trading_history_df.at[self.trading_history_df.index[-1], "bank_account"] + trade_value - transaction_cost
+        updated_bank = (
+            self.trading_history_df.at[
+                self.trading_history_df.index[-1], "bank_account"
+            ]
+            + trade_value
+            - transaction_cost
+        )
 
-        self.trading_history_df.at[self.trading_history_df.index[-1], "bank_account"] = max(0.0, updated_bank)
+        self.trading_history_df.at[
+            self.trading_history_df.index[-1], "bank_account"
+        ] = max(0.0, updated_bank)
         self.trading_history_df.at[self.trading_history_df.index[-1], ticker_name] = 0
         self.total_fees += transaction_cost
         self.total_slippage_cost += max(0.0, slippage_cost)
@@ -153,10 +184,14 @@ class TradingHistory:
         port_val_hist = self.portfolio_value_history()
         money_added = self.trading_history_df["money_invested"].fillna(0)
         for i in range(1, len(self.trading_history_df.index)):
-            todays_change = port_val_hist[i] / (port_val_hist[i - 1] + money_added.iloc[i]) - 1
+            todays_change = (
+                port_val_hist[i] / (port_val_hist[i - 1] + money_added.iloc[i]) - 1
+            )
             holding_period_return *= 1 + todays_change
 
-        time_delta = self.trading_history_df.index[-1] - self.trading_history_df.index[0]
+        time_delta = (
+            self.trading_history_df.index[-1] - self.trading_history_df.index[0]
+        )
         time_weighted_return = holding_period_return - 1
         if not annualize or time_delta.days <= 0:
             return time_weighted_return
@@ -175,7 +210,9 @@ class TradingHistory:
         if irr is None or not np.isfinite(irr):
             return 0
 
-        time_delta = self.trading_history_df.index[-1] - self.trading_history_df.index[0]
+        time_delta = (
+            self.trading_history_df.index[-1] - self.trading_history_df.index[0]
+        )
         if not annualize or time_delta.days <= 0:
             return irr
 
@@ -186,7 +223,9 @@ class TradingHistory:
         rate = guess
         for _ in range(100):
             npv = sum(cf / (1 + rate) ** i for i, cf in enumerate(cash_flows))
-            derivative = sum(-i * cf / (1 + rate) ** (i + 1) for i, cf in enumerate(cash_flows))
+            derivative = sum(
+                -i * cf / (1 + rate) ** (i + 1) for i, cf in enumerate(cash_flows)
+            )
             if abs(derivative) < 1e-12:
                 break
 
@@ -200,7 +239,9 @@ class TradingHistory:
         return rate
 
     def drawdown_series(self):
-        portfolio_values = pd.Series(self.portfolio_value_history(), index=self.trading_history_df.index)
+        portfolio_values = pd.Series(
+            self.portfolio_value_history(), index=self.trading_history_df.index
+        )
         if portfolio_values.empty:
             return pd.Series(dtype=float)
         running_max = portfolio_values.cummax()
@@ -208,11 +249,19 @@ class TradingHistory:
 
     #### DISPLAY HELP ####
     def printer(self):
-        print('\nStrat: ' + self.name + ":")
+        print("\nStrat: " + self.name + ":")
         for ticker in self.stock_df_to_today.columns.levels[0]:
             if self.trading_history_df[ticker][-1] != 0:
-                print("Shares of " + ticker + " Owned in the end: " + str(self.trading_history_df[ticker][-1]))
-        print("Bank Account left over: " + "%.2f" % self.trading_history_df['bank_account'][-1])
+                print(
+                    "Shares of "
+                    + ticker
+                    + " Owned in the end: "
+                    + str(self.trading_history_df[ticker][-1])
+                )
+        print(
+            "Bank Account left over: "
+            + "%.2f" % self.trading_history_df["bank_account"][-1]
+        )
         # protfolio_value = self.shares_history[-1]*self.price_history[-1] + self.bank_account_history[-1]
         port_val_hist = self.portfolio_value_history()
         print("Total Value: " + "%.2f" % port_val_hist[-1])
@@ -229,5 +278,7 @@ class TradingHistory:
 
     def add_port_value_to_plt(self):
         portfolio_value_history = self.portfolio_value_history()
-        plt.plot(self.trading_history_df.index, portfolio_value_history, label=self.name)
+        plt.plot(
+            self.trading_history_df.index, portfolio_value_history, label=self.name
+        )
         plt.legend()

@@ -48,7 +48,9 @@ class DataService:
             self._dataset_cache.pop(ticker, None)
 
         if not use_cache:
-            df = load_into_stock_data_set(ticker, data_dir=self.data_dir, fetcher=fetcher)
+            df = load_into_stock_data_set(
+                ticker, data_dir=self.data_dir, fetcher=fetcher
+            )
             self._dataset_cache[ticker] = df
             return df.copy(deep=True)
 

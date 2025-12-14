@@ -22,7 +22,9 @@ def _parse_value(value: str):
             return value
 
 
-def _parse_parameter_overrides(raw_overrides: List[str]) -> Dict[str, Dict[str, List[object]]]:
+def _parse_parameter_overrides(
+    raw_overrides: List[str],
+) -> Dict[str, Dict[str, List[object]]]:
     overrides: Dict[str, Dict[str, List[object]]] = {}
     for raw in raw_overrides:
         if "=" not in raw or "." not in raw:
@@ -47,11 +49,36 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
         default=DEFAULT_TICKERS,
         help="Ticker symbols to simulate",
     )
-    run_parser.add_argument("--start", dest="start_date", default=DEFAULT_START_DATE, help="Start date (YYYY-MM-DD)")
-    run_parser.add_argument("--end", dest="end_date", default=DEFAULT_END_DATE, help="End date (YYYY-MM-DD)")
-    run_parser.add_argument("--initial", dest="initial_deposit", type=int, default=DEFAULT_INITIAL_DEPOSIT, help="Initial deposit")
-    run_parser.add_argument("--daily", dest="daily_deposit", type=int, default=DEFAULT_DAILY_DEPOSIT, help="Daily deposit amount")
-    run_parser.add_argument("--monthly", dest="monthly_deposit", type=int, default=DEFAULT_MONTHLY_DEPOSIT, help="Monthly deposit amount")
+    run_parser.add_argument(
+        "--start",
+        dest="start_date",
+        default=DEFAULT_START_DATE,
+        help="Start date (YYYY-MM-DD)",
+    )
+    run_parser.add_argument(
+        "--end", dest="end_date", default=DEFAULT_END_DATE, help="End date (YYYY-MM-DD)"
+    )
+    run_parser.add_argument(
+        "--initial",
+        dest="initial_deposit",
+        type=int,
+        default=DEFAULT_INITIAL_DEPOSIT,
+        help="Initial deposit",
+    )
+    run_parser.add_argument(
+        "--daily",
+        dest="daily_deposit",
+        type=int,
+        default=DEFAULT_DAILY_DEPOSIT,
+        help="Daily deposit amount",
+    )
+    run_parser.add_argument(
+        "--monthly",
+        dest="monthly_deposit",
+        type=int,
+        default=DEFAULT_MONTHLY_DEPOSIT,
+        help="Monthly deposit amount",
+    )
     run_parser.add_argument(
         "--strategies",
         nargs="+",

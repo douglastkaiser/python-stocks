@@ -25,7 +25,11 @@ class StrategyConfig:
     enabled: bool = True
 
     def as_dict(self) -> Dict[str, Any]:
-        return {"name": self.name, "parameters": dict(self.parameters), "enabled": self.enabled}
+        return {
+            "name": self.name,
+            "parameters": dict(self.parameters),
+            "enabled": self.enabled,
+        }
 
 
 @dataclass(frozen=True)

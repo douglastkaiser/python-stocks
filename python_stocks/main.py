@@ -52,13 +52,21 @@ def run_simulation(
         assets_path.mkdir(parents=True, exist_ok=True)
 
         report_df.to_csv(report_path / "strategy_summary.csv", index=False)
-        report_df.to_json(report_path / "strategy_summary.json", orient="records", indent=2)
+        report_df.to_json(
+            report_path / "strategy_summary.json", orient="records", indent=2
+        )
 
         for idx, fig_num in enumerate(sorted(plt.get_fignums()), start=1):
             fig = plt.figure(fig_num)
-            fig.savefig(assets_path / f"figure_{idx}.png", bbox_inches="tight", metadata={"Date": None})
+            fig.savefig(
+                assets_path / f"figure_{idx}.png",
+                bbox_inches="tight",
+                metadata={"Date": None},
+            )
 
-        export_interactive_price_charts(stock_history_data.tickers(), stock_history_data.data_frame, assets_path)
+        export_interactive_price_charts(
+            stock_history_data.tickers(), stock_history_data.data_frame, assets_path
+        )
 
     end_time = time.time()
     print_time(end_time - start_time)

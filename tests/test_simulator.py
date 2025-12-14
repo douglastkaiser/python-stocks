@@ -16,7 +16,11 @@ class _InMemoryLoader:
 def _build_stock_data():
     dates = pd.date_range("2020-01-01", periods=6, freq="D")
     base = pd.DataFrame(
-        {"Open": [10, 10.5, 11, 11.5, 12, 12.5], "Close": [10, 10.6, 10.8, 11.2, 11.4, 11.8]}, index=dates
+        {
+            "Open": [10, 10.5, 11, 11.5, 12, 12.5],
+            "Close": [10, 10.6, 10.8, 11.2, 11.4, 11.8],
+        },
+        index=dates,
     )
     loader = _InMemoryLoader({"AAA": base, "BBB": base * 1.02})
     return StockData(["AAA", "BBB"], loader=loader)
@@ -24,7 +28,9 @@ def _build_stock_data():
 
 def test_simulation_engine_runs_with_seed(tmp_path):
     stock_data = _build_stock_data()
-    engine = SimulationEngine(stock_data, registry=build_default_registry(stock_data.tickers()))
+    engine = SimulationEngine(
+        stock_data, registry=build_default_registry(stock_data.tickers())
+    )
 
     first_output = engine.run_once(1000, seed=123)
     second_output = engine.run_once(1000, seed=123)
@@ -42,7 +48,9 @@ def test_simulation_engine_runs_with_seed(tmp_path):
 
 def test_batch_runs_collect_multiple_seeds():
     stock_data = _build_stock_data()
-    engine = SimulationEngine(stock_data, registry=build_default_registry(stock_data.tickers()))
+    engine = SimulationEngine(
+        stock_data, registry=build_default_registry(stock_data.tickers())
+    )
 
     outputs = engine.run_batch(500, seeds=[1, 2])
 

@@ -25,3 +25,20 @@ exclude = ["configs", "configs.*"]
 
 [project.scripts]
 python-stocks = "python_stocks.cli:main"
+
+[tool.black]
+line-length = 88
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+check_untyped_defs = true
+pretty = true
+
+[[tool.mypy.overrides]]
+module = [
+    "python_stocks.dashboard.*",
+    "tests.test_dashboard_smoke",
+    "tests.test_dashboard_accessibility",
+]
+ignore_errors = true
