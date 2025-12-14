@@ -43,4 +43,8 @@ folder (branch: `main`, folder: `/docs`) to serve the dashboards at your Pages U
    dashboard.
 
 Feel free to customize the markdown content here, swap in your own visuals, or tweak the presets for different portfolios or
-timeframes.
+timeframes. For more guided context, see the new walkthroughs:
+
+- [Strategy catalog](./strategies.md) for descriptions and parameter tips.
+- [Dashboard tour](./dashboards.md) for a tab-by-tab explanation of the interactive views.
+- [Tutorials](./tutorials.md) to recreate the Dash visuals in notebooks or scripts without running a server.
