@@ -369,193 +369,225 @@ def build_app() -> Dash:
     app.layout = html.Div(
         id="page-root",
         style=page_style(get_theme(DEFAULT_THEME_KEY)),
+        **{"data-theme": DEFAULT_THEME_KEY},
         children=[
-            html.Header(
-                style={
-                    "display": "flex",
-                    "alignItems": "center",
-                    "justifyContent": "space-between",
-                    "marginBottom": "16px",
-                },
+            html.Main(
+                className="page-shell",
                 children=[
+                    html.Div(
+                        style={
+                            "display": "flex",
+                            "justifyContent": "space-between",
+                            "alignItems": "center",
+                            "gap": "12px",
+                            "flexWrap": "wrap",
+                        },
+                        children=[
+                            text_stack(
+                                [
+                                    html.Div(
+                                        "Preview the Strategy Lab dashboard",
+                                        style={
+                                            "fontSize": "14px",
+                                            "color": "#64748b",
+                                            "fontWeight": 600,
+                                        },
+                                    ),
+                                    html.H1(
+                                        "Build resilient, cost-aware equity rules",
+                                        style={"margin": 0},
+                                    ),
+                                ],
+                                gap="4px",
+                            ),
+                            html.Div(
+                                [
+                                    html.Label(
+                                        "Theme",
+                                        htmlFor="theme-toggle",
+                                        style={"marginRight": "8px"},
+                                    ),
+                                    dcc.RadioItems(
+                                        id="theme-toggle",
+                                        options=[
+                                            {"label": "Light", "value": "light"},
+                                            {"label": "Dark", "value": "dark"},
+                                        ],
+                                        value=DEFAULT_THEME_KEY,
+                                        inline=True,
+                                    ),
+                                ],
+                                style={
+                                    "display": "flex",
+                                    "alignItems": "center",
+                                    "gap": "4px",
+                                    "padding": "10px 12px",
+                                    "borderRadius": "12px",
+                                    "background": "rgba(148, 163, 184, 0.12)",
+                                },
+                                role="group",
+                                **{"aria-label": "Theme selector"},
+                            ),
+                        ],
+                    ),
+                    _kpi_hero(DEFAULT_THEME_KEY),
+                    surface_card(
+                        theme_key=DEFAULT_THEME_KEY,
+                        title="Tune a strategy without losing market exposure",
+                        subtitle="Use realistic inputs so the comparison matrix and overlays react like a real account would.",
+                        children=[
+                            html.Div(className="section-divider"),
+                            html.Div(
+                                className="control-bar",
+                                children=[
+                                    html.Div(
+                                        className="control-card",
+                                        children=[
+                                            html.Label(
+                                                "Ticker",
+                                                htmlFor="ticker-dropdown",
+                                                **{"aria-label": "Ticker selector"},
+                                            ),
+                                            dcc.Dropdown(
+                                                id="ticker-dropdown",
+                                                options=[
+                                                    {"label": t, "value": t}
+                                                    for t in _SAMPLE.tickers
+                                                ],
+                                                value=_SAMPLE.tickers[0],
+                                                clearable=False,
+                                            ),
+                                        ],
+                                    ),
+                                    html.Div(
+                                        className="control-card",
+                                        children=[
+                                            html.Label(
+                                                "Lookback window (days)",
+                                                htmlFor="window-slider",
+                                                **{
+                                                    "aria-label": "Lookback window slider"
+                                                },
+                                            ),
+                                            dcc.Slider(
+                                                id="window-slider",
+                                                min=30,
+                                                max=180,
+                                                step=10,
+                                                value=90,
+                                                marks={30: "30", 90: "90", 180: "180"},
+                                            ),
+                                        ],
+                                        style={"minWidth": "240px"},
+                                    ),
+                                    html.Div(
+                                        className="control-card",
+                                        children=[
+                                            html.Label(
+                                                "Cost drag (bps)",
+                                                htmlFor="cost-slider",
+                                                **{"aria-label": "Cost drag slider"},
+                                            ),
+                                            dcc.Slider(
+                                                id="cost-slider",
+                                                min=0,
+                                                max=100,
+                                                step=5,
+                                                value=25,
+                                                marks={0: "0", 50: "50", 100: "100"},
+                                                tooltip={"placement": "bottom"},
+                                            ),
+                                        ],
+                                        style={"minWidth": "240px"},
+                                    ),
+                                    html.Div(
+                                        className="control-card",
+                                        children=[
+                                            html.Label(
+                                                "Timeline horizon",
+                                                htmlFor="horizon-dropdown",
+                                                **{
+                                                    "aria-label": "Timeline horizon selector"
+                                                },
+                                            ),
+                                            dcc.Dropdown(
+                                                id="horizon-dropdown",
+                                                options=[
+                                                    {"label": "3 months", "value": 60},
+                                                    {"label": "6 months", "value": 120},
+                                                    {
+                                                        "label": "12 months",
+                                                        "value": 252,
+                                                    },
+                                                ],
+                                                value=120,
+                                                clearable=False,
+                                            ),
+                                        ],
+                                        style={"minWidth": "200px"},
+                                    ),
+                                ],
+                            ),
+                        ],
+                    ),
                     text_stack(
                         [
-                            html.H1("Python Stocks Dashboard", style={"margin": 0}),
-                            html.P(
-                                "Interactive exploration built on Plotly + Dash",
-                                style={
-                                    "margin": 0,
-                                    "color": get_theme(DEFAULT_THEME_KEY)["muted_text"],
-                                },
-                            ),
+                            _strategies_at_a_glance(DEFAULT_THEME_KEY),
+                            _learning_path(DEFAULT_THEME_KEY),
+                            _latest_simulations(DEFAULT_THEME_KEY),
                         ],
-                        gap="4px",
+                        gap="20px",
                     ),
-                    html.Div(
-                        [
-                            html.Label(
-                                "Theme",
-                                htmlFor="theme-toggle",
-                                style={"marginRight": "8px"},
-                            ),
-                            dcc.RadioItems(
-                                id="theme-toggle",
-                                options=[
-                                    {"label": "Light", "value": "light"},
-                                    {"label": "Dark", "value": "dark"},
-                                ],
-                                value=DEFAULT_THEME_KEY,
-                                inline=True,
-                            ),
-                        ],
-                        style={"display": "flex", "alignItems": "center", "gap": "4px"},
-                        role="group",
-                        **{"aria-label": "Theme selector"},
-                    ),
-                ],
-            ),
-            _kpi_hero(DEFAULT_THEME_KEY),
-            html.Div(
-                style={
-                    "display": "flex",
-                    "gap": "12px",
-                    "marginBottom": "16px",
-                    "flexWrap": "wrap",
-                },
-                children=[
-                    html.Div(
-                        [
-                            html.Label(
-                                "Ticker",
-                                htmlFor="ticker-dropdown",
-                                **{"aria-label": "Ticker selector"},
-                            ),
-                            dcc.Dropdown(
-                                id="ticker-dropdown",
-                                options=[
-                                    {"label": t, "value": t} for t in _SAMPLE.tickers
-                                ],
-                                value=_SAMPLE.tickers[0],
-                                clearable=False,
-                                style={"minWidth": "180px"},
-                            ),
-                        ]
-                    ),
-                    html.Div(
-                        [
-                            html.Label(
-                                "Lookback window (days)",
-                                htmlFor="window-slider",
-                                **{"aria-label": "Lookback window slider"},
-                            ),
-                            dcc.Slider(
-                                id="window-slider",
-                                min=30,
-                                max=180,
-                                step=10,
-                                value=90,
-                                marks={30: "30", 90: "90", 180: "180"},
-                            ),
-                        ],
-                        style={"minWidth": "220px", "flex": "1"},
-                    ),
-                    html.Div(
-                        [
-                            html.Label(
-                                "Cost drag (bps)",
-                                htmlFor="cost-slider",
-                                **{"aria-label": "Cost drag slider"},
-                            ),
-                            dcc.Slider(
-                                id="cost-slider",
-                                min=0,
-                                max=100,
-                                step=5,
-                                value=25,
-                                marks={0: "0", 50: "50", 100: "100"},
-                                tooltip={"placement": "bottom"},
-                            ),
-                        ],
-                        style={"minWidth": "220px", "flex": "1"},
-                    ),
-                    html.Div(
-                        [
-                            html.Label(
-                                "Timeline horizon",
-                                htmlFor="horizon-dropdown",
-                                **{"aria-label": "Timeline horizon selector"},
-                            ),
-                            dcc.Dropdown(
-                                id="horizon-dropdown",
-                                options=[
-                                    {"label": "3 months", "value": 60},
-                                    {"label": "6 months", "value": 120},
-                                    {"label": "12 months", "value": 252},
-                                ],
-                                value=120,
-                                clearable=False,
-                                style={"minWidth": "160px"},
-                            ),
-                        ],
-                        style={"flex": "0 0 200px"},
-                    ),
-                ],
-            ),
-            text_stack(
-                [
-                    _strategies_at_a_glance(DEFAULT_THEME_KEY),
-                    _learning_path(DEFAULT_THEME_KEY),
-                    _latest_simulations(DEFAULT_THEME_KEY),
-                ],
-                gap="20px",
-            ),
-            dcc.Tabs(
-                id="dashboard-tabs",
-                value="overview",
-                children=[
-                    dcc.Tab(
-                        id="overview-tab",
-                        label="Overview",
+                    dcc.Tabs(
+                        id="dashboard-tabs",
                         value="overview",
-                        children=[_overview_tab(DEFAULT_THEME_KEY)],
-                    ),
-                    dcc.Tab(
-                        id="strategy-tab",
-                        label="Strategy Lab",
-                        value="strategy",
-                        children=[_strategy_tab(DEFAULT_THEME_KEY)],
-                    ),
-                    dcc.Tab(
-                        id="cost-tab",
-                        label="Cost/Impact Analysis",
-                        value="cost",
-                        children=[_cost_tab(DEFAULT_THEME_KEY)],
-                    ),
-                    dcc.Tab(
-                        id="comparison-tab",
-                        label="Comparisons",
-                        value="comparisons",
-                        children=[_comparison_tab(DEFAULT_THEME_KEY)],
-                    ),
-                    dcc.Tab(
-                        id="time-tab",
-                        label="Time in Market",
-                        value="timelesson",
-                        children=[_time_in_market_tab(DEFAULT_THEME_KEY)],
-                    ),
-                    dcc.Tab(
-                        id="diagnostics-tab",
-                        label="Data Diagnostics",
-                        value="diagnostics",
-                        children=[_diagnostics_tab(DEFAULT_THEME_KEY)],
+                        children=[
+                            dcc.Tab(
+                                id="overview-tab",
+                                label="Overview",
+                                value="overview",
+                                children=[_overview_tab(DEFAULT_THEME_KEY)],
+                            ),
+                            dcc.Tab(
+                                id="strategy-tab",
+                                label="Strategy Lab",
+                                value="strategy",
+                                children=[_strategy_tab(DEFAULT_THEME_KEY)],
+                            ),
+                            dcc.Tab(
+                                id="cost-tab",
+                                label="Cost/Impact Analysis",
+                                value="cost",
+                                children=[_cost_tab(DEFAULT_THEME_KEY)],
+                            ),
+                            dcc.Tab(
+                                id="comparison-tab",
+                                label="Comparisons",
+                                value="comparisons",
+                                children=[_comparison_tab(DEFAULT_THEME_KEY)],
+                            ),
+                            dcc.Tab(
+                                id="time-tab",
+                                label="Time in Market",
+                                value="timelesson",
+                                children=[_time_in_market_tab(DEFAULT_THEME_KEY)],
+                            ),
+                            dcc.Tab(
+                                id="diagnostics-tab",
+                                label="Data Diagnostics",
+                                value="diagnostics",
+                                children=[_diagnostics_tab(DEFAULT_THEME_KEY)],
+                            ),
+                        ],
                     ),
                 ],
-            ),
+            )
         ],
     )
 
     @app.callback(
         Output("page-root", "style"),
+        Output("page-root", "data-theme"),
         Output("price-chart", "figure"),
         Output("strategy-chart", "figure"),
         Output("cost-impact-chart", "figure"),
@@ -581,6 +613,7 @@ def build_app() -> Dash:
         horizon = horizon or 120
         return (
             page_style(theme),
+            theme_key,
             price_trend_figure(_SAMPLE, ticker, theme),
             strategy_signal_figure(_SAMPLE, ticker, theme),
             cost_impact_figure(_SAMPLE, ticker, theme),

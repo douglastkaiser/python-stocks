@@ -91,6 +91,19 @@ def button_link(
     return html.A(label, href=href, style=base_style)
 
 
+def eyebrow(label: str, *, theme_key: str) -> html.Span:
+    theme = get_theme(theme_key)
+    return html.Span(
+        label,
+        style={
+            "textTransform": "uppercase",
+            "letterSpacing": "0.08em",
+            "fontSize": "12px",
+            "color": theme["muted_text"],
+        },
+    )
+
+
 def kpi_stat(*, label: str, value: str, caption: str, theme_key: str) -> html.Div:
     theme = get_theme(theme_key)
     return html.Div(

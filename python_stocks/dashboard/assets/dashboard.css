@@ -1,0 +1,53 @@
+:root {
+  --page-max-width: 1200px;
+}
+
+#page-root {
+  background: radial-gradient(circle at 20% 20%, rgba(56, 189, 248, 0.08), transparent 35%),
+    radial-gradient(circle at 80% 0%, rgba(99, 102, 241, 0.12), transparent 30%),
+    #f8fafc;
+}
+
+#page-root[data-theme="dark"] {
+  background: radial-gradient(circle at 20% 20%, rgba(56, 189, 248, 0.12), transparent 35%),
+    radial-gradient(circle at 80% 0%, rgba(99, 102, 241, 0.18), transparent 30%),
+    #0b1224;
+}
+
+.page-shell {
+  max-width: var(--page-max-width);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.control-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.control-card {
+  min-width: 200px;
+  flex: 1 1 240px;
+}
+
+.section-divider {
+  height: 1px;
+  background: rgba(148, 163, 184, 0.35);
+  margin: 6px 0 12px;
+}
+
+.hero-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1.6fr 1fr;
+}
+
+@media (max-width: 960px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+  }
+}
