@@ -179,7 +179,9 @@ def _strategies_at_a_glance(theme_key: str) -> html.Div:
             theme_key=theme_key,
             title=item["title"],
             children=[
-                html.Div(item["headline"], style={"fontSize": "18px", "fontWeight": 600}),
+                html.Div(
+                    item["headline"], style={"fontSize": "18px", "fontWeight": 600}
+                ),
                 html.P(item["detail"], style=muted_text(theme)),
             ],
         )
@@ -414,7 +416,12 @@ def build_app() -> Dash:
             ),
             _kpi_hero(DEFAULT_THEME_KEY),
             html.Div(
-                style={"display": "flex", "gap": "12px", "marginBottom": "16px", "flexWrap": "wrap"},
+                style={
+                    "display": "flex",
+                    "gap": "12px",
+                    "marginBottom": "16px",
+                    "flexWrap": "wrap",
+                },
                 children=[
                     html.Div(
                         [

@@ -16,7 +16,10 @@ def muted_text(theme: Theme) -> dict:
 
 
 def text_stack(children: Iterable, gap: str = SPACING["sm"]) -> html.Div:
-    return html.Div(children=children, style={"display": "flex", "flexDirection": "column", "gap": gap})
+    return html.Div(
+        children=children,
+        style={"display": "flex", "flexDirection": "column", "gap": gap},
+    )
 
 
 def surface_card(
@@ -37,7 +40,11 @@ def surface_card(
         body.extend(children)
     if footer:
         body.append(footer)
-    return html.Div(style=surface_style(theme) | {"display": "flex", "flexDirection": "column", "gap": SPACING["sm"]}, children=body)
+    return html.Div(
+        style=surface_style(theme)
+        | {"display": "flex", "flexDirection": "column", "gap": SPACING["sm"]},
+        children=body,
+    )
 
 
 def pill(label: str, *, theme_key: str) -> html.Span:
@@ -58,7 +65,9 @@ def pill(label: str, *, theme_key: str) -> html.Span:
     )
 
 
-def button_link(label: str, *, href: str, theme_key: str, primary: bool = True) -> html.A:
+def button_link(
+    label: str, *, href: str, theme_key: str, primary: bool = True
+) -> html.A:
     theme = get_theme(theme_key)
     base_style = {
         "display": "inline-flex",
@@ -97,7 +106,9 @@ def kpi_stat(*, label: str, value: str, caption: str, theme_key: str) -> html.Di
         children=[
             html.Span(label, style={"fontSize": "12px", "color": theme["muted_text"]}),
             html.Strong(value, style={"fontSize": "20px"}),
-            html.Span(caption, style={"fontSize": "13px", "color": theme["muted_text"]}),
+            html.Span(
+                caption, style={"fontSize": "13px", "color": theme["muted_text"]}
+            ),
         ],
     )
 
@@ -121,7 +132,9 @@ def section_block(
     )
 
 
-def responsive_grid(children: List, *, min_width: str = "240px", gap: str = SPACING["md"]) -> html.Div:
+def responsive_grid(
+    children: List, *, min_width: str = "240px", gap: str = SPACING["md"]
+) -> html.Div:
     return html.Div(
         children=children,
         style={
@@ -161,11 +174,21 @@ def hero_banner(
         children=[
             text_stack(
                 [
-                    pill("Can't beat the market? Start by matching it.", theme_key=theme_key),
+                    pill(
+                        "Can't beat the market? Start by matching it.",
+                        theme_key=theme_key,
+                    ),
                     html.H2(title, style={"margin": 0}),
                     html.P(subtitle, style=muted_text(theme) | {"fontSize": "16px"}),
                     html.Blockquote(thesis, style={"margin": 0, "fontStyle": "italic"}),
-                    html.Div(actions, style={"display": "flex", "gap": SPACING["sm"], "flexWrap": "wrap"}),
+                    html.Div(
+                        actions,
+                        style={
+                            "display": "flex",
+                            "gap": SPACING["sm"],
+                            "flexWrap": "wrap",
+                        },
+                    ),
                 ],
                 gap=SPACING["sm"],
             ),
