@@ -8,6 +8,17 @@ from python_stocks.dashboard.components.education import (
     guidance_tooltips,
     myth_busting_callouts,
 )
+from python_stocks.dashboard.components.layout import (
+    button_link,
+    hero_banner,
+    kpi_stat,
+    muted_text,
+    pill,
+    responsive_grid,
+    section_block,
+    surface_card,
+    text_stack,
+)
 from python_stocks.dashboard.components.figures import (
     cost_impact_figure,
     diagnostics_figure,
@@ -28,4 +39,13 @@ __all__ = [
     "timeline_overlay_figure",
     "guidance_tooltips",
     "myth_busting_callouts",
+    "surface_card",
+    "text_stack",
+    "button_link",
+    "pill",
+    "muted_text",
+    "responsive_grid",
+    "section_block",
+    "hero_banner",
+    "kpi_stat",
 ]
