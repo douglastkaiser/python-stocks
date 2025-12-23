@@ -1,0 +1,134 @@
+name: Manual Pages deployment
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pages-manual
+  cancel-in-progress: false
+
+env:
+  PYTHON_VERSION: "3.11"
+  PAGES_BASE_URL: https://douglas.github.io/python-stocks/
+  SITE_ROOT: site
+
+jobs:
+  deploy-main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Ensure main branch
+        run: |
+          if [ "${GITHUB_REF_NAME}" != "main" ]; then
+            echo "This workflow must be triggered from the main branch." >&2
+            exit 1
+          fi
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install .
+
+      - name: Prepare site structure
+        env:
+          SITE_ROOT: ${{ env.SITE_ROOT }}
+        run: |
+          echo "REPORT_DIR=$SITE_ROOT" >> "$GITHUB_ENV"
+          mkdir -p "$SITE_ROOT"
+          rsync -av --delete docs/ "$SITE_ROOT"/
+
+      - name: Generate sample dashboards
+        run: |
+          python -m python_stocks run --tickers SPY DIA --start 2017-01-01 --end 2018-01-01 \
+            --initial 50000 --monthly 500 --strategies buy_and_hold moving_average_filter \
+            --report-dir "$REPORT_DIR" --no-show
+
+      - name: Build landing page
+        run: |
+          export REF_NAME="${REF_NAME:-${GITHUB_REF_NAME:-main}}"
+          python - <<'PY'
+          import html
+          import os
+          from pathlib import Path
+
+          report_dir = Path(os.environ["REPORT_DIR"])
+          report_dir.mkdir(parents=True, exist_ok=True)
+
+          ref_name = os.environ.get("REF_NAME", "main")
+
+          links = []
+          for path in sorted(report_dir.rglob("*")):
+            if path.is_file():
+              rel = path.relative_to(report_dir)
+              links.append(rel.as_posix())
+
+          link_items = "\n".join(
+            f"<li><a href='{html.escape(name)}'>{html.escape(name)}</a></li>" for name in links
+          )
+
+          title = f"Dashboards for {ref_name}"
+          intro = "Latest dashboards generated from the default branch. Use the links below to open the reports produced during the publish workflow."
+
+          body = f"""
+          <!doctype html>
+          <html lang='en'>
+          <head>
+            <meta charset='utf-8'>
+            <title>{title}</title>
+            <style>
+              body {{ font-family: system-ui, -apple-system, sans-serif; margin: 2rem; line-height: 1.5; }}
+              h1 {{ margin-bottom: 0.5rem; }}
+              ul {{ list-style: disc; padding-left: 1.5rem; }}
+              code {{ background: #f4f4f4; padding: 0.2rem 0.4rem; border-radius: 4px; }}
+            </style>
+          </head>
+          <body>
+            <h1>{title}</h1>
+            <p>{intro}</p>
+            <ul>
+              {link_items}
+            </ul>
+          </body>
+          </html>
+          """
+
+          (report_dir / "index.html").write_text(body, encoding="utf-8")
+          PY
+
+      - name: Check out gh-pages branch
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: gh-pages
+          fetch-depth: 0
+
+      - name: Sync main site content
+        env:
+          SITE_ROOT: ${{ env.SITE_ROOT }}
+        run: |
+          rsync -av --delete --exclude '.git' --exclude 'pr-*' "$SITE_ROOT"/ gh-pages/
+
+      - name: Commit and push updates
+        working-directory: gh-pages
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add --all
+          if git diff --cached --quiet; then
+            echo "No changes to publish."
+            exit 0
+          fi
+          git commit -m "Publish main site"
+          git push origin gh-pages
