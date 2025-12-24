@@ -691,7 +691,9 @@ def build_app() -> Dash:
         comparison_chart = comparison_matrix_figure(
             _SAMPLE, ticker, theme, window=window, cost_penalty=cost_penalty
         )
-        timeline_chart = timeline_overlay_figure(_SAMPLE, ticker, theme, horizon=horizon)
+        timeline_chart = timeline_overlay_figure(
+            _SAMPLE, ticker, theme, horizon=horizon
+        )
         return (
             page_style(theme),
             theme_key,

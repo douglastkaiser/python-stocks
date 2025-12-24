@@ -36,7 +36,13 @@ def build_preview(output_root: Path) -> None:
     output_dir = output_root / "dashboard"
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    css_src = Path(__file__).resolve().parent.parent / "python_stocks" / "dashboard" / "assets" / "dashboard.css"
+    css_src = (
+        Path(__file__).resolve().parent.parent
+        / "python_stocks"
+        / "dashboard"
+        / "assets"
+        / "dashboard.css"
+    )
     css_text = css_src.read_text()
 
     sample = MarketSample.demo(["AAPL", "MSFT", "SPY", "QQQ"])
@@ -46,7 +52,9 @@ def build_preview(output_root: Path) -> None:
         "price": price_trend_figure(sample, "AAPL", theme),
         "strategy": strategy_signal_figure(sample, "AAPL", theme),
         "cost": cost_impact_figure(sample, "AAPL", theme),
-        "matrix": comparison_matrix_figure(sample, "AAPL", theme, window=90, cost_penalty=0.0025),
+        "matrix": comparison_matrix_figure(
+            sample, "AAPL", theme, window=90, cost_penalty=0.0025
+        ),
         "timeline": timeline_overlay_figure(sample, "AAPL", theme, horizon=120),
         "time_mix": time_in_market_figure(sample, "AAPL", theme),
     }
