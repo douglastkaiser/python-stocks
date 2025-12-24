@@ -82,6 +82,48 @@ SIMULATION_FEED = [
         "note": "Stayed invested but resized positions to absorb overlapping signals.",
     },
 ]
+SHOWCASE_FEATURES = [
+    {
+        "title": "Market replay",
+        "subtitle": "Moving-average overlays make price context easier to read.",
+        "body": "Use the horizon control to zoom into recent swings and see how trends persisted.",
+        "graph_id": "price-spotlight",
+        "label": "Market replay spotlight chart",
+        "height": "280px",
+    },
+    {
+        "title": "Signals vs. benchmark",
+        "subtitle": "Equity curves update live as you tweak the lookback window.",
+        "body": "Watch strategy equity alongside buy-and-hold to quickly see where rules diverge.",
+        "graph_id": "strategy-spotlight",
+        "label": "Strategy spotlight chart",
+        "height": "280px",
+    },
+    {
+        "title": "Execution costs",
+        "subtitle": "Costs and liquidity are front-and-center instead of buried in tooltips.",
+        "body": "Dial in slippage assumptions to preview how rebalance churn changes the story.",
+        "graph_id": "cost-spotlight",
+        "label": "Execution cost spotlight chart",
+        "height": "280px",
+    },
+    {
+        "title": "Comparison matrix",
+        "subtitle": "Return, volatility, and cost reactions in one view.",
+        "body": "The matrix reacts instantly so you can iterate on inputs without losing the plot.",
+        "graph_id": "matrix-spotlight",
+        "label": "Comparison matrix spotlight chart",
+        "height": "300px",
+    },
+    {
+        "title": "Timeline overlays",
+        "subtitle": "Contextualize signals against events and market phases.",
+        "body": "Overlay momentum windows on the timeline to explain why a rule stayed invested.",
+        "graph_id": "timeline-spotlight",
+        "label": "Timeline overlay spotlight chart",
+        "height": "300px",
+    },
+]
 
 
 def _build_card(
@@ -231,6 +273,30 @@ def _latest_simulations(theme_key: str) -> html.Div:
         description="Server-side runs summarize how tweaks to rules and costs ripple through results.",
         theme_key=theme_key,
         content=responsive_grid(cards, min_width="260px"),
+    )
+
+
+def _guided_showcase(theme_key: str) -> html.Div:
+    theme = get_theme(theme_key)
+    cards = [
+        surface_card(
+            theme_key=theme_key,
+            title=feature["title"],
+            subtitle=feature["subtitle"],
+            children=[
+                html.P(feature["body"], style=muted_text(theme)),
+                _graph_container(
+                    feature["graph_id"], feature["label"], feature["height"]
+                ),
+            ],
+        )
+        for feature in SHOWCASE_FEATURES
+    ]
+    return section_block(
+        title="Guided dashboards and strategy explainers",
+        description="Front-page snapshots highlight the visuals you care about while controls stay within reach.",
+        theme_key=theme_key,
+        content=responsive_grid(cards, min_width="260px", gap="16px"),
     )
 
 
@@ -530,6 +596,7 @@ def build_app() -> Dash:
                             ),
                         ],
                     ),
+                    _guided_showcase(DEFAULT_THEME_KEY),
                     text_stack(
                         [
                             _strategies_at_a_glance(DEFAULT_THEME_KEY),
@@ -598,6 +665,11 @@ def build_app() -> Dash:
         Output("cost-impact-chart-secondary", "figure"),
         Output("comparison-matrix", "figure"),
         Output("timeline-overlay", "figure"),
+        Output("price-spotlight", "figure"),
+        Output("strategy-spotlight", "figure"),
+        Output("cost-spotlight", "figure"),
+        Output("matrix-spotlight", "figure"),
+        Output("timeline-spotlight", "figure"),
         Input("ticker-dropdown", "value"),
         Input("theme-toggle", "value"),
         Input("window-slider", "value"),
@@ -611,21 +683,33 @@ def build_app() -> Dash:
         cost_penalty = (cost_bps or 0) / 10_000
         window = window or 60
         horizon = horizon or 120
+        price_chart = price_trend_figure(_SAMPLE, ticker, theme)
+        strategy_chart = strategy_signal_figure(_SAMPLE, ticker, theme)
+        cost_chart = cost_impact_figure(_SAMPLE, ticker, theme)
+        time_chart = time_in_market_figure(_SAMPLE, ticker, theme)
+        diagnostics_chart = diagnostics_figure(_SAMPLE, ticker, theme)
+        comparison_chart = comparison_matrix_figure(
+            _SAMPLE, ticker, theme, window=window, cost_penalty=cost_penalty
+        )
+        timeline_chart = timeline_overlay_figure(_SAMPLE, ticker, theme, horizon=horizon)
         return (
             page_style(theme),
             theme_key,
-            price_trend_figure(_SAMPLE, ticker, theme),
-            strategy_signal_figure(_SAMPLE, ticker, theme),
-            cost_impact_figure(_SAMPLE, ticker, theme),
-            time_in_market_figure(_SAMPLE, ticker, theme),
-            diagnostics_figure(_SAMPLE, ticker, theme),
-            price_trend_figure(_SAMPLE, ticker, theme),
-            strategy_signal_figure(_SAMPLE, ticker, theme),
-            cost_impact_figure(_SAMPLE, ticker, theme),
-            comparison_matrix_figure(
-                _SAMPLE, ticker, theme, window=window, cost_penalty=cost_penalty
-            ),
-            timeline_overlay_figure(_SAMPLE, ticker, theme, horizon=horizon),
+            price_chart,
+            strategy_chart,
+            cost_chart,
+            time_chart,
+            diagnostics_chart,
+            price_chart,
+            strategy_chart,
+            cost_chart,
+            comparison_chart,
+            timeline_chart,
+            price_chart,
+            strategy_chart,
+            cost_chart,
+            comparison_chart,
+            timeline_chart,
         )
 
     return app

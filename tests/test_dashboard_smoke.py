@@ -17,6 +17,11 @@ _EXPECTED_GRAPH_IDS = {
     "cost-impact-chart-secondary",
     "comparison-matrix",
     "timeline-overlay",
+    "price-spotlight",
+    "strategy-spotlight",
+    "cost-spotlight",
+    "matrix-spotlight",
+    "timeline-spotlight",
 }
 
 
