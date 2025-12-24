@@ -1,9 +1,15 @@
 """Generate a static dashboard preview page for GitHub Pages previews."""
 
+# ruff: noqa: E402
+
 from __future__ import annotations
 
 import sys
 from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parent.parent
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 
 import plotly.io as pio
 
@@ -12,13 +18,13 @@ from python_stocks.dashboard.components.figures import (
     price_trend_figure,
     strategy_signal_figure,
     time_in_market_figure,
-)
+)  # noqa: E402
 from python_stocks.dashboard.components.comparison import (
     comparison_matrix_figure,
     timeline_overlay_figure,
-)
-from python_stocks.dashboard.components.market import MarketSample
-from python_stocks.dashboard.theme import DEFAULT_THEME_KEY, get_theme
+)  # noqa: E402
+from python_stocks.dashboard.components.market import MarketSample  # noqa: E402
+from python_stocks.dashboard.theme import DEFAULT_THEME_KEY, get_theme  # noqa: E402
 
 
 def _render_figure_html(fig, theme) -> str:

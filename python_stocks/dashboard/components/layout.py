@@ -176,11 +176,7 @@ def section_header(
     theme = get_theme(theme_key)
     return html.Div(
         children=[
-            *(
-                [eyebrow(eyebrow_text, theme_key=theme_key)]
-                if eyebrow_text
-                else []
-            ),
+            *([eyebrow(eyebrow_text, theme_key=theme_key)] if eyebrow_text else []),
             html.Div(title, style={"fontWeight": 700, "fontSize": "20px"}),
             html.P(description, style=muted_text(theme)),
         ],
