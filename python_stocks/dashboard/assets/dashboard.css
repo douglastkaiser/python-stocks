@@ -46,8 +46,23 @@
   grid-template-columns: 1.6fr 1fr;
 }
 
+.scenario-panel {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 12px;
+  align-items: stretch;
+}
+
+.scenario-actions {
+  min-width: 240px;
+}
+
 @media (max-width: 960px) {
   .hero-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .scenario-panel {
     grid-template-columns: 1fr;
   }
 }
