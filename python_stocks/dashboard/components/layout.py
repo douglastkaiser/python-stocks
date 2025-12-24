@@ -231,6 +231,8 @@ def hero_banner(
     kpis: List[html.Div],
     actions: List[html.A],
     theme_key: str,
+    hero_visual: Optional[html.Div] = None,
+    quick_toggles: Optional[List[html.Div]] = None,
 ) -> html.Div:
     theme = get_theme(theme_key)
     gradient = (
@@ -285,6 +287,33 @@ def hero_banner(
                 ],
                 gap=SPACING["sm"],
             ),
-            responsive_grid(kpis, min_width="200px", gap=SPACING["sm"]),
+            html.Div(
+                style={
+                    "display": "flex",
+                    "flexDirection": "column",
+                    "gap": SPACING["sm"],
+                },
+                children=list(
+                    filter(
+                        None,
+                        [
+                            (
+                                html.Div(
+                                    quick_toggles,
+                                    style={
+                                        "display": "flex",
+                                        "flexWrap": "wrap",
+                                        "gap": SPACING["sm"],
+                                    },
+                                )
+                                if quick_toggles
+                                else None
+                            ),
+                            hero_visual,
+                            responsive_grid(kpis, min_width="200px", gap=SPACING["sm"]),
+                        ],
+                    )
+                ),
+            ),
         ],
     )

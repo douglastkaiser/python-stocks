@@ -31,10 +31,16 @@ from python_stocks.dashboard.theme import (
     DEFAULT_THEME_KEY,
     get_theme,
     page_style,
+    surface_style,
 )
 
 
 _SAMPLE = MarketSample.demo(["AAPL", "MSFT", "SPY", "QQQ"])
+_HERO_PRESETS = {
+    "balanced": {"label": "Balanced (90d / 25bps drag)", "window": 90, "cost_bps": 25},
+    "fast": {"label": "Fast swings (45d / 10bps)", "window": 45, "cost_bps": 10},
+    "patient": {"label": "Patient (140d / 40bps)", "window": 140, "cost_bps": 40},
+}
 STRATEGY_SUMMARIES = [
     {
         "title": "Trend-following crossover",
@@ -172,6 +178,7 @@ def _overview_tab(theme_key: str) -> html.Div:
 
 
 def _kpi_hero(theme_key: str) -> html.Div:
+    theme = get_theme(theme_key)
     hero_kpis = [
         kpi_stat(
             label="Benchmark discipline",
@@ -192,6 +199,96 @@ def _kpi_hero(theme_key: str) -> html.Div:
             theme_key=theme_key,
         ),
     ]
+    toggle_group_style = {
+        "display": "flex",
+        "flexDirection": "column",
+        "gap": "8px",
+        "padding": "10px 12px",
+        "borderRadius": "12px",
+        "background": f"rgba(15,23,42,{0.05 if theme['mode']=='light' else 0.35})",
+        "border": f"1px solid {theme['grid']}",
+    }
+    radio_label_style = {
+        "padding": "8px 10px",
+        "borderRadius": "10px",
+        "border": f"1px solid {theme['grid']}",
+        "marginRight": "6px",
+        "display": "inline-flex",
+        "alignItems": "center",
+        "gap": "6px",
+        "background": f"rgba(148, 163, 184, {0.15 if theme['mode']=='light' else 0.18})",
+        "cursor": "pointer",
+    }
+    quick_toggles = html.Div(
+        [
+            html.Div(
+                [
+                    html.Span("Quick ticker", style={"fontWeight": 700}),
+                    html.Span(
+                        "See how the matrix shifts between watchlist names.",
+                        style=muted_text(theme) | {"fontSize": "12px"},
+                    ),
+                    dcc.RadioItems(
+                        id="hero-ticker-toggle",
+                        options=[
+                            {"label": ticker, "value": ticker}
+                            for ticker in _SAMPLE.tickers
+                        ],
+                        value=_SAMPLE.tickers[0],
+                        inline=True,
+                        inputStyle={"marginRight": "6px"},
+                        labelStyle=radio_label_style,
+                    ),
+                ],
+                style=toggle_group_style,
+            ),
+            html.Div(
+                [
+                    html.Span("Preset windows", style={"fontWeight": 700}),
+                    html.Span(
+                        "Pick a window + cost pairing to compare reactions.",
+                        style=muted_text(theme) | {"fontSize": "12px"},
+                    ),
+                    dcc.RadioItems(
+                        id="hero-preset-toggle",
+                        options=[
+                            {"label": preset["label"], "value": key}
+                            for key, preset in _HERO_PRESETS.items()
+                        ],
+                        value="balanced",
+                        inline=True,
+                        inputStyle={"marginRight": "6px"},
+                        labelStyle=radio_label_style,
+                    ),
+                ],
+                style=toggle_group_style,
+            ),
+        ],
+        style={"display": "flex", "gap": "10px", "flexWrap": "wrap"},
+    )
+    hero_visual = html.Div(
+        style=surface_style(theme) | {"display": "flex", "flexDirection": "column"},
+        children=[
+            html.Div(
+                [
+                    html.Div(
+                        "Live comparison chart",
+                        style={"fontWeight": 700, "fontSize": "16px"},
+                    ),
+                    html.Span(
+                        "Return, volatility, and cost bubbles react instantly.",
+                        style=muted_text(theme) | {"fontSize": "13px"},
+                    ),
+                ],
+                style={"display": "flex", "flexDirection": "column", "gap": "2px"},
+            ),
+            dcc.Graph(
+                id="hero-comparison-chart",
+                config={"displayModeBar": False},
+                style={"height": "320px"},
+            ),
+        ],
+    )
     return hero_banner(
         title="Match the market with disciplined, cost-aware rules",
         subtitle="KPIs, Strategy Lab, and Compare views make it obvious which tweaks actually improve resilience.",
@@ -212,6 +309,8 @@ def _kpi_hero(theme_key: str) -> html.Div:
             ),
         ],
         theme_key=theme_key,
+        hero_visual=hero_visual,
+        quick_toggles=[quick_toggles],
     )
 
 
@@ -638,6 +737,7 @@ def build_app() -> Dash:
     @app.callback(
         Output("page-root", "style"),
         Output("page-root", "data-theme"),
+        Output("hero-comparison-chart", "figure"),
         Output("price-chart", "figure"),
         Output("strategy-chart", "figure"),
         Output("cost-impact-chart", "figure"),
@@ -658,14 +758,25 @@ def build_app() -> Dash:
         Input("window-slider", "value"),
         Input("cost-slider", "value"),
         Input("horizon-dropdown", "value"),
+        Input("hero-ticker-toggle", "value"),
+        Input("hero-preset-toggle", "value"),
     )
     def _update_charts(
-        ticker: str, theme_key: str, window: int, cost_bps: int, horizon: int
+        ticker: str,
+        theme_key: str,
+        window: int,
+        cost_bps: int,
+        horizon: int,
+        hero_ticker: str,
+        hero_preset: str,
     ):
         theme = get_theme(theme_key)
         cost_penalty = (cost_bps or 0) / 10_000
         window = window or 60
         horizon = horizon or 120
+        hero_config = _HERO_PRESETS.get(hero_preset, _HERO_PRESETS["balanced"])
+        hero_cost_penalty = hero_config["cost_bps"] / 10_000
+        hero_window = hero_config["window"]
         price_chart = price_trend_figure(_SAMPLE, ticker, theme)
         strategy_chart = strategy_signal_figure(_SAMPLE, ticker, theme)
         cost_chart = cost_impact_figure(_SAMPLE, ticker, theme)
@@ -677,9 +788,17 @@ def build_app() -> Dash:
         timeline_chart = timeline_overlay_figure(
             _SAMPLE, ticker, theme, horizon=horizon
         )
+        hero_chart = comparison_matrix_figure(
+            _SAMPLE,
+            hero_ticker or ticker,
+            theme,
+            window=hero_window,
+            cost_penalty=hero_cost_penalty,
+        )
         return (
             page_style(theme),
             theme_key,
+            hero_chart,
             price_chart,
             strategy_chart,
             cost_chart,
