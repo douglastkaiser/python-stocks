@@ -15,6 +15,50 @@ def muted_text(theme: Theme) -> dict:
     return {"color": theme["muted_text"], "margin": 0}
 
 
+def page_header(
+    title: str, subtitle: str, *, theme_key: str, controls: Optional[List] = None
+) -> html.Div:
+    theme = get_theme(theme_key)
+    header_children: List = [
+        text_stack(
+            [
+                html.Span(
+                    subtitle,
+                    style={
+                        "fontSize": "14px",
+                        "fontWeight": 600,
+                        "color": theme["muted_text"],
+                    },
+                ),
+                html.H1(title, style={"margin": 0, "fontSize": "26px"}),
+            ],
+            gap="4px",
+        )
+    ]
+    if controls:
+        header_children.append(
+            html.Div(
+                controls,
+                style={
+                    "display": "flex",
+                    "alignItems": "center",
+                    "gap": SPACING["sm"],
+                    "flexWrap": "wrap",
+                },
+            )
+        )
+    return html.Div(
+        style={
+            "display": "flex",
+            "justifyContent": "space-between",
+            "alignItems": "center",
+            "gap": SPACING["md"],
+            "flexWrap": "wrap",
+        },
+        children=header_children,
+    )
+
+
 def text_stack(children: Iterable, gap: str = SPACING["sm"]) -> html.Div:
     return html.Div(
         children=children,
@@ -126,19 +170,40 @@ def kpi_stat(*, label: str, value: str, caption: str, theme_key: str) -> html.Di
     )
 
 
-def section_block(
-    *, title: str, description: str, theme_key: str, content: List
-) -> html.Section:
+def section_header(
+    *, title: str, description: str, theme_key: str, eyebrow_text: Optional[str] = None
+) -> html.Div:
     theme = get_theme(theme_key)
+    return html.Div(
+        children=[
+            *([eyebrow(eyebrow_text, theme_key=theme_key)] if eyebrow_text else []),
+            html.Div(title, style={"fontWeight": 700, "fontSize": "20px"}),
+            html.P(description, style=muted_text(theme)),
+        ],
+        style={
+            "display": "flex",
+            "flexDirection": "column",
+            "gap": "6px",
+        },
+    )
+
+
+def section_block(
+    *,
+    title: str,
+    description: str,
+    theme_key: str,
+    content: List,
+    eyebrow_text: Optional[str] = None,
+) -> html.Section:
     return html.Section(
         style={"display": "flex", "flexDirection": "column", "gap": SPACING["md"]},
         children=[
-            text_stack(
-                [
-                    html.Div(title, style={"fontWeight": 700, "fontSize": "20px"}),
-                    html.P(description, style=muted_text(theme)),
-                ],
-                gap="6px",
+            section_header(
+                title=title,
+                description=description,
+                theme_key=theme_key,
+                eyebrow_text=eyebrow_text,
             ),
             content,
         ],
@@ -173,16 +238,31 @@ def hero_banner(
         if theme["mode"] == "light"
         else "linear-gradient(135deg, rgba(14,165,233,0.25), rgba(99,102,241,0.25))"
     )
+    thesis_box = html.Div(
+        [
+            html.Strong("Can't beat the market? "),
+            html.Span(thesis),
+        ],
+        style={
+            "padding": "10px 12px",
+            "borderRadius": "12px",
+            "background": f"rgba(15,23,42,{0.04 if theme['mode']=='light' else 0.35})",
+            "border": f"1px solid {theme['grid']}",
+            "fontStyle": "italic",
+        },
+    )
     return html.Div(
+        className="hero-grid",
         style={
             "padding": SPACING["lg"],
-            "borderRadius": "16px",
+            "borderRadius": "18px",
             "background": gradient,
             "border": f"1px solid {theme['grid']}",
             "display": "grid",
-            "gridTemplateColumns": "2fr 1fr",
+            "gridTemplateColumns": "1.6fr 1fr",
             "gap": SPACING["md"],
             "alignItems": "center",
+            "boxShadow": "0 20px 60px rgba(15,23,42,0.12)",
         },
         children=[
             text_stack(
@@ -193,7 +273,7 @@ def hero_banner(
                     ),
                     html.H2(title, style={"margin": 0}),
                     html.P(subtitle, style=muted_text(theme) | {"fontSize": "16px"}),
-                    html.Blockquote(thesis, style={"margin": 0, "fontStyle": "italic"}),
+                    thesis_box,
                     html.Div(
                         actions,
                         style={
