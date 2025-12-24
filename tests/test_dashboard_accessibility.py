@@ -62,6 +62,11 @@ def test_all_graphs_define_aria_labels():
         "cost-impact-chart-secondary",
         "comparison-matrix",
         "timeline-overlay",
+        "price-spotlight",
+        "strategy-spotlight",
+        "cost-spotlight",
+        "matrix-spotlight",
+        "timeline-spotlight",
     }
 
     assert expected_graphs.issubset(labeled_graphs)
