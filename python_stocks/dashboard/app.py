@@ -17,6 +17,7 @@ from python_stocks.dashboard.components import (
     kpi_stat,
     myth_busting_callouts,
     muted_text,
+    page_header,
     responsive_grid,
     section_block,
     surface_card,
@@ -174,37 +175,37 @@ def _kpi_hero(theme_key: str) -> html.Div:
     hero_kpis = [
         kpi_stat(
             label="Benchmark discipline",
-            value="92% time invested",
-            caption="Momentum rules stick with the market instead of timing it.",
+            value="92% time in-market",
+            caption="Signals prefer participation over predictions.",
             theme_key=theme_key,
         ),
         kpi_stat(
             label="Drag minimized",
             value="< 40 bps modeled",
-            caption="Execution guardrails keep most signals tradable.",
+            caption="Liquidity guardrails keep live trades close to the model.",
             theme_key=theme_key,
         ),
         kpi_stat(
-            label="Replay speed",
-            value="< 1s refresh",
-            caption="Adjust sliders and see the comparison matrix update instantly.",
+            label="Compare faster",
+            value="Sub-second refresh",
+            caption="Strategy Lab and Compare views respond as soon as you tweak inputs.",
             theme_key=theme_key,
         ),
     ]
     return hero_banner(
-        title="Build rules that match the market before you try to beat it",
-        subtitle="Strategy lab + comparison tools help you pressure test signals, costs, and capacity with live feedback.",
-        thesis="Edge comes from disciplined execution: stay invested, size responsibly, and avoid churn that erodes returns.",
+        title="Match the market with disciplined, cost-aware rules",
+        subtitle="KPIs, Strategy Lab, and Compare views make it obvious which tweaks actually improve resilience.",
+        thesis="You rarely beat the benchmark by guessing tops—you win by staying invested, sizing responsibly, and only trading when costs make sense.",
         kpis=hero_kpis,
         actions=[
             button_link(
-                "Open Strategy Lab",
+                "Launch Strategy Lab",
                 href="#strategy-tab",
                 theme_key=theme_key,
                 primary=True,
             ),
             button_link(
-                "Jump to Comparisons",
+                "Open Compare view",
                 href="#comparison-tab",
                 theme_key=theme_key,
                 primary=False,
@@ -231,8 +232,9 @@ def _strategies_at_a_glance(theme_key: str) -> html.Div:
     ]
     return section_block(
         title="Strategies at a glance",
-        description="Snapshots from the Strategy Lab show how cost-aware rules behave before you deploy capital.",
+        description="Server-side Strategy Lab snapshots show how cost-aware rules behave before you deploy capital.",
         theme_key=theme_key,
+        eyebrow_text="Strategy Lab feed",
         content=responsive_grid(cards, min_width="260px"),
     )
 
@@ -249,8 +251,9 @@ def _learning_path(theme_key: str) -> html.Div:
     ]
     return section_block(
         title="Learning path",
-        description="A guided sequence keeps you focused: explore, price in costs, then compare outcomes.",
+        description="The dashboard curates the sequence: explore signals, price in costs, then pressure-test comparisons.",
         theme_key=theme_key,
+        eyebrow_text="Guided onboarding",
         content=responsive_grid(steps, min_width="240px"),
     )
 
@@ -270,8 +273,9 @@ def _latest_simulations(theme_key: str) -> html.Div:
     ]
     return section_block(
         title="Latest simulations",
-        description="Server-side runs summarize how tweaks to rules and costs ripple through results.",
+        description="Server runs summarize how tweaks to rules and costs ripple through results, updating as new simulations finish.",
         theme_key=theme_key,
+        eyebrow_text="Server runs",
         content=responsive_grid(cards, min_width="260px"),
     )
 
@@ -440,32 +444,11 @@ def build_app() -> Dash:
             html.Main(
                 className="page-shell",
                 children=[
-                    html.Div(
-                        style={
-                            "display": "flex",
-                            "justifyContent": "space-between",
-                            "alignItems": "center",
-                            "gap": "12px",
-                            "flexWrap": "wrap",
-                        },
-                        children=[
-                            text_stack(
-                                [
-                                    html.Div(
-                                        "Preview the Strategy Lab dashboard",
-                                        style={
-                                            "fontSize": "14px",
-                                            "color": "#64748b",
-                                            "fontWeight": 600,
-                                        },
-                                    ),
-                                    html.H1(
-                                        "Build resilient, cost-aware equity rules",
-                                        style={"margin": 0},
-                                    ),
-                                ],
-                                gap="4px",
-                            ),
+                    page_header(
+                        title="Build resilient, cost-aware equity rules",
+                        subtitle="Preview the Strategy Lab dashboard",
+                        theme_key=DEFAULT_THEME_KEY,
+                        controls=[
                             html.Div(
                                 [
                                     html.Label(
@@ -493,7 +476,7 @@ def build_app() -> Dash:
                                 },
                                 role="group",
                                 **{"aria-label": "Theme selector"},
-                            ),
+                            )
                         ],
                     ),
                     _kpi_hero(DEFAULT_THEME_KEY),
@@ -721,4 +704,4 @@ app = build_app()
 
 
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    app.run(debug=True, host="0.0.0.0")
