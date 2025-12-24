@@ -62,9 +62,9 @@ repository clean:
 
 - **Manual deploys from `main`:** Trigger the `Manual Pages deployment` workflow (`.github/workflows/pages-manual.yml`) from the
   Actions tab after merging to `main`. It rebuilds the SPY/DIA sample dashboards and landing page, then syncs the `gh-pages`
-  branch root without touching existing preview folders so `https://douglas.github.io/python-stocks/` stays current.
+  branch root without touching existing preview folders so `https://www.douglastkaiser.com/python-stocks/` stays current.
 - **Automatic PR previews:** The `PR Pages previews` workflow (`.github/workflows/pages-preview.yml`) runs on PR updates, publishes
-  artifacts to `https://douglas.github.io/python-stocks/pr-<number>/`, and posts/updates a PR comment with the preview URL.
+  artifacts to `https://www.douglastkaiser.com/python-stocks/pr-<number>/`, and posts/updates a PR comment with the preview URL.
   When the PR closes, the workflow removes the matching `pr-<number>` folder from `gh-pages` and updates the comment to show the
   preview was cleaned up.
 

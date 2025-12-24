@@ -14,7 +14,7 @@ concurrency:
 
 env:
   PYTHON_VERSION: "3.11"
-  PAGES_BASE_URL: https://douglas.github.io/python-stocks/
+  PAGES_BASE_URL: https://www.douglastkaiser.com/python-stocks/
   SITE_ROOT: site
 
 jobs:
