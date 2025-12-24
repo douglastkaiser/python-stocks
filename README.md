@@ -60,13 +60,13 @@ outputs from a lightweight buy-and-hold simulation. Artifacts are published in t
 GitHub Pages now serves content from the `gh-pages` branch so the public site stays in sync with CI assets while leaving the
 repository clean:
 
-- **Manual deploys from `main`:** Trigger the `Manual Pages deployment` workflow (`.github/workflows/pages-manual.yml`) from the
-  Actions tab after merging to `main`. It rebuilds the SPY/DIA sample dashboards and landing page, then syncs the `gh-pages`
-  branch root without touching existing preview folders so `https://www.douglastkaiser.com/python-stocks/` stays current.
-- **Automatic PR previews:** The `PR Pages previews` workflow (`.github/workflows/pages-preview.yml`) runs on PR updates, publishes
-  artifacts to `https://www.douglastkaiser.com/python-stocks/pr-<number>/`, and posts/updates a PR comment with the preview URL.
-  When the PR closes, the workflow removes the matching `pr-<number>` folder from `gh-pages` and updates the comment to show the
-  preview was cleaned up.
+- **Manual deploys from `main`:** Trigger the `Deploy Main` workflow (`.github/workflows/deploy-main.yml`) from the Actions tab
+  after merging to `main`. It rebuilds the SPY/DIA sample dashboards and landing page, then syncs the `gh-pages` branch root while
+  keeping any existing PR preview folders so `https://www.douglastkaiser.com/python-stocks/` stays current.
+- **Automatic PR previews:** The `PR Preview` workflow (`.github/workflows/pr-preview.yml`) runs on PR updates, publishes artifacts
+  to `https://www.douglastkaiser.com/python-stocks/pr/<number>/`, and posts/updates a PR comment with the preview URL. The
+  companion `PR Preview Cleanup` workflow (`.github/workflows/pr-cleanup.yml`) removes the matching preview folder from `gh-pages`
+  after the PR closes.
 
 You can still regenerate static reports locally into `docs/` with the same command used by the workflows:
 
