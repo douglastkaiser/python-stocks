@@ -57,20 +57,23 @@ outputs from a lightweight buy-and-hold simulation. Artifacts are published in t
 
 ## Publish dashboards to GitHub Pages
 
-Generate static plots and reports into the `docs/` folder and point GitHub Pages at that directory:
+GitHub Pages now serves content from the `gh-pages` branch so the public site stays in sync with CI assets while leaving the
+repository clean:
+
+- **Manual deploys from `main`:** Trigger the `Deploy Main` workflow (`.github/workflows/deploy-main.yml`) from the Actions tab
+  after merging to `main`. It rebuilds the SPY/DIA sample dashboards and landing page, then syncs the `gh-pages` branch root while
+  keeping any existing PR preview folders so `https://www.douglastkaiser.com/python-stocks/` stays current.
+- **Automatic PR previews:** The `PR Preview` workflow (`.github/workflows/pr-preview.yml`) runs on PR updates, publishes artifacts
+  to `https://www.douglastkaiser.com/python-stocks/pr/<number>/`, and posts/updates a PR comment with the preview URL. The
+  companion `PR Preview Cleanup` workflow (`.github/workflows/pr-cleanup.yml`) removes the matching preview folder from `gh-pages`
+  after the PR closes.
+
+You can still regenerate static reports locally into `docs/` with the same command used by the workflows:
 
 ```bash
 python -m python_stocks run --tickers SPY --start 2015-01-01 --end 2019-01-01 \
   --initial 50000 --report-dir docs --no-show
 ```
-
-Then enable GitHub Pages in your repository settings (branch: `main` or `master`, folder: `/docs`). Assets will be served from
-`https://douglastkaiser.github.io/python-stocks/`.
-
-An automated workflow (`.github/workflows/publish-docs.yml`) rebuilds the `docs/` folder on every push to `main` and on pull
-requests (for preview deployments). It runs a lightweight SPY+DIA sample backtest in headless mode, uploads the generated
-CSV/JSON, PNG, and interactive HTML assets as a Pages artifact, posts a preview link on pull requests, and deploys without
-committing the artifacts back to the repository.
 
 ## Preset scenarios
 
