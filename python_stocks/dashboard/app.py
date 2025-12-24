@@ -23,6 +23,7 @@ from python_stocks.dashboard.components import (
     text_stack,
     price_trend_figure,
     strategy_signal_figure,
+    strategy_hero_figure,
     time_in_market_figure,
     timeline_overlay_figure,
 )
@@ -31,9 +32,16 @@ from python_stocks.dashboard.theme import (
     get_theme,
     page_style,
 )
+from python_stocks.services.data_service import DataService
 
 
 _SAMPLE = MarketSample.demo(["AAPL", "MSFT", "SPY", "QQQ"])
+_DATA_SERVICE = DataService()
+HERO_STRATEGIES = [
+    "Buy & Hold",
+    "Trend Filter (20/60 MA)",
+    "Volatility Target (15%)",
+]
 STRATEGY_SUMMARIES = [
     {
         "title": "Trend-following crossover",
@@ -104,27 +112,70 @@ def _graph_container(graph_id: str, label: str, height: str) -> html.Div:
     )
 
 
+def _load_price_history(ticker: str):
+    try:
+        return _DATA_SERVICE.load_dataset(ticker)
+    except (FileNotFoundError, ValueError):
+        if ticker in _SAMPLE.tickers:
+            return _SAMPLE.history[ticker]
+        return _SAMPLE.history[_SAMPLE.tickers[0]]
+
+
 def _overview_tab(theme_key: str) -> html.Div:
     return html.Div(
         className="grid",
         children=[
             _build_card(
-                "Price Overview",
-                [_graph_container("price-chart", "Price overview chart", "360px")],
-                theme_key,
-            ),
-            _build_card(
-                "Strategy Lab",
+                "Strategy Returns vs. Volatility",
                 [
-                    html.P("Moving average crossover vs. buy and hold."),
                     _graph_container(
-                        "strategy-chart", "Strategy lab performance chart", "360px"
+                        "hero-chart", "Strategy hero comparison chart", "420px"
+                    ),
+                    html.P(
+                        [
+                            "Hover each line to see time-in-market exposure. ",
+                            html.A(
+                                "Dive deeper in the comparison tab.",
+                                href="#comparison-tab",
+                            ),
+                        ]
                     ),
                 ],
                 theme_key,
             ),
+            html.Div(
+                className="grid",
+                children=[
+                    _build_card(
+                        "Price Overview",
+                        [
+                            _graph_container(
+                                "price-chart", "Price overview chart", "360px"
+                            )
+                        ],
+                        theme_key,
+                    ),
+                    _build_card(
+                        "Strategy Lab",
+                        [
+                            html.P("Moving average crossover vs. buy and hold."),
+                            _graph_container(
+                                "strategy-chart",
+                                "Strategy lab performance chart",
+                                "360px",
+                            ),
+                        ],
+                        theme_key,
+                    ),
+                ],
+                style={
+                    "display": "grid",
+                    "gridTemplateColumns": "1fr 1fr",
+                    "gap": "16px",
+                },
+            ),
         ],
-        style={"display": "grid", "gridTemplateColumns": "1fr 1fr", "gap": "16px"},
+        style={"display": "flex", "flexDirection": "column", "gap": "16px"},
     )
 
 
@@ -463,6 +514,49 @@ def build_app() -> Dash:
                                         className="control-card",
                                         children=[
                                             html.Label(
+                                                "Primary strategy",
+                                                htmlFor="strategy-primary-dropdown",
+                                                **{
+                                                    "aria-label": "Primary strategy selector"
+                                                },
+                                            ),
+                                            dcc.Dropdown(
+                                                id="strategy-primary-dropdown",
+                                                options=[
+                                                    {"label": strategy, "value": strategy}
+                                                    for strategy in HERO_STRATEGIES
+                                                ],
+                                                value=HERO_STRATEGIES[0],
+                                                clearable=False,
+                                            ),
+                                        ],
+                                    ),
+                                    html.Div(
+                                        className="control-card",
+                                        children=[
+                                            html.Label(
+                                                "Compare strategies",
+                                                htmlFor="strategy-compare-dropdown",
+                                                **{
+                                                    "aria-label": "Strategy comparison selector"
+                                                },
+                                            ),
+                                            dcc.Dropdown(
+                                                id="strategy-compare-dropdown",
+                                                options=[
+                                                    {"label": strategy, "value": strategy}
+                                                    for strategy in HERO_STRATEGIES
+                                                ],
+                                                value=HERO_STRATEGIES[1:],
+                                                multi=True,
+                                            ),
+                                        ],
+                                        style={"minWidth": "240px"},
+                                    ),
+                                    html.Div(
+                                        className="control-card",
+                                        children=[
+                                            html.Label(
                                                 "Lookback window (days)",
                                                 htmlFor="window-slider",
                                                 **{
@@ -476,6 +570,31 @@ def build_app() -> Dash:
                                                 step=10,
                                                 value=90,
                                                 marks={30: "30", 90: "90", 180: "180"},
+                                            ),
+                                        ],
+                                        style={"minWidth": "240px"},
+                                    ),
+                                    html.Div(
+                                        className="control-card",
+                                        children=[
+                                            html.Label(
+                                                "Hero timeframe (days)",
+                                                htmlFor="timeframe-slider",
+                                                **{
+                                                    "aria-label": "Hero timeframe slider"
+                                                },
+                                            ),
+                                            dcc.Slider(
+                                                id="timeframe-slider",
+                                                min=60,
+                                                max=252,
+                                                step=20,
+                                                value=180,
+                                                marks={
+                                                    60: "60",
+                                                    180: "180",
+                                                    252: "252",
+                                                },
                                             ),
                                         ],
                                         style={"minWidth": "240px"},
@@ -588,6 +707,7 @@ def build_app() -> Dash:
     @app.callback(
         Output("page-root", "style"),
         Output("page-root", "data-theme"),
+        Output("hero-chart", "figure"),
         Output("price-chart", "figure"),
         Output("strategy-chart", "figure"),
         Output("cost-impact-chart", "figure"),
@@ -599,21 +719,40 @@ def build_app() -> Dash:
         Output("comparison-matrix", "figure"),
         Output("timeline-overlay", "figure"),
         Input("ticker-dropdown", "value"),
+        Input("strategy-primary-dropdown", "value"),
+        Input("strategy-compare-dropdown", "value"),
         Input("theme-toggle", "value"),
         Input("window-slider", "value"),
         Input("cost-slider", "value"),
+        Input("timeframe-slider", "value"),
         Input("horizon-dropdown", "value"),
     )
     def _update_charts(
-        ticker: str, theme_key: str, window: int, cost_bps: int, horizon: int
+        ticker: str,
+        primary_strategy: str,
+        comparison_strategies: List[str],
+        theme_key: str,
+        window: int,
+        cost_bps: int,
+        timeframe: int,
+        horizon: int,
     ):
         theme = get_theme(theme_key)
         cost_penalty = (cost_bps or 0) / 10_000
         window = window or 60
+        timeframe = timeframe or 180
         horizon = horizon or 120
+        price_history = _load_price_history(ticker)
         return (
             page_style(theme),
             theme_key,
+            strategy_hero_figure(
+                price_history,
+                theme,
+                primary_strategy=primary_strategy or HERO_STRATEGIES[0],
+                comparison_strategies=comparison_strategies or HERO_STRATEGIES[1:],
+                timeframe=timeframe,
+            ),
             price_trend_figure(_SAMPLE, ticker, theme),
             strategy_signal_figure(_SAMPLE, ticker, theme),
             cost_impact_figure(_SAMPLE, ticker, theme),

@@ -26,6 +26,7 @@ from python_stocks.dashboard.components.figures import (
     strategy_signal_figure,
     time_in_market_figure,
 )
+from python_stocks.dashboard.components.hero_chart import strategy_hero_figure
 from python_stocks.dashboard.components.market import MarketSample
 
 __all__ = [
@@ -37,6 +38,7 @@ __all__ = [
     "diagnostics_figure",
     "comparison_matrix_figure",
     "timeline_overlay_figure",
+    "strategy_hero_figure",
     "guidance_tooltips",
     "myth_busting_callouts",
     "surface_card",
