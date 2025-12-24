@@ -44,6 +44,10 @@ jobs:
             --initial 50000 --monthly 500 --strategies buy_and_hold moving_average_filter \
             --report-dir "$REPORT_DIR" --no-show
 
+      - name: Build dashboard preview page
+        run: |
+          python scripts/build_dashboard_preview.py "$BUILD_DIR"
+
       - name: Checkout gh-pages branch
         uses: actions/checkout@v4
         with:
