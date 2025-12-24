@@ -1,50 +1,119 @@
-# python-stocks dashboards
+<link rel="stylesheet" href="./assets/landing.css">
 
-Static dashboards under `/docs` are ready to publish directly to GitHub Pages. The `publish-docs` workflow rebuilds a small
-sample backtest (SPY + DIA, 2017–2018) on every push to `main` and every pull request (for Draft Preview deployments). Each run
-saves CSV/JSON summaries, PNG charts, and interactive HTML embeds so visitors always have something to browse without running the
-simulator themselves.
+<div class="landing">
+<section class="landing-hero">
+  <div class="hero-text">
+    <div class="eyebrow">Guided dashboards · Live simulations</div>
+    <h1>python-stocks dashboards</h1>
+    <p class="lede">
+      Explore equity strategies with cost-aware charts, comparison matrices, and tutorial-style walkthroughs.
+      Every preview is rebuilt automatically so visitors can explore without installing anything.
+    </p>
+    <div class="cta-row">
+      <a class="cta primary" href="./assets/spy_interactive.html">View SPY preview</a>
+      <a class="cta secondary" href="./dashboards.md">Tour the dashboard</a>
+    </div>
+    <div class="stat-grid">
+      <div class="stat"><div class="label">CI refreshed</div><div class="value">On every push</div></div>
+      <div class="stat"><div class="label">Sample horizon</div><div class="value">2017–2018</div></div>
+      <div class="stat"><div class="label">Strategies</div><div class="value">Buy & hold + MA filter</div></div>
+    </div>
+  </div>
+  <div class="landing-panel">
+    <h2>Preview assets</h2>
+    <div class="landing-card-grid" style="margin-top: 10px;">
+      <div class="landing-card">
+        <div class="chip">Snapshots</div>
+        <h3>Static plots</h3>
+        <p>PNG charts exported from the SPY/DIA simulation.</p>
+        <p class="landing-subtle"><a href="./assets/figure_1.png">figure_1.png</a> · <a href="./assets/figure_2.png">figure_2.png</a> · <a href="./assets/figure_3.png">figure_3.png</a></p>
+      </div>
+      <div class="landing-card">
+        <div class="chip">Interactive</div>
+        <h3>Price + signals</h3>
+        <p>Hoverable HTML views published alongside the static charts.</p>
+        <p class="landing-subtle"><a href="./assets/spy_interactive.html">SPY</a> · <a href="./assets/dia_interactive.html">DIA</a></p>
+      </div>
+      <div class="landing-card">
+        <div class="chip">Summaries</div>
+        <h3>CSV + JSON</h3>
+        <p>Strategy-level aggregates ready for notebooks or spreadsheets.</p>
+        <p class="landing-subtle"><a href="./strategy_summary.csv">strategy_summary.csv</a> · <a href="./strategy_summary.json">strategy_summary.json</a></p>
+      </div>
+    </div>
+  </div>
+</section>
 
-## Starter dashboard (SPY + DIA)
+<section>
+  <div class="landing-section-header">
+    <h2>What ships with the site</h2>
+    <span>Built from the SPY + DIA starter run</span>
+  </div>
+  <div class="landing-columns">
+    <div class="landing-panel">
+      <p>The pages are generated from:</p>
+      <div class="landing-code-block">
+        python -m python_stocks run --tickers SPY DIA --start 2017-01-01 --end 2018-01-01 \
+        --initial 50000 --monthly 500 --strategies buy_and_hold moving_average_filter \
+        --report-dir docs --no-show
+      </div>
+      <p class="landing-subtle">The CI workflow mirrors this exact command to keep previews current.</p>
+    </div>
+    <div class="landing-card-grid">
+      <div class="landing-card">
+        <h3>Strategy lab guidance</h3>
+        <p>Walkthroughs explain how to read each tab and what inputs drive the visuals.</p>
+        <p class="landing-subtle"><a href="./dashboards.md">Dashboard tour</a></p>
+      </div>
+      <div class="landing-card">
+        <h3>Catalog + tutorials</h3>
+        <p>Strategy definitions, parameter hints, and notebook-style recreations.</p>
+        <ul class="landing-inline-list">
+          <li><a href="./strategies.md">Strategy catalog</a></li>
+          <li><a href="./tutorials.md">Tutorials</a></li>
+        </ul>
+      </div>
+      <div class="landing-card">
+        <h3>Preset scripts</h3>
+        <p>Ready-to-run configs for momentum, moving-average sweeps, and buy-and-hold baselines.</p>
+        <ul class="landing-inline-list">
+          <li><code>./configs/buy_and_hold.sh</code></li>
+          <li><code>./configs/ma_crossover.sh</code></li>
+          <li><code>./configs/momentum.sh</code></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
 
-The assets published to GitHub Pages come from `python -m python_stocks run --tickers SPY DIA --start 2017-01-01 --end
-2018-01-01 --initial 50000 --monthly 500 --strategies buy_and_hold moving_average_filter --report-dir docs --no-show`. They are
-generated in CI and uploaded as a Pages artifact (they are not committed to the repository to avoid giant HTML diffs).
-
-- Strategy summaries: [strategy_summary.csv](./strategy_summary.csv) · [strategy_summary.json](./strategy_summary.json)
-- Static plots: [figure_1.png](./assets/figure_1.png), [figure_2.png](./assets/figure_2.png), [figure_3.png](./assets/figure_3.png)
-- Interactive price views: [SPY](./assets/spy_interactive.html) · [DIA](./assets/dia_interactive.html) (generated on the fly by
-  the Pages workflow)
-
-## Publish automatically
-
-The GitHub Actions workflow at `.github/workflows/publish-docs.yml` installs the project, runs the sample simulation with
-`--report-dir docs --no-show`, uploads the refreshed assets as a Pages artifact, posts a PR comment with the preview link, and
-deploys the site to GitHub Pages (including Draft Preview deployments on pull requests). Point GitHub Pages at the `docs/`
-folder (branch: `main`, folder: `/docs`) to serve the dashboards at your Pages URL.
-
-## Run your own simulations
-
-1. Use the CLI directly:
-   ```bash
-   python -m python_stocks run --tickers SPY DIA --start 2017-01-01 --end 2018-01-01 \
-     --initial 50000 --monthly 500 --report-dir docs --no-show
-   ```
-   This writes the summary CSV/JSON and PNG/HTML assets under `docs/` for GitHub Pages.
-
-2. Or run one of the presets from the repo root:
-   ```bash
-   ./configs/buy_and_hold.sh
-   ./configs/ma_crossover.sh
-   ./configs/momentum.sh
-   ```
-
-3. Push your branch and open a pull request to get an automatic Draft Preview, or push to `main` to refresh the published
-   dashboard.
-
-Feel free to customize the markdown content here, swap in your own visuals, or tweak the presets for different portfolios or
-timeframes. For more guided context, see the new walkthroughs:
-
-- [Strategy catalog](./strategies.md) for descriptions and parameter tips.
-- [Dashboard tour](./dashboards.md) for a tab-by-tab explanation of the interactive views.
-- [Tutorials](./tutorials.md) to recreate the Dash visuals in notebooks or scripts without running a server.
+<section>
+  <div class="landing-section-header">
+    <h2>Publish automatically</h2>
+    <span>GitHub Pages + PR previews</span>
+  </div>
+  <div class="landing-columns">
+    <div class="landing-panel">
+      <p>Every push triggers the Pages workflow to rebuild, upload, and deploy the SPY/DIA sample.</p>
+      <ul>
+        <li>Push to <code>main</code> to refresh the live site.</li>
+        <li>Open a pull request to get a Draft Preview link and comment.</li>
+        <li>Artifacts stay in lockstep with the Dash app for predictable demos.</li>
+      </ul>
+      <div class="landing-badges">
+        <span class="landing-badge">Artifacts: Plotly + PNG</span>
+        <span class="landing-badge">CI: publish-docs</span>
+        <span class="landing-badge">Pages folder: <code>/docs</code></span>
+      </div>
+    </div>
+    <div class="landing-panel">
+      <h3>Run locally</h3>
+      <ol>
+        <li>Install: <code>pip install -e .</code></li>
+        <li>Launch app: <code>PYTHONPATH=. python -m python_stocks.dashboard.app</code></li>
+        <li>Regenerate artifacts: <code>make artifacts</code></li>
+      </ol>
+      <p class="landing-subtle">Artifacts match the CI preview so you can verify changes before publishing.</p>
+    </div>
+  </div>
+</section>
+</div>
