@@ -1,0 +1,2 @@
+[console_scripts]
+python-stocks = python_stocks.cli:main
