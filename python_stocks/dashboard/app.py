@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import List
 
-from dash import Dash, Input, Output, dcc, html
+from dash import Dash, Input, Output, State, dcc, html, no_update
 
 from python_stocks.dashboard.components import (
     MarketSample,
@@ -40,6 +40,35 @@ _HERO_PRESETS = {
     "balanced": {"label": "Balanced (90d / 25bps drag)", "window": 90, "cost_bps": 25},
     "fast": {"label": "Fast swings (45d / 10bps)", "window": 45, "cost_bps": 10},
     "patient": {"label": "Patient (140d / 40bps)", "window": 140, "cost_bps": 40},
+}
+SCENARIO_PRESETS = {
+    "rangebound": {
+        "title": "Rangebound week",
+        "description": "QQQ chopping sideways; tighten the lookback and keep costs lean.",
+        "ticker": "QQQ",
+        "window": 60,
+        "cost_bps": 15,
+        "horizon": 60,
+        "hero_preset": "fast",
+    },
+    "pullback": {
+        "title": "Pullback recovery",
+        "description": "MSFT digesting gains; slower window with higher drag to avoid churn.",
+        "ticker": "MSFT",
+        "window": 130,
+        "cost_bps": 35,
+        "horizon": 252,
+        "hero_preset": "patient",
+    },
+    "breakout": {
+        "title": "Breakout attempt",
+        "description": "AAPL re-accelerating; medium window with balanced costs.",
+        "ticker": "AAPL",
+        "window": 90,
+        "cost_bps": 25,
+        "horizon": 120,
+        "hero_preset": "balanced",
+    },
 }
 STRATEGY_SUMMARIES = [
     {
@@ -314,6 +343,150 @@ def _kpi_hero(theme_key: str) -> html.Div:
     )
 
 
+def _scenario_panel(theme_key: str) -> html.Div:
+    theme = get_theme(theme_key)
+    scenario_options = [
+        {
+            "label": html.Div(
+                className="scenario-option",
+                style={
+                    "display": "flex",
+                    "flexDirection": "column",
+                    "gap": "6px",
+                    "padding": "10px 12px",
+                    "borderRadius": "12px",
+                    "border": f"1px solid {theme['grid']}",
+                    "background": f"rgba(148, 163, 184, {0.12 if theme['mode']=='light' else 0.22})",
+                },
+                children=[
+                    html.Div(
+                        preset["title"],
+                        style={"fontWeight": 700, "fontSize": "15px"},
+                    ),
+                    html.Span(
+                        preset["description"],
+                        style=muted_text(theme) | {"fontSize": "13px"},
+                    ),
+                    html.Div(
+                        [
+                            html.Span(f"Ticker: {preset['ticker']}"),
+                            html.Span(f"Window: {preset['window']}d"),
+                            html.Span(f"Cost drag: {preset['cost_bps']} bps"),
+                            html.Span(f"Horizon: {preset['horizon']}d"),
+                        ],
+                        style={
+                            "display": "flex",
+                            "flexWrap": "wrap",
+                            "gap": "8px",
+                            "fontSize": "12px",
+                            "color": theme["muted_text"],
+                        },
+                    ),
+                ],
+            ),
+            "value": key,
+        }
+        for key, preset in SCENARIO_PRESETS.items()
+    ]
+    action_box_style = {
+        "display": "flex",
+        "flexDirection": "column",
+        "gap": "10px",
+        "padding": "12px",
+        "borderRadius": "12px",
+        "border": f"1px solid {theme['grid']}",
+        "background": f"rgba(15,23,42,{0.05 if theme['mode']=='light' else 0.3})",
+    }
+    primary_button_style = {
+        "padding": "10px 14px",
+        "borderRadius": "10px",
+        "border": f"1px solid {theme['accent']}",
+        "background": theme["accent"],
+        "color": "#0b1224" if theme["mode"] == "light" else "#0f172a",
+        "fontWeight": 700,
+        "cursor": "pointer",
+    }
+    ghost_button_style = {
+        "padding": "10px 14px",
+        "borderRadius": "10px",
+        "border": f"1px solid {theme['grid']}",
+        "background": "transparent",
+        "color": theme["text"],
+        "fontWeight": 600,
+        "cursor": "pointer",
+    }
+    return html.Div(
+        className="scenario-panel",
+        children=[
+            html.Div(
+                children=[
+                    html.Div(
+                        [
+                            html.Div("Try a scenario", style={"fontWeight": 700}),
+                            html.Span(
+                                "Pick a preset to auto-fill the controls and compare reactions instantly.",
+                                style=muted_text(theme),
+                            ),
+                        ]
+                    ),
+                    dcc.RadioItems(
+                        id="scenario-selector",
+                        options=scenario_options,
+                        value=next(iter(SCENARIO_PRESETS.keys())),
+                        inputStyle={"marginRight": "10px", "marginLeft": "2px"},
+                        labelStyle={
+                            "display": "block",
+                            "marginBottom": "10px",
+                            "cursor": "pointer",
+                        },
+                    ),
+                ],
+                style={
+                    "display": "flex",
+                    "flexDirection": "column",
+                    "gap": "10px",
+                },
+            ),
+            html.Div(
+                style=action_box_style,
+                className="scenario-actions",
+                children=[
+                    html.Div(
+                        [
+                            html.Span("Scenario controls", style={"fontWeight": 700}),
+                            html.Span(
+                                "Apply a preset to update tickers, windows, costs, and hero quick toggles.",
+                                style=muted_text(theme) | {"fontSize": "13px"},
+                            ),
+                        ],
+                        style={
+                            "display": "flex",
+                            "flexDirection": "column",
+                            "gap": "4px",
+                        },
+                    ),
+                    html.Button(
+                        "Apply preset to controls",
+                        id="scenario-apply",
+                        n_clicks=0,
+                        style=primary_button_style,
+                    ),
+                    html.Button(
+                        "Rerun with current inputs",
+                        id="scenario-rerun",
+                        n_clicks=0,
+                        style=ghost_button_style,
+                    ),
+                    html.Span(
+                        "Tip: re-run to keep the figures in sync after manual tweaks.",
+                        style=muted_text(theme) | {"fontSize": "12px"},
+                    ),
+                ],
+            ),
+        ],
+    )
+
+
 def _strategies_at_a_glance(theme_key: str) -> html.Div:
     theme = get_theme(theme_key)
     cards = [
@@ -585,6 +758,7 @@ def build_app() -> Dash:
                         subtitle="Use realistic inputs so the comparison matrix and overlays react like a real account would.",
                         children=[
                             html.Div(className="section-divider"),
+                            _scenario_panel(DEFAULT_THEME_KEY),
                             html.Div(
                                 className="control-bar",
                                 children=[
@@ -735,6 +909,48 @@ def build_app() -> Dash:
     )
 
     @app.callback(
+        Output("ticker-dropdown", "value"),
+        Output("window-slider", "value"),
+        Output("cost-slider", "value"),
+        Output("horizon-dropdown", "value"),
+        Output("hero-preset-toggle", "value"),
+        Output("hero-ticker-toggle", "value"),
+        Input("scenario-apply", "n_clicks"),
+        State("scenario-selector", "value"),
+        prevent_initial_call=True,
+    )
+    def _apply_scenario_preset(
+        n_clicks: int | None, scenario_key: str | None
+    ):  # pragma: no cover - UI glue
+        if not n_clicks or not scenario_key:
+            return (
+                no_update,
+                no_update,
+                no_update,
+                no_update,
+                no_update,
+                no_update,
+            )
+        preset = SCENARIO_PRESETS.get(scenario_key)
+        if not preset:
+            return (
+                no_update,
+                no_update,
+                no_update,
+                no_update,
+                no_update,
+                no_update,
+            )
+        return (
+            preset["ticker"],
+            preset["window"],
+            preset["cost_bps"],
+            preset["horizon"],
+            preset["hero_preset"],
+            preset["ticker"],
+        )
+
+    @app.callback(
         Output("page-root", "style"),
         Output("page-root", "data-theme"),
         Output("hero-comparison-chart", "figure"),
@@ -760,6 +976,7 @@ def build_app() -> Dash:
         Input("horizon-dropdown", "value"),
         Input("hero-ticker-toggle", "value"),
         Input("hero-preset-toggle", "value"),
+        Input("scenario-rerun", "n_clicks"),
     )
     def _update_charts(
         ticker: str,
@@ -769,6 +986,7 @@ def build_app() -> Dash:
         horizon: int,
         hero_ticker: str,
         hero_preset: str,
+        scenario_rerun_clicks: int | None,
     ):
         theme = get_theme(theme_key)
         cost_penalty = (cost_bps or 0) / 10_000
@@ -795,6 +1013,21 @@ def build_app() -> Dash:
             window=hero_window,
             cost_penalty=hero_cost_penalty,
         )
+        revision_tag = (
+            f"{ticker}-{window}-{cost_bps}-{horizon}-{hero_ticker}-{hero_preset}-"
+            f"{scenario_rerun_clicks or 0}"
+        )
+        for fig in [
+            hero_chart,
+            price_chart,
+            strategy_chart,
+            cost_chart,
+            time_chart,
+            diagnostics_chart,
+            comparison_chart,
+            timeline_chart,
+        ]:
+            fig.update_layout(uirevision=revision_tag)
         return (
             page_style(theme),
             theme_key,
