@@ -41,7 +41,7 @@ class TradingHistory:
 
         is_first_day = len(stock_df_to_today.index) <= 1
         if is_first_day:
-            df.loc[todays_date] = [0] * len(df.columns)
+            df.loc[todays_date] = [0.0] * len(df.columns)
             starting_bank = 0
         else:
             df.loc[todays_date] = df.iloc[-1]
