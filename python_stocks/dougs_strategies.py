@@ -4,7 +4,6 @@ from .math_helper import no_delay_moving_average_filter, slope
 from .services.strategy_service import StrategyContext
 from .trading_history import TradingHistory
 
-
 ##### STRATEGIES
 
 

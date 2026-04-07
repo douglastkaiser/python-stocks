@@ -3,7 +3,6 @@ from typing import Dict, List, Optional
 
 from .main import run_simulation
 
-
 DEFAULT_TICKERS = ["SPY"]
 DEFAULT_START_DATE = "2015-01-01"
 DEFAULT_END_DATE = "2019-01-01"

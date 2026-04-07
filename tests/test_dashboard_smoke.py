@@ -5,7 +5,6 @@ from __future__ import annotations
 from python_stocks.dashboard.app import build_app
 from dash import dcc
 
-
 _EXPECTED_GRAPH_IDS = {
     "price-chart",
     "strategy-chart",

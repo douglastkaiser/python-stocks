@@ -5,7 +5,6 @@ from __future__ import annotations
 import os
 from typing import Optional
 
-
 _CACHE_TRUE = {"1", "true", "yes", "on"}
 
 

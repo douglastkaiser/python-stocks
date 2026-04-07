@@ -17,7 +17,6 @@ from python_stocks.dashboard.components.figures import (
 from python_stocks.dashboard.components.market import MarketSample
 from python_stocks.dashboard.theme import get_theme
 
-
 os.environ.setdefault("PYTHON_STOCKS_TEST_MODE", "1")
 
 SNAPSHOT_DIR = Path(__file__).parent / "snapshots"
