@@ -254,12 +254,7 @@ class TradingHistory:
         for ticker in self.stock_df_to_today.columns.levels[0]:
             shares = self.trading_history_df.at[last_idx, ticker]
             if shares != 0:
-                print(
-                    "Shares of "
-                    + ticker
-                    + " Owned in the end: "
-                    + str(shares)
-                )
+                print("Shares of " + ticker + " Owned in the end: " + str(shares))
         print(
             "Bank Account left over: "
             + "%.2f" % self.trading_history_df.at[last_idx, "bank_account"]
