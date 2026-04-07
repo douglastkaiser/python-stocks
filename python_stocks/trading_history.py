@@ -41,7 +41,7 @@ class TradingHistory:
 
         is_first_day = len(stock_df_to_today.index) <= 1
         if is_first_day:
-            df.loc[todays_date] = [0] * len(df.columns)
+            df.loc[todays_date] = [0.0] * len(df.columns)
             starting_bank = 0
         else:
             df.loc[todays_date] = df.iloc[-1]
@@ -250,17 +250,14 @@ class TradingHistory:
     #### DISPLAY HELP ####
     def printer(self):
         print("\nStrat: " + self.name + ":")
+        last_idx = self.trading_history_df.index[-1]
         for ticker in self.stock_df_to_today.columns.levels[0]:
-            if self.trading_history_df[ticker][-1] != 0:
-                print(
-                    "Shares of "
-                    + ticker
-                    + " Owned in the end: "
-                    + str(self.trading_history_df[ticker][-1])
-                )
+            shares = self.trading_history_df.at[last_idx, ticker]
+            if shares != 0:
+                print("Shares of " + ticker + " Owned in the end: " + str(shares))
         print(
             "Bank Account left over: "
-            + "%.2f" % self.trading_history_df["bank_account"][-1]
+            + "%.2f" % self.trading_history_df.at[last_idx, "bank_account"]
         )
         # protfolio_value = self.shares_history[-1]*self.price_history[-1] + self.bank_account_history[-1]
         port_val_hist = self.portfolio_value_history()

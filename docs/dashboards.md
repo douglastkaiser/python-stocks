@@ -1,3 +1,7 @@
+---
+layout: default
+title: Dashboard tour
+---
 # Dashboard tour
 
 The Dash app ships with opinionated tabs that pair with the static assets published to GitHub Pages. Use this guide to understand how each view illustrates market efficiency and the value of staying invested.

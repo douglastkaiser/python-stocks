@@ -4,3 +4,7 @@ docs/assets/*.png
 
 # Local CI artifact runs
 artifacts/
+
+# Python bytecode
+__pycache__/
+*.pyc

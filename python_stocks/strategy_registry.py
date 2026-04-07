@@ -5,7 +5,6 @@ from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Tupl
 from .trading_history import TradingHistory
 from .services.strategy_service import StrategyContext
 
-
 StrategyCallable = Callable[[StrategyContext], TradingHistory]
 
 

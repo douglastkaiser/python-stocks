@@ -6,7 +6,6 @@ from .engine.simulator import SimulationEngine
 from .services.strategy_service import StrategyResult
 from .services.runtime_flags import prefer_cached_results
 
-
 SimulationCacheKey = Tuple[
     int,
     Tuple[str, ...],

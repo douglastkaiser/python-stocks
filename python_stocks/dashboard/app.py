@@ -34,7 +34,6 @@ from python_stocks.dashboard.theme import (
     surface_style,
 )
 
-
 _SAMPLE = MarketSample.demo(["AAPL", "MSFT", "SPY", "QQQ"])
 _HERO_PRESETS = {
     "balanced": {"label": "Balanced (90d / 25bps drag)", "window": 90, "cost_bps": 25},

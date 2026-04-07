@@ -4,7 +4,6 @@ from .math_helper import no_delay_moving_average_filter, slope
 from .services.strategy_service import StrategyContext
 from .trading_history import TradingHistory
 
-
 ##### STRATEGIES
 
 
@@ -40,9 +39,9 @@ def strategy_marcus_2p25(
     interest = params.get("interest_rate", 2.25)
     trading_history_day = 365
     daily_interest = interest / 100 / trading_history_day
-    trading_history.trading_history_df["bank_account"][-1] += (
-        daily_interest * trading_history.trading_history_df["bank_account"][-1]
-    )
+    df = trading_history.trading_history_df
+    last_idx = df.index[-1]
+    df.at[last_idx, "bank_account"] += daily_interest * df.at[last_idx, "bank_account"]
 
     return trading_history
 

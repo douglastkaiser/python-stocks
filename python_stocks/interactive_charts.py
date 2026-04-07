@@ -7,7 +7,6 @@ from typing import Iterable, List
 import numpy as np
 import pandas as pd
 
-
 VEGA_SCRIPTS = """
 <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
 <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
