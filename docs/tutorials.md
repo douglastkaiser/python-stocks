@@ -1,3 +1,7 @@
+---
+layout: default
+title: Tutorials
+---
 # Tutorials: recreate the dashboard views without the UI
 
 The snippets below mirror the Dash tabs so you can explore the same ideas in a notebook or Markdown setting. They rely on the lightweight `MarketSample` demo data that powers the CI artifacts.

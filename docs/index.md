@@ -1,3 +1,7 @@
+---
+layout: default
+title: python-stocks
+---
 <link rel="stylesheet" href="./assets/landing.css">
 
 <div class="landing">

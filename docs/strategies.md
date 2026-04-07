@@ -1,3 +1,7 @@
+---
+layout: default
+title: Strategy catalog
+---
 # Strategy catalog
 
 This guide summarizes the built-in strategies, their required data, and the levers you can adjust when running simulations via `python -m python_stocks run ...` or by supplying overrides to the Dash app.
