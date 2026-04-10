@@ -14,8 +14,8 @@ title: python-stocks
       Every preview is rebuilt automatically so visitors can explore without installing anything.
     </p>
     <div class="cta-row">
-      <a class="cta primary" href="./assets/spy_interactive.html">View SPY preview</a>
-      <a class="cta secondary" href="./dashboards.md">Tour the dashboard</a>
+      <a class="cta primary" href="./dashboard/">Start here: interactive dashboard preview</a>
+      <a class="cta secondary" href="./dashboards.md">Then read the dashboard tour</a>
     </div>
     <div class="stat-grid">
       <div class="stat"><div class="label">CI refreshed</div><div class="value">On every push</div></div>
@@ -27,10 +27,14 @@ title: python-stocks
     <h2>Preview assets</h2>
     <div class="landing-card-grid" style="margin-top: 10px;">
       <div class="landing-card">
-        <div class="chip">Snapshots</div>
-        <h3>Static plots</h3>
-        <p>PNG charts exported from the SPY/DIA simulation.</p>
-        <p class="landing-subtle"><a href="./assets/figure_1.png">figure_1.png</a> · <a href="./assets/figure_2.png">figure_2.png</a> · <a href="./assets/figure_3.png">figure_3.png</a></p>
+        <div class="chip">Start here</div>
+        <h3>Interactive dashboard preview</h3>
+        <p>Open the full static dashboard route first, then use raw files only when you need exports.</p>
+        <p><a href="./dashboard/">Launch dashboard preview</a></p>
+        <details class="landing-subtle">
+          <summary>Download raw assets</summary>
+          <p><a href="./assets/figure_1.png">figure_1.png</a> · <a href="./assets/figure_2.png">figure_2.png</a> · <a href="./assets/figure_3.png">figure_3.png</a></p>
+        </details>
       </div>
       <div class="landing-card">
         <div class="chip">Interactive</div>
