@@ -65,12 +65,30 @@
   min-width: 240px;
 }
 
+.tab-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.tab-grid--two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.tab-grid--comparison {
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+}
+
 @media (max-width: 960px) {
   .hero-grid {
     grid-template-columns: 1fr;
   }
 
   .scenario-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .tab-grid--two,
+  .tab-grid--comparison {
     grid-template-columns: 1fr;
   }
 }

@@ -183,7 +183,7 @@ def _graph_container(graph_id: str, label: str, height: str) -> html.Div:
 
 def _overview_tab(theme_key: str) -> html.Div:
     return html.Div(
-        className="grid",
+        className="tab-grid tab-grid--two",
         children=[
             _build_card(
                 "Price Overview",
@@ -201,7 +201,6 @@ def _overview_tab(theme_key: str) -> html.Div:
                 theme_key,
             ),
         ],
-        style={"display": "grid", "gridTemplateColumns": "1fr 1fr", "gap": "16px"},
     )
 
 
@@ -577,7 +576,7 @@ def _guided_showcase(theme_key: str) -> html.Div:
 
 def _strategy_tab(theme_key: str) -> html.Div:
     return html.Div(
-        className="grid",
+        className="tab-grid tab-grid--two",
         children=[
             _build_card(
                 "Strategy Comparison",
@@ -603,7 +602,6 @@ def _strategy_tab(theme_key: str) -> html.Div:
                 theme_key,
             ),
         ],
-        style={"display": "grid", "gridTemplateColumns": "1fr 1fr", "gap": "16px"},
     )
 
 
@@ -626,7 +624,7 @@ def _cost_tab(theme_key: str) -> html.Div:
 
 def _time_in_market_tab(theme_key: str) -> html.Div:
     return html.Div(
-        style={"display": "grid", "gridTemplateColumns": "1fr 1fr", "gap": "16px"},
+        className="tab-grid tab-grid--two",
         children=[
             _build_card(
                 "Time in Market Lesson",
@@ -654,7 +652,7 @@ def _time_in_market_tab(theme_key: str) -> html.Div:
 def _comparison_tab(theme_key: str) -> html.Div:
     tips = guidance_tooltips()
     return html.Div(
-        style={"display": "grid", "gridTemplateColumns": "2fr 1fr", "gap": "16px"},
+        className="tab-grid tab-grid--comparison",
         children=[
             _build_card(
                 "Return / Volatility / Cost Matrix",
