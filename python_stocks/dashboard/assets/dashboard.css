@@ -1,5 +1,9 @@
 :root {
   --page-max-width: 1200px;
+  --surface-border-subtle: rgba(148, 163, 184, 0.28);
+  --surface-border-strong: rgba(148, 163, 184, 0.46);
+  --surface-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  --surface-shadow-strong: 0 20px 60px rgba(15, 23, 42, 0.12);
 }
 
 #page-root {
@@ -9,6 +13,10 @@
 }
 
 #page-root[data-theme="dark"] {
+  --surface-border-subtle: rgba(148, 163, 184, 0.24);
+  --surface-border-strong: rgba(148, 163, 184, 0.36);
+  --surface-shadow: 0 12px 32px rgba(2, 6, 23, 0.45);
+  --surface-shadow-strong: 0 24px 64px rgba(2, 6, 23, 0.52);
   background: radial-gradient(circle at 20% 20%, rgba(56, 189, 248, 0.12), transparent 35%),
     radial-gradient(circle at 80% 0%, rgba(99, 102, 241, 0.18), transparent 30%),
     #0b1224;
@@ -36,7 +44,7 @@
 
 .section-divider {
   height: 1px;
-  background: rgba(148, 163, 184, 0.35);
+  background: var(--surface-border-subtle);
   margin: 6px 0 12px;
 }
 

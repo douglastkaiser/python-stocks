@@ -5,6 +5,8 @@
   --landing-surface: #ffffff;
   --landing-card: #ffffff;
   --landing-border: #cbd5e1;
+  --landing-surface-border-subtle: rgba(148, 163, 184, 0.18);
+  --landing-surface-border-strong: rgba(148, 163, 184, 0.24);
   --landing-muted: #475569;
   --landing-foreground: #0f172a;
   --landing-foreground-strong: #020617;
@@ -37,6 +39,8 @@
   --landing-surface: #0b1220;
   --landing-card: #0f172a;
   --landing-border: #1f2937;
+  --landing-surface-border-subtle: rgba(148, 163, 184, 0.18);
+  --landing-surface-border-strong: rgba(148, 163, 184, 0.24);
   --landing-muted: #94a3b8;
   --landing-foreground: #e2e8f0;
   --landing-foreground-strong: #f8fafc;
@@ -178,7 +182,7 @@
   background: var(--landing-card);
   border-radius: 14px;
   padding: 16px;
-  border: 1px solid var(--landing-border);
+  border: 1px solid var(--landing-surface-border-subtle);
   box-shadow: 0 10px 28px rgba(15, 23, 42, 0.25);
 }
 
@@ -221,7 +225,7 @@
   background: linear-gradient(145deg, var(--landing-panel-gradient-a), var(--landing-panel-gradient-b));
   border-radius: 14px;
   padding: 16px;
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  border: 1px solid var(--landing-surface-border-strong);
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
 }
 
