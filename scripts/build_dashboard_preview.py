@@ -67,6 +67,10 @@ def _theme_tokens(mode: str) -> str:
             f"  --dashboard-accent: {theme['accent']};",
             f"  --dashboard-accent-alt: {theme['accent_alt']};",
             f"  --dashboard-grid: {theme['grid']};",
+            f"  --surface-border-subtle: {theme['surface_border_subtle']};",
+            f"  --surface-border-strong: {theme['surface_border_strong']};",
+            f"  --surface-shadow: {theme['surface_shadow']};",
+            f"  --surface-shadow-strong: {theme['surface_shadow_strong']};",
             f"  --dashboard-plot-bg: {theme['plot_bg']};",
             f"  --dashboard-paper-bg: {theme['paper_bg']};",
         ]
@@ -294,13 +298,13 @@ def build_preview(output_root: Path) -> None:
   .showcase-grid {{ display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px; }}
   .surface-card {{
     background: var(--dashboard-panel);
-    border: 1px solid var(--dashboard-grid);
+    border: 1px solid var(--surface-border-subtle);
     border-radius: 12px;
     padding: 12px;
     display: flex;
     flex-direction: column;
     gap: 6px;
-    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
+    box-shadow: var(--surface-shadow);
   }}
   .surface-card h3 {{ margin: 0; }}
   .muted {{ color: var(--dashboard-muted-text); margin: 0; }}

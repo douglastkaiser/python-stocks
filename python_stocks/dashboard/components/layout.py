@@ -249,7 +249,7 @@ def hero_banner(
             "padding": "10px 12px",
             "borderRadius": "12px",
             "background": f"rgba(15,23,42,{0.04 if theme['mode']=='light' else 0.35})",
-            "border": f"1px solid {theme['grid']}",
+            "border": f"1px solid {theme['surface_border_subtle']}",
             "fontStyle": "italic",
         },
     )
@@ -259,12 +259,12 @@ def hero_banner(
             "padding": SPACING["lg"],
             "borderRadius": "18px",
             "background": gradient,
-            "border": f"1px solid {theme['grid']}",
+            "border": f"1px solid {theme['surface_border_strong']}",
             "display": "grid",
             "gridTemplateColumns": "1.6fr 1fr",
             "gap": SPACING["md"],
             "alignItems": "center",
-            "boxShadow": "0 20px 60px rgba(15,23,42,0.12)",
+            "boxShadow": theme["surface_shadow_strong"],
         },
         children=[
             text_stack(
