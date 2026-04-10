@@ -4,7 +4,7 @@ title: python-stocks
 ---
 <link rel="stylesheet" href="./assets/landing.css">
 
-<div class="landing">
+<div class="landing" data-theme="light">
 <section class="landing-hero">
   <div class="hero-text">
     <div class="eyebrow">Guided dashboards · Live simulations</div>
@@ -16,6 +16,13 @@ title: python-stocks
     <div class="cta-row">
       <a class="cta primary" href="./dashboard/">Start here: interactive dashboard preview</a>
       <a class="cta secondary" href="./dashboards.md">Then read the dashboard tour</a>
+    </div>
+    <div class="landing-theme-row">
+      <div class="landing-theme-switch" role="group" aria-label="Theme selector">
+        <span class="label">Theme</span>
+        <button type="button" data-theme-choice="Light">Light</button>
+        <button type="button" data-theme-choice="Dark">Dark</button>
+      </div>
     </div>
     <div class="stat-grid">
       <div class="stat"><div class="label">CI refreshed</div><div class="value">On every push</div></div>
@@ -125,3 +132,36 @@ title: python-stocks
   </div>
 </section>
 </div>
+
+<script>
+(() => {
+  const landing = document.querySelector(".landing");
+  if (!landing) {
+    return;
+  }
+
+  const storageKey = "landing-theme";
+  const buttons = Array.from(landing.querySelectorAll("[data-theme-choice]"));
+  const applyTheme = (mode) => {
+    landing.setAttribute("data-theme", mode);
+    buttons.forEach((button) => {
+      button.classList.toggle("is-active", button.dataset.themeChoice.toLowerCase() === mode);
+    });
+  };
+
+  const stored = window.localStorage.getItem(storageKey);
+  const initialTheme = stored === "light" || stored === "dark"
+    ? stored
+    : (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+
+  applyTheme(initialTheme);
+
+  buttons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const selectedTheme = button.dataset.themeChoice.toLowerCase();
+      window.localStorage.setItem(storageKey, selectedTheme);
+      applyTheme(selectedTheme);
+    });
+  });
+})();
+</script>
