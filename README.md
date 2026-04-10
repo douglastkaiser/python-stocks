@@ -8,6 +8,11 @@ Stock market simulator to test out stock buy/sell strategies and to analyze risk
 
 ## Guided dashboards and strategy explainers
 
+Start here in this order so the first click matches the published preview flow:
+
+1. **Interactive dashboard preview:** [docs/dashboard/](./docs/dashboard/)
+2. **Dashboard tour docs:** [docs/dashboards.md](./docs/dashboards.md)
+
 The [docs/](./docs) folder now includes guided walk-throughs for every available strategy, the comparison dashboards, and the core lesson we keep seeing in simulations: markets are tough to beat, so time **in** the market usually wins over attempts to time entries and exits.
 
 - **Strategy catalog:** [docs/strategies.md](./docs/strategies.md) covers how each registered strategy behaves, what data it needs, and which parameters you can tweak.
