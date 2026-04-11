@@ -86,18 +86,18 @@ STRATEGY_SUMMARIES = [
         "detail": "Keeps compounding intact by sizing down during noisy swings instead of exiting entirely.",
     },
 ]
-LEARNING_STEPS = [
+WORKFLOW_STEPS = [
     {
-        "title": "Start with price context",
-        "body": "Replay recent swings to see how signals react before real capital is at risk.",
+        "title": "Anchor to market regime",
+        "body": "Frame the current move before changing parameters so confidence reflects context, not recency bias.",
     },
     {
-        "title": "Layer in costs",
-        "body": "Model slippage and fees so ideas survive outside of notebooks.",
+        "title": "Adjust cost sensitivity",
+        "body": "Increase or decrease drag assumptions to see when expected edge no longer clears execution friction.",
     },
     {
-        "title": "Compare outcomes",
-        "body": "Use the comparison matrix to pressure test edge, drawdowns, and capacity.",
+        "title": "Confirm tradeoff profile",
+        "body": "Validate return, drawdown, and participation tradeoffs before promoting a rule to live monitoring.",
     },
 ]
 SIMULATION_FEED = [
@@ -275,20 +275,26 @@ def _kpi_hero(theme_key: str) -> html.Div:
         ],
     )
     return hero_banner(
-        title="Match the market with disciplined, cost-aware rules",
-        subtitle="KPIs, Strategy Lab, and Compare views make it obvious which tweaks actually improve resilience.",
-        thesis="You rarely beat the benchmark by guessing tops—you win by staying invested, sizing responsibly, and only trading when costs make sense.",
+        title="Decide faster with evidence-backed, cost-aware rules",
+        subtitle="Use KPI, Strategy Lab, and Compare signals to confirm what is robust before you deploy.",
+        thesis="Confirm trend participation first, stress-test sensitivity second, and only scale when tradeoffs stay favorable under higher drag.",
         kpis=hero_kpis,
         actions=[
             button_link(
-                "Launch Strategy Lab",
+                "Confirm signal",
                 href="#strategy-tab",
                 theme_key=theme_key,
                 primary=True,
             ),
             button_link(
-                "Open Compare view",
+                "Run stress test",
                 href="#comparison-tab",
+                theme_key=theme_key,
+                primary=False,
+            ),
+            button_link(
+                "Run discipline check",
+                href="#cost-slider",
                 theme_key=theme_key,
                 primary=False,
             ),
@@ -378,9 +384,9 @@ def _scenario_panel(theme_key: str) -> html.Div:
                 children=[
                     html.Div(
                         [
-                            html.Div("Try a scenario", style={"fontWeight": 700}),
+                            html.Div("Stress-test a scenario", style={"fontWeight": 700}),
                             html.Span(
-                                "Pick a preset to auto-fill the controls and compare reactions instantly.",
+                                "Pick a preset to load assumptions quickly, then validate sensitivity across views.",
                                 style=muted_text(theme),
                             ),
                         ]
@@ -411,7 +417,7 @@ def _scenario_panel(theme_key: str) -> html.Div:
                         [
                             html.Span("Scenario controls", style={"fontWeight": 700}),
                             html.Span(
-                                "Apply a preset to update tickers, windows, costs, and hero quick toggles.",
+                                "Load a preset to update ticker, horizon, costs, and hero quick toggles in one pass.",
                                 style=muted_text(theme) | {"fontSize": "13px"},
                             ),
                         ],
@@ -422,19 +428,19 @@ def _scenario_panel(theme_key: str) -> html.Div:
                         },
                     ),
                     html.Button(
-                        "Apply preset to controls",
+                        "Load stress-test preset",
                         id="scenario-apply",
                         n_clicks=0,
                         style=primary_button_style,
                     ),
                     html.Button(
-                        "Rerun with current inputs",
+                        "Recompute stress test",
                         id="scenario-rerun",
                         n_clicks=0,
                         style=ghost_button_style,
                     ),
                     html.Span(
-                        "Tip: re-run to keep the figures in sync after manual tweaks.",
+                        "Tip: recompute after manual edits to keep all views synchronized.",
                         style=muted_text(theme) | {"fontSize": "12px"},
                     ),
                 ],
@@ -560,7 +566,7 @@ def _scenario_stress_test_section(theme_key: str) -> html.Div:
             title=step["title"],
             children=[html.P(step["body"], style=muted_text(theme))],
         )
-        for step in LEARNING_STEPS
+        for step in WORKFLOW_STEPS
     ]
     return section_block(
         title="2. Scenario stress-test",
@@ -765,7 +771,7 @@ def _time_in_market_tab(theme_key: str) -> html.Div:
         className="tab-grid tab-grid--two",
         children=[
             _build_card(
-                "Time in Market Lesson",
+                "Time in Market Exposure",
                 [
                     _graph_container(
                         "time-in-market-chart", "Time in market pie chart", "360px"
@@ -853,7 +859,7 @@ def build_app() -> Dash:
                 children=[
                     page_header(
                         title="Build resilient, cost-aware equity rules",
-                        subtitle="Preview the Strategy Lab dashboard",
+                        subtitle="Decide, confirm, and stress-test with the Strategy Lab workflow",
                         theme_key=DEFAULT_THEME_KEY,
                         controls=[
                             html.Div(
@@ -889,8 +895,8 @@ def build_app() -> Dash:
                     _kpi_hero(DEFAULT_THEME_KEY),
                     surface_card(
                         theme_key=DEFAULT_THEME_KEY,
-                        title="Tune a strategy without losing market exposure",
-                        subtitle="Use realistic inputs so the comparison matrix and overlays react like a real account would.",
+                        title="Run a decision workflow without losing market exposure context",
+                        subtitle="Use realistic inputs so matrix and overlay reactions reflect confidence, sensitivity, and tradeoff shifts.",
                         children=[
                             html.Div(className="section-divider"),
                             html.P(
