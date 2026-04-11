@@ -268,12 +268,13 @@ def _kpi_hero(theme_key: str) -> html.Div:
         "border": f"1px solid {theme['grid']}",
     }
     radio_label_style = {
-        "padding": "8px 10px",
+        "padding": "12px 12px",
         "borderRadius": "10px",
         "border": f"1px solid {theme['grid']}",
         "marginRight": "6px",
         "display": "inline-flex",
         "alignItems": "center",
+        "minHeight": "44px",
         "gap": "6px",
         "background": f"rgba(148, 163, 184, {0.15 if theme['mode']=='light' else 0.18})",
         "cursor": "pointer",
@@ -323,6 +324,7 @@ def _kpi_hero(theme_key: str) -> html.Div:
                 style=toggle_group_style,
             ),
         ],
+        className="hero-quick-toggles",
         style={"display": "flex", "gap": "10px", "flexWrap": "wrap"},
     )
     hero_visual = html.Div(
@@ -347,6 +349,13 @@ def _kpi_hero(theme_key: str) -> html.Div:
                 style={"height": "320px"},
             ),
             html.Div(id="hero-comparison-chart-metadata"),
+        ],
+    )
+    advanced_toggles = html.Details(
+        className="mobile-disclosure hero-disclosure",
+        children=[
+            html.Summary("Advanced hero controls"),
+            html.Div([quick_toggles], className="mobile-disclosure-content"),
         ],
     )
     return hero_banner(
@@ -376,7 +385,7 @@ def _kpi_hero(theme_key: str) -> html.Div:
         ],
         theme_key=theme_key,
         hero_visual=hero_visual,
-        quick_toggles=[quick_toggles],
+        quick_toggles=[advanced_toggles],
     )
 
 
@@ -571,24 +580,40 @@ def _signal_confirmation_section(theme_key: str) -> html.Div:
                                 ),
                             ],
                         ),
-                        html.Div(
-                            className="control-card",
+                        html.Details(
+                            className="mobile-disclosure control-disclosure",
                             children=[
-                                html.Label(
-                                    "Lookback window (days)",
-                                    htmlFor="window-slider",
-                                    **{"aria-label": "Lookback window slider"},
-                                ),
-                                dcc.Slider(
-                                    id="window-slider",
-                                    min=30,
-                                    max=180,
-                                    step=10,
-                                    value=90,
-                                    marks={30: "30", 90: "90", 180: "180"},
+                                html.Summary("Advanced controls"),
+                                html.Div(
+                                    className="mobile-disclosure-content",
+                                    children=[
+                                        html.Div(
+                                            className="control-card",
+                                            children=[
+                                                html.Label(
+                                                    "Lookback window (days)",
+                                                    htmlFor="window-slider",
+                                                    **{
+                                                        "aria-label": "Lookback window slider"
+                                                    },
+                                                ),
+                                                dcc.Slider(
+                                                    id="window-slider",
+                                                    min=30,
+                                                    max=180,
+                                                    step=10,
+                                                    value=90,
+                                                    marks={
+                                                        30: "30",
+                                                        90: "90",
+                                                        180: "180",
+                                                    },
+                                                ),
+                                            ],
+                                        )
+                                    ],
                                 ),
                             ],
-                            style={"minWidth": "240px"},
                         ),
                     ],
                 ),
@@ -657,26 +682,47 @@ def _scenario_stress_test_section(theme_key: str) -> html.Div:
                 html.Div(
                     className="control-bar",
                     children=[
-                        html.Div(
-                            className="control-card",
+                        html.Details(
+                            className="mobile-disclosure control-disclosure",
                             children=[
-                                html.Label(
-                                    "Timeline horizon",
-                                    htmlFor="horizon-dropdown",
-                                    **{"aria-label": "Timeline horizon selector"},
-                                ),
-                                dcc.Dropdown(
-                                    id="horizon-dropdown",
-                                    options=[
-                                        {"label": "3 months", "value": 60},
-                                        {"label": "6 months", "value": 120},
-                                        {"label": "12 months", "value": 252},
+                                html.Summary("Advanced controls"),
+                                html.Div(
+                                    className="mobile-disclosure-content",
+                                    children=[
+                                        html.Div(
+                                            className="control-card",
+                                            children=[
+                                                html.Label(
+                                                    "Timeline horizon",
+                                                    htmlFor="horizon-dropdown",
+                                                    **{
+                                                        "aria-label": "Timeline horizon selector"
+                                                    },
+                                                ),
+                                                dcc.Dropdown(
+                                                    id="horizon-dropdown",
+                                                    options=[
+                                                        {
+                                                            "label": "3 months",
+                                                            "value": 60,
+                                                        },
+                                                        {
+                                                            "label": "6 months",
+                                                            "value": 120,
+                                                        },
+                                                        {
+                                                            "label": "12 months",
+                                                            "value": 252,
+                                                        },
+                                                    ],
+                                                    value=120,
+                                                    clearable=False,
+                                                ),
+                                            ],
+                                        )
                                     ],
-                                    value=120,
-                                    clearable=False,
                                 ),
                             ],
-                            style={"minWidth": "200px"},
                         ),
                     ],
                 ),
@@ -739,25 +785,41 @@ def _discipline_check_section(theme_key: str) -> html.Div:
                 html.Div(
                     className="control-bar",
                     children=[
-                        html.Div(
-                            className="control-card",
+                        html.Details(
+                            className="mobile-disclosure control-disclosure",
                             children=[
-                                html.Label(
-                                    "Cost drag (bps)",
-                                    htmlFor="cost-slider",
-                                    **{"aria-label": "Cost drag slider"},
-                                ),
-                                dcc.Slider(
-                                    id="cost-slider",
-                                    min=0,
-                                    max=100,
-                                    step=5,
-                                    value=25,
-                                    marks={0: "0", 50: "50", 100: "100"},
-                                    tooltip={"placement": "bottom"},
+                                html.Summary("Advanced controls"),
+                                html.Div(
+                                    className="mobile-disclosure-content",
+                                    children=[
+                                        html.Div(
+                                            className="control-card",
+                                            children=[
+                                                html.Label(
+                                                    "Cost drag (bps)",
+                                                    htmlFor="cost-slider",
+                                                    **{
+                                                        "aria-label": "Cost drag slider"
+                                                    },
+                                                ),
+                                                dcc.Slider(
+                                                    id="cost-slider",
+                                                    min=0,
+                                                    max=100,
+                                                    step=5,
+                                                    value=25,
+                                                    marks={
+                                                        0: "0",
+                                                        50: "50",
+                                                        100: "100",
+                                                    },
+                                                    tooltip={"placement": "bottom"},
+                                                ),
+                                            ],
+                                        )
+                                    ],
                                 ),
                             ],
-                            style={"minWidth": "240px"},
                         ),
                     ],
                 ),

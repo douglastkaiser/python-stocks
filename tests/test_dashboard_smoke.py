@@ -3,7 +3,7 @@ from __future__ import annotations
 # mypy: ignore-errors
 
 from python_stocks.dashboard.app import build_app
-from dash import dcc
+from dash import dcc, html
 
 _EXPECTED_GRAPH_IDS = {
     "price-chart",
@@ -41,6 +41,21 @@ def _collect_graph_ids(node):
     return ids
 
 
+def _collect_nodes(node, component_type):
+    nodes = []
+    if isinstance(node, component_type):
+        nodes.append(node)
+
+    children = getattr(node, "children", None)
+    if isinstance(children, (list, tuple)):
+        for child in children:
+            nodes.extend(_collect_nodes(child, component_type))
+    elif children is not None:
+        nodes.extend(_collect_nodes(children, component_type))
+
+    return nodes
+
+
 def test_dashboard_layout_contains_expected_graphs():
     app = build_app()
     graph_ids = _collect_graph_ids(app.layout)
@@ -62,3 +77,13 @@ def test_dashboard_callback_registered():
             or callback.get("output")
         )
         assert has_outputs, "Callback should define outputs for interactive updates"
+
+
+def test_mobile_disclosure_controls_exist():
+    app = build_app()
+    disclosure_nodes = _collect_nodes(app.layout, html.Details)
+    assert disclosure_nodes, "Expected progressive disclosure controls in layout"
+    disclosure_classes = {
+        str(getattr(node, "className", "")) for node in disclosure_nodes
+    }
+    assert any("mobile-disclosure" in class_name for class_name in disclosure_classes)
