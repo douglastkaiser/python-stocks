@@ -1,4 +1,4 @@
-"""Narrative helpers and guided tooltips for the dashboard."""
+"""Analytical guidance helpers for the dashboard."""
 
 from __future__ import annotations
 
@@ -17,20 +17,22 @@ def myth_busting_callouts() -> html.Div:
             "marginTop": "8px",
         },
         children=[
-            html.Strong("Myth busting:"),
+            html.Strong("Context note:"),
             html.P(
-                "Consistently beating the market isn't about heroic trades. It comes from repeatable rules, risk controls, and minimizing drag.",
+                "Treat this as a confidence check: edge quality depends on stable rules, risk controls, and disciplined cost assumptions.",
                 style={"marginBottom": "4px"},
             ),
             html.Ul(
                 [
                     html.Li(
-                        "Slower drawdowns often recover faster when costs stay contained."
+                        "Lower turnover can improve recovery odds when execution drag rises."
                     ),
                     html.Li(
-                        "Staying invested through noisy stretches keeps compounding intact."
+                        "Participation stability often matters more than precise turning-point calls."
                     ),
-                    html.Li("Execution discipline can matter as much as entry timing."),
+                    html.Li(
+                        "Revisit sensitivity bands before increasing risk or allocation."
+                    ),
                 ],
                 style={"margin": 0, "paddingLeft": "18px"},
             ),
@@ -41,13 +43,13 @@ def myth_busting_callouts() -> html.Div:
 def guidance_tooltips() -> List[html.Div]:
     return [
         html.Div(
-            "Hover charts for guidance on interpreting signals.",
-            title="Tooltips explain volatility bands, slippage estimates, and rule-of-thumb interpretations.",
+            "Hover charts to inspect confidence and sensitivity cues.",
+            title="Tooltips highlight volatility ranges, slippage sensitivity, and confidence under changing assumptions.",
             style={"color": "#6b7280", "fontSize": "13px"},
         ),
         html.Div(
-            "Use the controls below to rerun the comparison in real time.",
-            title="Adjust the lookback window, cost assumptions, and ticker to see how the narrative changes.",
+            "Adjust controls to quantify tradeoff changes in real time.",
+            title="Change lookback, cost drag, and ticker to measure return-volatility-cost tradeoffs before acting.",
             style={"color": "#6b7280", "fontSize": "13px"},
         ),
     ]
