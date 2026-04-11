@@ -28,6 +28,21 @@ The app is organized around three explicit workflows. Each workflow maps to name
 
 The hero area supports all three workflows with quick controls (`Quick ticker`, `Preset windows`) and action CTAs (`Confirm signal`, `Run stress test`, `Run discipline check`).
 
+### Provenance + timestamps in chart views
+
+Every analysis/chart view includes shared metadata for:
+
+- **Source**: the feed backing the chart.
+- **Market date (as-of)**: the market session date represented by the data.
+- **Last refresh timestamp**: when the app most recently refreshed the dataset.
+
+`Market date` and `last refresh` are intentionally different:
+
+- `Market date` tracks data recency in market terms (e.g., latest trading day included).
+- `Last refresh` tracks operational recency (when data retrieval/generation ran).
+
+If the refresh timestamp exceeds the stale threshold, the dashboard surfaces a non-blocking stale-data warning near the chart metadata.
+
 ## Start with the dashboard
 
 Use this sequence so the first click matches the published preview flow:

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Iterable, List
 
 import numpy as np
@@ -15,6 +15,11 @@ class MarketSample:
 
     tickers: List[str]
     history: pd.DataFrame
+    data_source: str = "Unknown source"
+    market_date: pd.Timestamp = field(default_factory=lambda: pd.Timestamp.utcnow())
+    last_refresh: pd.Timestamp = field(
+        default_factory=lambda: pd.Timestamp.now(tz="UTC")
+    )
 
     @classmethod
     def demo(cls, tickers: Iterable[str], periods: int = 180) -> "MarketSample":
@@ -28,4 +33,20 @@ class MarketSample:
             frames[ticker] = pd.DataFrame(
                 {"Close": close, "Volume": (close * 1_000).round(0)}, index=index
             )
-        return cls(tickers=list(tickers), history=pd.concat(frames, axis=1))
+        return cls(
+            tickers=list(tickers),
+            history=pd.concat(frames, axis=1),
+            data_source="Demo market sample (simulated OHLCV)",
+            market_date=end_date,
+            last_refresh=pd.Timestamp.now(tz="UTC").floor("s"),
+        )
+
+    def is_stale(
+        self, *, now: pd.Timestamp | None = None, stale_after_hours: int = 24
+    ) -> bool:
+        """Whether the dataset refresh timestamp is older than the threshold."""
+        now_ts = now or pd.Timestamp.now(tz="UTC")
+        refresh_ts = self.last_refresh
+        if refresh_ts.tzinfo is None:
+            refresh_ts = refresh_ts.tz_localize("UTC")
+        return (now_ts - refresh_ts) > pd.Timedelta(hours=stale_after_hours)

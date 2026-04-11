@@ -78,6 +78,20 @@
   grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
 }
 
+.data-provenance-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+}
+
+.metadata-warning {
+  font-size: 12px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(245, 158, 11, 0.45);
+  background: rgba(245, 158, 11, 0.1);
+}
+
 @media (max-width: 960px) {
   .hero-grid {
     grid-template-columns: 1fr;
@@ -90,5 +104,11 @@
   .tab-grid--two,
   .tab-grid--comparison {
     grid-template-columns: 1fr;
+  }
+
+  .data-provenance-items {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 6px;
   }
 }

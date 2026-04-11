@@ -10,6 +10,7 @@ from python_stocks.dashboard.components.education import (
 )
 from python_stocks.dashboard.components.layout import (
     button_link,
+    data_provenance_panel,
     hero_banner,
     kpi_stat,
     muted_text,
@@ -44,6 +45,7 @@ __all__ = [
     "surface_card",
     "text_stack",
     "button_link",
+    "data_provenance_panel",
     "page_header",
     "pill",
     "muted_text",

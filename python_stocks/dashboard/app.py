@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-from typing import List
+from typing import Dict, List
 
+import pandas as pd
 from dash import Dash, Input, Output, State, dcc, html, no_update
 
 from python_stocks.dashboard.components import (
@@ -11,6 +12,7 @@ from python_stocks.dashboard.components import (
     button_link,
     comparison_matrix_figure,
     cost_impact_figure,
+    data_provenance_panel,
     diagnostics_figure,
     guidance_tooltips,
     hero_banner,
@@ -35,6 +37,24 @@ from python_stocks.dashboard.theme import (
 )
 
 _SAMPLE = MarketSample.demo(["AAPL", "MSFT", "SPY", "QQQ"])
+_CHART_IDS = [
+    "hero-comparison-chart",
+    "price-chart",
+    "strategy-chart",
+    "cost-impact-chart",
+    "time-in-market-chart",
+    "diagnostics-chart",
+    "price-chart-secondary",
+    "strategy-chart-secondary",
+    "cost-impact-chart-secondary",
+    "comparison-matrix",
+    "timeline-overlay",
+    "price-spotlight",
+    "strategy-spotlight",
+    "cost-spotlight",
+    "matrix-spotlight",
+    "timeline-spotlight",
+]
 _HERO_PRESETS = {
     "balanced": {"label": "Balanced (90d / 25bps drag)", "window": 90, "cost_bps": 25},
     "fast": {"label": "Fast swings (45d / 10bps)", "window": 45, "cost_bps": 10},
@@ -134,9 +154,63 @@ def _graph_container(graph_id: str, label: str, height: str) -> html.Div:
                 id=graph_id,
                 config={"displayModeBar": False},
                 style={"height": height},
-            )
+            ),
+            html.Div(id=f"{graph_id}-metadata"),
         ],
     )
+
+
+def _format_timestamp(ts: pd.Timestamp) -> str:
+    return ts.strftime("%Y-%m-%d %H:%M:%S UTC")
+
+
+def _build_chart_metadata(
+    *,
+    theme_key: str,
+    ticker: str,
+    window: int,
+    cost_bps: int,
+    horizon: int,
+    hero_ticker: str,
+    hero_preset: str,
+    sample: MarketSample,
+) -> Dict[str, html.Div]:
+    market_date = sample.market_date.strftime("%Y-%m-%d")
+    refresh_time = _format_timestamp(sample.last_refresh)
+    is_stale = sample.is_stale(stale_after_hours=24)
+    shared_scope = f"window {window}d · cost {cost_bps} bps · horizon {horizon}d"
+    chart_scopes = {
+        "hero-comparison-chart": f"hero preset {hero_preset}",
+        "price-chart": shared_scope,
+        "strategy-chart": shared_scope,
+        "cost-impact-chart": shared_scope,
+        "time-in-market-chart": shared_scope,
+        "diagnostics-chart": shared_scope,
+        "price-chart-secondary": shared_scope,
+        "strategy-chart-secondary": shared_scope,
+        "cost-impact-chart-secondary": shared_scope,
+        "comparison-matrix": shared_scope,
+        "timeline-overlay": shared_scope,
+        "price-spotlight": shared_scope,
+        "strategy-spotlight": shared_scope,
+        "cost-spotlight": shared_scope,
+        "matrix-spotlight": shared_scope,
+        "timeline-spotlight": shared_scope,
+    }
+    chart_tickers = {chart_id: ticker for chart_id in _CHART_IDS}
+    chart_tickers["hero-comparison-chart"] = hero_ticker or ticker
+    return {
+        f"{chart_id}-metadata": data_provenance_panel(
+            theme_key=theme_key,
+            data_source=sample.data_source,
+            market_date=market_date,
+            last_refresh=refresh_time,
+            ticker=chart_tickers[chart_id],
+            scope_label=chart_scopes[chart_id],
+            is_stale=is_stale,
+        )
+        for chart_id in _CHART_IDS
+    }
 
 
 def _overview_tab(theme_key: str) -> html.Div:
@@ -272,6 +346,7 @@ def _kpi_hero(theme_key: str) -> html.Div:
                 config={"displayModeBar": False},
                 style={"height": "320px"},
             ),
+            html.Div(id="hero-comparison-chart-metadata"),
         ],
     )
     return hero_banner(
@@ -1015,6 +1090,7 @@ def build_app() -> Dash:
         Output("cost-spotlight", "figure"),
         Output("matrix-spotlight", "figure"),
         Output("timeline-spotlight", "figure"),
+        *[Output(f"{chart_id}-metadata", "children") for chart_id in _CHART_IDS],
         Input("ticker-dropdown", "value"),
         Input("theme-toggle", "value"),
         Input("window-slider", "value"),
@@ -1074,6 +1150,16 @@ def build_app() -> Dash:
             timeline_chart,
         ]:
             fig.update_layout(uirevision=revision_tag)
+        metadata = _build_chart_metadata(
+            theme_key=theme_key,
+            ticker=ticker,
+            window=window,
+            cost_bps=cost_bps,
+            horizon=horizon,
+            hero_ticker=hero_ticker or ticker,
+            hero_preset=hero_preset,
+            sample=_SAMPLE,
+        )
         return (
             page_style(theme),
             theme_key,
@@ -1093,6 +1179,7 @@ def build_app() -> Dash:
             cost_chart,
             comparison_chart,
             timeline_chart,
+            *[metadata[f"{chart_id}-metadata"] for chart_id in _CHART_IDS],
         )
 
     return app

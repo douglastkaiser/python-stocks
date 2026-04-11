@@ -317,3 +317,80 @@ def hero_banner(
             ),
         ],
     )
+
+
+def data_provenance_panel(
+    *,
+    theme_key: str,
+    data_source: str,
+    market_date: str,
+    last_refresh: str,
+    ticker: str,
+    scope_label: str,
+    is_stale: bool = False,
+) -> html.Div:
+    theme = get_theme(theme_key)
+    item_style = {
+        "display": "flex",
+        "gap": "4px",
+        "alignItems": "baseline",
+        "fontSize": "12px",
+    }
+    label_style = {"color": theme["muted_text"], "fontWeight": 600}
+    value_style = {"color": theme["text"]}
+    warning = (
+        html.Div(
+            "Data may be stale — refresh cache/provider before making trade decisions.",
+            className="metadata-warning",
+            role="status",
+            **{"aria-live": "polite"},
+        )
+        if is_stale
+        else None
+    )
+    return html.Div(
+        className="data-provenance",
+        children=[
+            html.Div(
+                className="data-provenance-items",
+                children=[
+                    html.Div(
+                        [
+                            html.Span("Source:", style=label_style),
+                            html.Span(data_source, style=value_style),
+                        ],
+                        style=item_style,
+                    ),
+                    html.Div(
+                        [
+                            html.Span("Market date:", style=label_style),
+                            html.Span(market_date, style=value_style),
+                        ],
+                        style=item_style,
+                    ),
+                    html.Div(
+                        [
+                            html.Span("Last refresh:", style=label_style),
+                            html.Span(last_refresh, style=value_style),
+                        ],
+                        style=item_style,
+                    ),
+                    html.Div(
+                        [
+                            html.Span("Ticker/scope:", style=label_style),
+                            html.Span(f"{ticker} · {scope_label}", style=value_style),
+                        ],
+                        style=item_style,
+                    ),
+                ],
+            ),
+            warning,
+        ],
+        style={
+            "display": "flex",
+            "flexDirection": "column",
+            "gap": "6px",
+            "paddingTop": "8px",
+            "borderTop": f"1px dashed {theme['grid']}",
+        },
+    )
