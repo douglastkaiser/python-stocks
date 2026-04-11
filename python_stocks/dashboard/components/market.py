@@ -18,7 +18,8 @@ class MarketSample:
 
     @classmethod
     def demo(cls, tickers: Iterable[str], periods: int = 180) -> "MarketSample":
-        index = pd.date_range(end=pd.Timestamp.today(), periods=periods, freq="B")
+        end_date = pd.offsets.BDay().rollback(pd.Timestamp.today().normalize())
+        index = pd.date_range(end=end_date, periods=periods, freq="B")
         frames = {}
         for ticker in tickers:
             noise = pd.Series(np.random.normal(0, 1.2, periods), index=index).cumsum()
