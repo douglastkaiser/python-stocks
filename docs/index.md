@@ -7,15 +7,15 @@ title: python-stocks
 <div class="landing" data-theme="light">
 <section class="landing-hero">
   <div class="hero-text">
-    <div class="eyebrow">Guided dashboards · Live simulations</div>
-    <h1>python-stocks dashboards</h1>
+    <div class="eyebrow">Analysis-first workbench · Decision support</div>
+    <h1>python-stocks dashboard</h1>
     <p class="lede">
-      Explore equity strategies with cost-aware charts, comparison matrices, and tutorial-style walkthroughs.
-      Every preview is rebuilt automatically so visitors can explore without installing anything.
+      Confirm signals, stress-test scenarios, and check entry/exit discipline in one flow.
+      Use the same controls and charts published in CI previews to make faster, evidence-backed decisions.
     </p>
     <div class="cta-row">
-      <a class="cta primary" href="./dashboard/">Start here: interactive dashboard preview</a>
-      <a class="cta secondary" href="./dashboards.md">Then read the dashboard tour</a>
+      <a class="cta primary" href="./dashboard/">Confirm signal in dashboard preview</a>
+      <a class="cta secondary" href="./dashboards.md">Open the dashboard workflow map</a>
     </div>
     <div class="landing-theme-row">
       <div class="landing-theme-switch" role="group" aria-label="Theme selector">
@@ -25,35 +25,31 @@ title: python-stocks
       </div>
     </div>
     <div class="stat-grid">
+      <div class="stat"><div class="label">Workflow steps</div><div class="value">3 decision phases</div></div>
       <div class="stat"><div class="label">CI refreshed</div><div class="value">On every push</div></div>
       <div class="stat"><div class="label">Sample horizon</div><div class="value">2017–2018</div></div>
-      <div class="stat"><div class="label">Strategies</div><div class="value">Buy & hold + MA filter</div></div>
     </div>
   </div>
   <div class="landing-panel">
-    <h2>Preview assets</h2>
+    <h2>Decision workflow entry points</h2>
     <div class="landing-card-grid" style="margin-top: 10px;">
       <div class="landing-card">
-        <div class="chip">Start here</div>
-        <h3>Interactive dashboard preview</h3>
-        <p>Open the full static dashboard route first, then use raw files only when you need exports.</p>
-        <p><a href="./dashboard/">Launch dashboard preview</a></p>
-        <details class="landing-subtle">
-          <summary>Download raw assets</summary>
-          <p><a href="./assets/figure_1.png">figure_1.png</a> · <a href="./assets/figure_2.png">figure_2.png</a> · <a href="./assets/figure_3.png">figure_3.png</a></p>
-        </details>
+        <div class="chip">Workflow 1</div>
+        <h3>1. Signal confirmation</h3>
+        <p>Start with trend context and benchmark behavior before adjusting assumptions.</p>
+        <p><a href="./dashboard/#strategy-tab">Confirm signal</a></p>
       </div>
       <div class="landing-card">
-        <div class="chip">Interactive</div>
-        <h3>Price + signals</h3>
-        <p>Hoverable HTML views published alongside the static charts.</p>
-        <p class="landing-subtle"><a href="./assets/spy_interactive.html">SPY</a> · <a href="./assets/dia_interactive.html">DIA</a></p>
+        <div class="chip">Workflow 2</div>
+        <h3>2. Scenario stress-test</h3>
+        <p>Use scenario presets and timeline horizon controls to pressure-test robustness.</p>
+        <p class="landing-subtle"><a href="./dashboard/#comparison-tab">Run stress test</a></p>
       </div>
       <div class="landing-card">
-        <div class="chip">Summaries</div>
-        <h3>CSV + JSON</h3>
-        <p>Strategy-level aggregates ready for notebooks or spreadsheets.</p>
-        <p class="landing-subtle"><a href="./strategy_summary.csv">strategy_summary.csv</a> · <a href="./strategy_summary.json">strategy_summary.json</a></p>
+        <div class="chip">Workflow 3</div>
+        <h3>3. Entry/exit discipline check</h3>
+        <p>Model cost drag and verify outcomes stay acceptable before scaling.</p>
+        <p class="landing-subtle"><a href="./dashboard/#cost-tab">Run discipline check</a></p>
       </div>
     </div>
   </div>
@@ -61,40 +57,36 @@ title: python-stocks
 
 <section>
   <div class="landing-section-header">
-    <h2>What ships with the site</h2>
-    <span>Built from the SPY + DIA starter run</span>
+    <h2>Operational references</h2>
+    <span>Map UI locations to decisions</span>
   </div>
   <div class="landing-columns">
     <div class="landing-panel">
-      <p>The pages are generated from:</p>
-      <div class="landing-code-block">
-        python -m python_stocks run --tickers SPY DIA --start 2017-01-01 --end 2018-01-01 \
-        --initial 50000 --monthly 500 --strategies buy_and_hold moving_average_filter \
-        --report-dir docs --no-show
-      </div>
-      <p class="landing-subtle">The CI workflow mirrors this exact command to keep previews current.</p>
+      <p>Use the workflow map to match each decision to the right controls and charts:</p>
+      <ul>
+        <li>Hero controls: <code>Quick ticker</code>, <code>Preset windows</code></li>
+        <li>Scenario panel: <code>Stress-test a scenario</code>, <code>Scenario controls</code></li>
+        <li>Tabs: <code>Overview</code>, <code>Strategy Lab</code>, <code>Cost/Impact Analysis</code>, <code>Comparisons</code>, <code>Time in Market</code>, <code>Data Diagnostics</code></li>
+      </ul>
+      <p class="landing-subtle"><a href="./dashboards.md">Open dashboard workflow map</a></p>
     </div>
     <div class="landing-card-grid">
       <div class="landing-card">
-        <h3>Strategy lab guidance</h3>
-        <p>Walkthroughs explain how to read each tab and what inputs drive the visuals.</p>
-        <p class="landing-subtle"><a href="./dashboards.md">Dashboard tour</a></p>
+        <h3>Strategy catalog</h3>
+        <p>Reference strategy behavior, inputs, and parameter surfaces.</p>
+        <p class="landing-subtle"><a href="./strategies.md">Strategy catalog</a></p>
       </div>
       <div class="landing-card">
-        <h3>Catalog + tutorials</h3>
-        <p>Strategy definitions, parameter hints, and notebook-style recreations.</p>
-        <ul class="landing-inline-list">
-          <li><a href="./strategies.md">Strategy catalog</a></li>
-          <li><a href="./tutorials.md">Tutorials</a></li>
-        </ul>
+        <h3>Tutorial reproductions</h3>
+        <p>Notebook-style walkthroughs for reproducing visual outputs offline.</p>
+        <p class="landing-subtle"><a href="./tutorials.md">Tutorials</a></p>
       </div>
       <div class="landing-card">
-        <h3>Preset scripts</h3>
-        <p>Ready-to-run configs for momentum, moving-average sweeps, and buy-and-hold baselines.</p>
+        <h3>Quickstart commands</h3>
         <ul class="landing-inline-list">
-          <li><code>./configs/buy_and_hold.sh</code></li>
-          <li><code>./configs/ma_crossover.sh</code></li>
-          <li><code>./configs/momentum.sh</code></li>
+          <li><code>pip install -e .</code></li>
+          <li><code>PYTHONPATH=. python -m python_stocks.dashboard.app</code></li>
+          <li><code>make artifacts</code></li>
         </ul>
       </div>
     </div>
@@ -112,7 +104,7 @@ title: python-stocks
       <ul>
         <li>Push to <code>main</code> to refresh the live site.</li>
         <li>Open a pull request to get a Draft Preview link and comment.</li>
-        <li>Artifacts stay in lockstep with the Dash app for predictable demos.</li>
+        <li>Artifacts stay in lockstep with the dashboard for predictable decision reviews.</li>
       </ul>
       <div class="landing-badges">
         <span class="landing-badge">Artifacts: Plotly + PNG</span>
@@ -127,7 +119,7 @@ title: python-stocks
         <li>Launch app: <code>PYTHONPATH=. python -m python_stocks.dashboard.app</code></li>
         <li>Regenerate artifacts: <code>make artifacts</code></li>
       </ol>
-      <p class="landing-subtle">Artifacts match the CI preview so you can verify changes before publishing.</p>
+      <p class="landing-subtle">Time-in-market output remains available as supporting evidence in the <code>Time in Market</code> tab.</p>
     </div>
   </div>
 </section>

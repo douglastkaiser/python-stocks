@@ -1,23 +1,47 @@
 # python-stocks
 
-Stock market simulator to test out stock buy/sell strategies and to analyze risk profiles.
+Analysis-first stock strategy workbench for decision support. Use it to validate signal quality, pressure-test scenarios, and check execution discipline before committing capital.
 
 - All issues should have a priority tag and one other tag.
 - All pull request should be reveiwed before merging.
 - Preference is for Python but other options may be considered.
 
-## Guided dashboards and strategy explainers
+## Decision workflows and dashboard map
 
-Start here in this order so the first click matches the published preview flow:
+The app is organized around three explicit workflows. Each workflow maps to named UI locations so you can move from controls to evidence quickly.
+
+1. **Signal confirmation**
+   - **Workflow section:** `1. Signal confirmation`
+   - **Primary controls:** `Ticker`, `Lookback window (days)`
+   - **Key charts/cards:** `Market replay`, `Signals vs. benchmark`
+   - **Related tab:** `Strategy Lab`
+2. **Scenario stress-test**
+   - **Workflow section:** `2. Scenario stress-test`
+   - **Primary controls:** `Stress-test a scenario`, `Scenario controls`, `Timeline horizon`
+   - **Key charts/cards:** `Comparison matrix`, `Timeline overlays`
+   - **Related tab:** `Comparisons`
+3. **Entry/exit discipline check**
+   - **Workflow section:** `3. Entry/exit discipline check`
+   - **Primary controls:** `Cost drag (bps)`
+   - **Key charts/cards:** `Execution costs`
+   - **Related tab:** `Cost/Impact Analysis`
+
+The hero area supports all three workflows with quick controls (`Quick ticker`, `Preset windows`) and action CTAs (`Confirm signal`, `Run stress test`, `Run discipline check`).
+
+## Start with the dashboard
+
+Use this sequence so the first click matches the published preview flow:
 
 1. **Interactive dashboard preview:** [docs/dashboard/](./docs/dashboard/)
-2. **Dashboard tour docs:** [docs/dashboards.md](./docs/dashboards.md)
+2. **Decision workflow map:** [docs/dashboards.md](./docs/dashboards.md)
 
-The [docs/](./docs) folder now includes guided walk-throughs for every available strategy, the comparison dashboards, and the core lesson we keep seeing in simulations: markets are tough to beat, so time **in** the market usually wins over attempts to time entries and exits.
+The [docs/](./docs) folder also includes deeper references:
 
 - **Strategy catalog:** [docs/strategies.md](./docs/strategies.md) covers how each registered strategy behaves, what data it needs, and which parameters you can tweak.
-- **Dashboard tour:** [docs/dashboards.md](./docs/dashboards.md) explains the Dash tabs (overview, strategy lab, cost/impact, comparisons, time-in-market, diagnostics) and how they illustrate market efficiency and holding-period discipline.
-- **Hands-on tutorials:** [docs/tutorials.md](./docs/tutorials.md) mirrors the interactive views with notebook-style steps so you can reproduce the plots without launching the UI.
+- **Decision workflow map:** [docs/dashboards.md](./docs/dashboards.md) explains when to use each dashboard tab and what decision each view supports.
+- **Hands-on tutorials:** [docs/tutorials.md](./docs/tutorials.md) mirrors interactive views with notebook-style steps.
+
+Time-in-market evidence remains available in the `Time in Market` tab as a supporting check, not the primary entry point.
 
 ## Dash app quickstart
 

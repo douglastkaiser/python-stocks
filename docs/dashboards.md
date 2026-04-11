@@ -1,34 +1,50 @@
 ---
 layout: default
-title: Dashboard tour
+title: Dashboard workflow map
 ---
-# Dashboard tour
+# Dashboard workflow map
 
-The Dash app ships with opinionated tabs that pair with the static assets published to GitHub Pages. Use this guide to understand how each view illustrates market efficiency and the value of staying invested.
+Use the dashboard as an analysis-first decision workbench: confirm signal quality, stress-test assumptions, then run execution discipline checks.
 
-## Overview
-- **What it shows:** Price trend with overlays from the demo dataset (AAPL, MSFT, SPY).
-- **Takeaway:** A simple price view establishes context for the strategy and cost experiments on other tabs.
+## Workflow 1 — Signal confirmation
+- **When to use:** You want to decide whether a signal is strong enough to act on before changing costs or assumptions.
+- **Decision it supports:** “Do I have enough trend and benchmark evidence to proceed?”
+- **UI locations:**
+  - Workflow section: `1. Signal confirmation`
+  - Hero controls: `Quick ticker`, `Preset windows`
+  - Section controls: `Ticker`, `Lookback window (days)`
+  - Charts/cards: `Market replay`, `Signals vs. benchmark`
+  - Related tabs/charts: `Overview` (`Price Overview`, `Strategy Lab`) and `Strategy Lab` tab (`Strategy Comparison`, `Execution Context`)
 
-## Strategy Lab
-- **What it shows:** Moving-average crossover signals, trade markers, and cost drag controls.
-- **Takeaway:** Timing can trim drawdowns but often misses upside—compare against `buy_and_hold` to see if churn is worthwhile.
+## Workflow 2 — Scenario stress-test
+- **When to use:** You need to evaluate how robust a rule remains under different preset assumptions and horizons.
+- **Decision it supports:** “Does this still hold up across scenarios and market regimes?”
+- **UI locations:**
+  - Workflow section: `2. Scenario stress-test`
+  - Scenario panel: `Stress-test a scenario`, `Scenario controls`, `Load stress-test preset`, `Recompute stress test`
+  - Section controls: `Timeline horizon`
+  - Charts/cards: `Comparison matrix`, `Timeline overlays`
+  - Related tab/charts: `Comparisons` tab (`Strategy matrix`, `Timeline overlay`)
 
-## Cost / Impact Analysis
-- **What it shows:** Adjustable basis-point cost slider with impact curves.
-- **Takeaway:** Even tiny frictions can erase the theoretical edge of high-turnover strategies, reinforcing that patient holding often wins after costs.
+## Workflow 3 — Entry/exit discipline check
+- **When to use:** You are close to execution and need to test cost sensitivity before scaling or increasing turnover.
+- **Decision it supports:** “Are expected outcomes still acceptable after realistic drag?”
+- **UI locations:**
+  - Workflow section: `3. Entry/exit discipline check`
+  - Hero CTA: `Run discipline check`
+  - Section controls: `Cost drag (bps)`
+  - Charts/cards: `Execution costs`
+  - Related tab/charts: `Cost/Impact Analysis` tab (`Cost Impact Curve`, `Slippage trend`)
 
-## Comparisons
-- **What it shows:** Matrix heatmap of strategy combinations and parameter windows, plus a timeline overlay.
-- **Takeaway:** The best-performing cells usually belong to longer holding windows or less reactive configurations, underscoring the time-in-market theme.
+## Supporting evidence: participation discipline
+- **When to use:** You need a secondary check on participation risk after primary signal/stress/cost decisions are made.
+- **Decision it supports:** “Am I sacrificing too much market participation?”
+- **UI location:** `Time in Market` tab (`Time in Market Exposure`, `Participation diagnostics`)
 
-## Time in Market
-- **What it shows:** Focused view on holding-period discipline and missed-days scenarios.
-- **Takeaway:** Demonstrates how skipping a handful of strong days can crater returns relative to simply staying invested.
-
-## Data Diagnostics
-- **What it shows:** Daily return distribution checks for sanity before drawing conclusions from simulations.
-- **Takeaway:** Helps confirm whether outlier moves or bad data (e.g., missing opens) skew strategy comparisons.
+## Data quality gate
+- **When to use:** You suspect outliers or source irregularities may distort conclusions.
+- **Decision it supports:** “Are these insights trustworthy enough to base decisions on?”
+- **UI location:** `Data Diagnostics` tab (`Data Diagnostics` histogram)
 
 ## Preview without running a server
 - Run `make artifacts` to create the Plotly HTML/PNG exports under `artifacts/plotly/`.
