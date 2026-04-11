@@ -1,4 +1,4 @@
-.PHONY: lint test dash-smoke artifacts
+.PHONY: lint test dash-smoke artifacts ingest-daily
 
 lint:
 	black --check .
@@ -14,3 +14,7 @@ dash-smoke:
 
 artifacts:
 	PYTHONPATH=. PYTHON_STOCKS_TEST_MODE=1 python scripts/generate_artifacts.py --output-dir artifacts
+
+
+ingest-daily:
+	PYTHONPATH=. python -m python_stocks ingest-daily

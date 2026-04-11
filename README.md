@@ -40,6 +40,7 @@ The [docs/](./docs) folder also includes deeper references:
 - **Strategy catalog:** [docs/strategies.md](./docs/strategies.md) covers how each registered strategy behaves, what data it needs, and which parameters you can tweak.
 - **Decision workflow map:** [docs/dashboards.md](./docs/dashboards.md) explains when to use each dashboard tab and what decision each view supports.
 - **Hands-on tutorials:** [docs/tutorials.md](./docs/tutorials.md) mirrors interactive views with notebook-style steps.
+- **Market data ingestion:** [docs/market_data.md](./docs/market_data.md) describes the daily provider, cache, quality checks, and demo fallback behavior.
 
 Time-in-market evidence remains available in the `Time in Market` tab as a supporting check, not the primary entry point.
 
@@ -62,6 +63,29 @@ Run the interactive Dash app locally or in the same artifact-preview mode used b
    PYTHONPATH=. PYTHON_STOCKS_TEST_MODE=1 python scripts/generate_artifacts.py --output-dir artifacts
    ```
    This produces Plotly HTML/PNG snapshots under `artifacts/plotly/` and simulation summaries under `artifacts/simulation/` that mirror the GitHub Actions preview artifact.
+
+### Daily real-market data ingestion
+
+The project now supports an incremental daily OHLCV ingest pipeline for the curated symbols `SPY`, `DIA`, `NDAQ`, and `TQQQ`.
+
+- **Provider:** Stooq public daily CSV endpoint (no auth required), wrapped behind a provider abstraction so sources can be swapped later.
+- **Cadence:** Run once per market day (after close), e.g. via cron/Task Scheduler.
+- **Local store/cache:** `${PYTHON_STOCKS_MARKET_DATA_DIR:-~/.cache/python-stocks/daily}` as per-symbol CSV files.
+- **Fallback behavior:** If provider refresh fails, the app keeps using local cache when present; if no cache exists it falls back to bundled demo data under `python_stocks/raw_data`.
+- **Data quality checks:** The ingest command reports warnings for missing business days, stale data, and malformed OHLCV rows.
+
+Commands:
+
+```bash
+# default curated set
+make ingest-daily
+
+# equivalent explicit command
+PYTHONPATH=. python -m python_stocks ingest-daily
+
+# full refresh and custom stale threshold
+PYTHONPATH=. python -m python_stocks ingest-daily --full-refresh --stale-after 2
+```
 
 ## Development
 

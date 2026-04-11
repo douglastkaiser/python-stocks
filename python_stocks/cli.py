@@ -1,7 +1,14 @@
 import argparse
+import logging
+from pathlib import Path
 from typing import Dict, List, Optional
 
 from .main import run_simulation
+from .market_data import (
+    CURATED_TICKERS,
+    DailyPriceStore,
+    ingest_curated_daily_data,
+)
 
 DEFAULT_TICKERS = ["SPY"]
 DEFAULT_START_DATE = "2015-01-01"
@@ -104,6 +111,33 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
         help="Skip interactive plot display (useful for GitHub Pages artifact generation)",
     )
 
+    ingest_parser = subparsers.add_parser(
+        "ingest-daily",
+        help="Refresh curated daily market OHLCV cache from the configured provider",
+    )
+    ingest_parser.add_argument(
+        "--tickers",
+        nargs="+",
+        default=list(CURATED_TICKERS),
+        help="Curated ticker symbols to refresh",
+    )
+    ingest_parser.add_argument(
+        "--data-dir",
+        default=None,
+        help="Optional override for the market-data cache directory",
+    )
+    ingest_parser.add_argument(
+        "--full-refresh",
+        action="store_true",
+        help="Ignore incremental start dates and rewrite local CSVs from full provider history",
+    )
+    ingest_parser.add_argument(
+        "--stale-after",
+        type=int,
+        default=3,
+        help="Warn when data lags this many business days behind expected latest day",
+    )
+
     return parser.parse_args(argv)
 
 
@@ -123,6 +157,19 @@ def main(argv: Optional[List[str]] = None) -> None:
             report_dir=args.report_dir,
             show_plots=args.show_plots,
         )
+
+    if args.command == "ingest-daily":
+        logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
+        store = DailyPriceStore(root=Path(args.data_dir) if args.data_dir else None)
+        results = ingest_curated_daily_data(
+            tickers=args.tickers,
+            store=store,
+            full_refresh=args.full_refresh,
+            stale_after_business_days=args.stale_after,
+        )
+
+        for result in results:
+            print(f"[{result.status.upper()}] {result.message}")
 
 
 if __name__ == "__main__":
