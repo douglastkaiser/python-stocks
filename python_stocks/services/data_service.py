@@ -9,6 +9,7 @@ from typing import Callable, Dict, Iterable, Optional
 import pandas as pd
 
 from ..data_loading import load_into_stock_data_set
+from ..market_data import load_market_or_demo_dataset
 from ..stock_data import StockData
 from .runtime_flags import prefer_cached_results
 
@@ -48,9 +49,12 @@ class DataService:
             self._dataset_cache.pop(ticker, None)
 
         if not use_cache:
-            df = load_into_stock_data_set(
-                ticker, data_dir=self.data_dir, fetcher=fetcher
-            )
+            if fetcher is not None:
+                df = load_into_stock_data_set(
+                    ticker, data_dir=self.data_dir, fetcher=fetcher
+                )
+            else:
+                df = load_market_or_demo_dataset(ticker, demo_data_dir=self.data_dir)
             self._dataset_cache[ticker] = df
             return df.copy(deep=True)
 
@@ -82,7 +86,7 @@ class DataService:
     def _memoized_disk_load(ticker: str, data_dir: str) -> pd.DataFrame:
         """Memoize disk-backed loads across service instances."""
 
-        return load_into_stock_data_set(ticker, data_dir=Path(data_dir))
+        return load_market_or_demo_dataset(ticker, demo_data_dir=Path(data_dir))
 
 
 __all__ = ["DataService"]

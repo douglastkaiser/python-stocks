@@ -68,12 +68,12 @@ def test_prefer_cached_results_env_flags(monkeypatch):
 def test_data_service_uses_cache_and_refresh(monkeypatch, tmp_path):
     load_calls = []
 
-    def _fake_loader(ticker, data_dir=None, fetcher=None):
+    def _fake_loader(ticker, data_dir=None, fetcher=None, **kwargs):
         load_calls.append(ticker)
         return pd.DataFrame({"Close": [1.0, 2.0, 3.0]})
 
     monkeypatch.setattr(
-        "python_stocks.services.data_service.load_into_stock_data_set", _fake_loader
+        "python_stocks.services.data_service.load_market_or_demo_dataset", _fake_loader
     )
     monkeypatch.setattr(
         "python_stocks.services.data_service.prefer_cached_results",
