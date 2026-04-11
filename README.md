@@ -98,10 +98,10 @@ pre-commit install
 
 ### Automation and CI
 
-Local commands mirror the GitHub Actions workflow:
+Local commands for development and CI parity:
 
-- `make lint` runs Ruff checks.
-- `make test` executes the regression suite with `PYTHON_STOCKS_TEST_MODE=1` (headless matplotlib).
+- `make lint` runs local static checks (Black, Ruff, mypy, pyright).
+- `make test` executes the regression suite with `PYTHON_STOCKS_TEST_MODE=1` (headless matplotlib) and is the primary CI gate.
 - `make dash-smoke` runs the Dash layout smoke tests.
 - `make artifacts` rebuilds the sample simulations and Plotly snapshots used as CI build artifacts.
 
