@@ -117,48 +117,6 @@ SIMULATION_FEED = [
         "note": "Stayed invested but resized positions to absorb overlapping signals.",
     },
 ]
-SHOWCASE_FEATURES = [
-    {
-        "title": "Market replay",
-        "subtitle": "Moving-average overlays make price context easier to read.",
-        "body": "Use the horizon control to zoom into recent swings and see how trends persisted.",
-        "graph_id": "price-spotlight",
-        "label": "Market replay spotlight chart",
-        "height": "280px",
-    },
-    {
-        "title": "Signals vs. benchmark",
-        "subtitle": "Equity curves update live as you tweak the lookback window.",
-        "body": "Watch strategy equity alongside buy-and-hold to quickly see where rules diverge.",
-        "graph_id": "strategy-spotlight",
-        "label": "Strategy spotlight chart",
-        "height": "280px",
-    },
-    {
-        "title": "Execution costs",
-        "subtitle": "Costs and liquidity are front-and-center instead of buried in tooltips.",
-        "body": "Dial in slippage assumptions to preview how rebalance churn changes the story.",
-        "graph_id": "cost-spotlight",
-        "label": "Execution cost spotlight chart",
-        "height": "280px",
-    },
-    {
-        "title": "Comparison matrix",
-        "subtitle": "Return, volatility, and cost reactions in one view.",
-        "body": "The matrix reacts instantly so you can iterate on inputs without losing the plot.",
-        "graph_id": "matrix-spotlight",
-        "label": "Comparison matrix spotlight chart",
-        "height": "300px",
-    },
-    {
-        "title": "Timeline overlays",
-        "subtitle": "Contextualize signals against events and market phases.",
-        "body": "Overlay momentum windows on the timeline to explain why a rule stayed invested.",
-        "graph_id": "timeline-spotlight",
-        "label": "Timeline overlay spotlight chart",
-        "height": "300px",
-    },
-]
 
 
 def _build_card(
@@ -485,9 +443,9 @@ def _scenario_panel(theme_key: str) -> html.Div:
     )
 
 
-def _strategies_at_a_glance(theme_key: str) -> html.Div:
+def _signal_confirmation_section(theme_key: str) -> html.Div:
     theme = get_theme(theme_key)
-    cards = [
+    summary_cards = [
         surface_card(
             theme_key=theme_key,
             title=item["title"],
@@ -501,15 +459,100 @@ def _strategies_at_a_glance(theme_key: str) -> html.Div:
         for item in STRATEGY_SUMMARIES
     ]
     return section_block(
-        title="Strategies at a glance",
-        description="Server-side Strategy Lab snapshots show how cost-aware rules behave before you deploy capital.",
+        title="1. Signal confirmation",
+        description="Confirm trend context first, then compare signal behavior before changing execution assumptions.",
         theme_key=theme_key,
-        eyebrow_text="Strategy Lab feed",
-        content=responsive_grid(cards, min_width="260px"),
+        eyebrow_text="Workflow step",
+        content=html.Div(
+            style={"display": "flex", "flexDirection": "column", "gap": "16px"},
+            children=[
+                html.Div(
+                    className="control-bar",
+                    children=[
+                        html.Div(
+                            className="control-card",
+                            children=[
+                                html.Label(
+                                    "Ticker",
+                                    htmlFor="ticker-dropdown",
+                                    **{"aria-label": "Ticker selector"},
+                                ),
+                                dcc.Dropdown(
+                                    id="ticker-dropdown",
+                                    options=[
+                                        {"label": t, "value": t}
+                                        for t in _SAMPLE.tickers
+                                    ],
+                                    value=_SAMPLE.tickers[0],
+                                    clearable=False,
+                                ),
+                            ],
+                        ),
+                        html.Div(
+                            className="control-card",
+                            children=[
+                                html.Label(
+                                    "Lookback window (days)",
+                                    htmlFor="window-slider",
+                                    **{"aria-label": "Lookback window slider"},
+                                ),
+                                dcc.Slider(
+                                    id="window-slider",
+                                    min=30,
+                                    max=180,
+                                    step=10,
+                                    value=90,
+                                    marks={30: "30", 90: "90", 180: "180"},
+                                ),
+                            ],
+                            style={"minWidth": "240px"},
+                        ),
+                    ],
+                ),
+                responsive_grid(
+                    [
+                        surface_card(
+                            theme_key=theme_key,
+                            title="Market replay",
+                            subtitle="Read the trend context before acting.",
+                            children=[
+                                html.P(
+                                    "Use ticker and lookback inputs to confirm where the current move sits in context.",
+                                    style=muted_text(theme),
+                                ),
+                                _graph_container(
+                                    "price-spotlight",
+                                    "Market replay spotlight chart",
+                                    "280px",
+                                ),
+                            ],
+                        ),
+                        surface_card(
+                            theme_key=theme_key,
+                            title="Signals vs. benchmark",
+                            subtitle="Validate signal behavior against buy-and-hold.",
+                            children=[
+                                html.P(
+                                    "Check whether rules stay invested during constructive trends before tuning anything else.",
+                                    style=muted_text(theme),
+                                ),
+                                _graph_container(
+                                    "strategy-spotlight",
+                                    "Strategy spotlight chart",
+                                    "280px",
+                                ),
+                            ],
+                        ),
+                    ],
+                    min_width="280px",
+                ),
+                responsive_grid(summary_cards, min_width="260px"),
+            ],
+        ),
     )
 
 
-def _learning_path(theme_key: str) -> html.Div:
+def _scenario_stress_test_section(theme_key: str) -> html.Div:
     theme = get_theme(theme_key)
     steps = [
         surface_card(
@@ -520,15 +563,76 @@ def _learning_path(theme_key: str) -> html.Div:
         for step in LEARNING_STEPS
     ]
     return section_block(
-        title="Learning path",
-        description="The dashboard curates the sequence: explore signals, price in costs, then pressure-test comparisons.",
+        title="2. Scenario stress-test",
+        description="Apply scenario presets, then pressure-test outcomes with comparison and timeline views.",
         theme_key=theme_key,
-        eyebrow_text="Guided onboarding",
-        content=responsive_grid(steps, min_width="240px"),
+        eyebrow_text="Workflow step",
+        content=html.Div(
+            style={"display": "flex", "flexDirection": "column", "gap": "16px"},
+            children=[
+                _scenario_panel(theme_key),
+                html.Div(
+                    className="control-bar",
+                    children=[
+                        html.Div(
+                            className="control-card",
+                            children=[
+                                html.Label(
+                                    "Timeline horizon",
+                                    htmlFor="horizon-dropdown",
+                                    **{"aria-label": "Timeline horizon selector"},
+                                ),
+                                dcc.Dropdown(
+                                    id="horizon-dropdown",
+                                    options=[
+                                        {"label": "3 months", "value": 60},
+                                        {"label": "6 months", "value": 120},
+                                        {"label": "12 months", "value": 252},
+                                    ],
+                                    value=120,
+                                    clearable=False,
+                                ),
+                            ],
+                            style={"minWidth": "200px"},
+                        ),
+                    ],
+                ),
+                responsive_grid(
+                    [
+                        surface_card(
+                            theme_key=theme_key,
+                            title="Comparison matrix",
+                            subtitle="Spot return, volatility, and cost trade-offs fast.",
+                            children=[
+                                _graph_container(
+                                    "matrix-spotlight",
+                                    "Comparison matrix spotlight chart",
+                                    "300px",
+                                )
+                            ],
+                        ),
+                        surface_card(
+                            theme_key=theme_key,
+                            title="Timeline overlays",
+                            subtitle="Check if the rule held through regime shifts.",
+                            children=[
+                                _graph_container(
+                                    "timeline-spotlight",
+                                    "Timeline overlay spotlight chart",
+                                    "300px",
+                                )
+                            ],
+                        ),
+                    ],
+                    min_width="280px",
+                ),
+                responsive_grid(steps, min_width="240px"),
+            ],
+        ),
     )
 
 
-def _latest_simulations(theme_key: str) -> html.Div:
+def _discipline_check_section(theme_key: str) -> html.Div:
     theme = get_theme(theme_key)
     cards = [
         surface_card(
@@ -542,35 +646,69 @@ def _latest_simulations(theme_key: str) -> html.Div:
         for sim in SIMULATION_FEED
     ]
     return section_block(
-        title="Latest simulations",
-        description="Server runs summarize how tweaks to rules and costs ripple through results, updating as new simulations finish.",
+        title="3. Entry/exit discipline check",
+        description="Model cost drag and review simulation outcomes before deciding to trade less or stay invested.",
         theme_key=theme_key,
-        eyebrow_text="Server runs",
-        content=responsive_grid(cards, min_width="260px"),
+        eyebrow_text="Workflow step",
+        content=html.Div(
+            style={"display": "flex", "flexDirection": "column", "gap": "16px"},
+            children=[
+                html.Div(
+                    className="control-bar",
+                    children=[
+                        html.Div(
+                            className="control-card",
+                            children=[
+                                html.Label(
+                                    "Cost drag (bps)",
+                                    htmlFor="cost-slider",
+                                    **{"aria-label": "Cost drag slider"},
+                                ),
+                                dcc.Slider(
+                                    id="cost-slider",
+                                    min=0,
+                                    max=100,
+                                    step=5,
+                                    value=25,
+                                    marks={0: "0", 50: "50", 100: "100"},
+                                    tooltip={"placement": "bottom"},
+                                ),
+                            ],
+                            style={"minWidth": "240px"},
+                        ),
+                    ],
+                ),
+                responsive_grid(
+                    [
+                        surface_card(
+                            theme_key=theme_key,
+                            title="Execution costs",
+                            subtitle="Stress entry/exit assumptions before scaling.",
+                            children=[
+                                _graph_container(
+                                    "cost-spotlight",
+                                    "Execution cost spotlight chart",
+                                    "280px",
+                                )
+                            ],
+                        ),
+                    ],
+                    min_width="280px",
+                ),
+                responsive_grid(cards, min_width="260px"),
+            ],
+        ),
     )
 
 
-def _guided_showcase(theme_key: str) -> html.Div:
-    theme = get_theme(theme_key)
-    cards = [
-        surface_card(
-            theme_key=theme_key,
-            title=feature["title"],
-            subtitle=feature["subtitle"],
-            children=[
-                html.P(feature["body"], style=muted_text(theme)),
-                _graph_container(
-                    feature["graph_id"], feature["label"], feature["height"]
-                ),
-            ],
-        )
-        for feature in SHOWCASE_FEATURES
-    ]
-    return section_block(
-        title="Guided dashboards and strategy explainers",
-        description="Front-page snapshots highlight the visuals you care about while controls stay within reach.",
-        theme_key=theme_key,
-        content=responsive_grid(cards, min_width="260px", gap="16px"),
+def _workflow_sections(theme_key: str) -> html.Div:
+    return text_stack(
+        [
+            _signal_confirmation_section(theme_key),
+            _scenario_stress_test_section(theme_key),
+            _discipline_check_section(theme_key),
+        ],
+        gap="20px",
     )
 
 
@@ -755,109 +893,12 @@ def build_app() -> Dash:
                         subtitle="Use realistic inputs so the comparison matrix and overlays react like a real account would.",
                         children=[
                             html.Div(className="section-divider"),
-                            _scenario_panel(DEFAULT_THEME_KEY),
-                            html.Div(
-                                className="control-bar",
-                                children=[
-                                    html.Div(
-                                        className="control-card",
-                                        children=[
-                                            html.Label(
-                                                "Ticker",
-                                                htmlFor="ticker-dropdown",
-                                                **{"aria-label": "Ticker selector"},
-                                            ),
-                                            dcc.Dropdown(
-                                                id="ticker-dropdown",
-                                                options=[
-                                                    {"label": t, "value": t}
-                                                    for t in _SAMPLE.tickers
-                                                ],
-                                                value=_SAMPLE.tickers[0],
-                                                clearable=False,
-                                            ),
-                                        ],
-                                    ),
-                                    html.Div(
-                                        className="control-card",
-                                        children=[
-                                            html.Label(
-                                                "Lookback window (days)",
-                                                htmlFor="window-slider",
-                                                **{
-                                                    "aria-label": "Lookback window slider"
-                                                },
-                                            ),
-                                            dcc.Slider(
-                                                id="window-slider",
-                                                min=30,
-                                                max=180,
-                                                step=10,
-                                                value=90,
-                                                marks={30: "30", 90: "90", 180: "180"},
-                                            ),
-                                        ],
-                                        style={"minWidth": "240px"},
-                                    ),
-                                    html.Div(
-                                        className="control-card",
-                                        children=[
-                                            html.Label(
-                                                "Cost drag (bps)",
-                                                htmlFor="cost-slider",
-                                                **{"aria-label": "Cost drag slider"},
-                                            ),
-                                            dcc.Slider(
-                                                id="cost-slider",
-                                                min=0,
-                                                max=100,
-                                                step=5,
-                                                value=25,
-                                                marks={0: "0", 50: "50", 100: "100"},
-                                                tooltip={"placement": "bottom"},
-                                            ),
-                                        ],
-                                        style={"minWidth": "240px"},
-                                    ),
-                                    html.Div(
-                                        className="control-card",
-                                        children=[
-                                            html.Label(
-                                                "Timeline horizon",
-                                                htmlFor="horizon-dropdown",
-                                                **{
-                                                    "aria-label": "Timeline horizon selector"
-                                                },
-                                            ),
-                                            dcc.Dropdown(
-                                                id="horizon-dropdown",
-                                                options=[
-                                                    {"label": "3 months", "value": 60},
-                                                    {"label": "6 months", "value": 120},
-                                                    {
-                                                        "label": "12 months",
-                                                        "value": 252,
-                                                    },
-                                                ],
-                                                value=120,
-                                                clearable=False,
-                                            ),
-                                        ],
-                                        style={"minWidth": "200px"},
-                                    ),
-                                ],
+                            html.P(
+                                "Use the workflow blocks below to confirm signals, stress-test scenarios, and verify cost discipline in sequence.",
                             ),
                         ],
                     ),
-                    _guided_showcase(DEFAULT_THEME_KEY),
-                    text_stack(
-                        [
-                            _strategies_at_a_glance(DEFAULT_THEME_KEY),
-                            _learning_path(DEFAULT_THEME_KEY),
-                            _latest_simulations(DEFAULT_THEME_KEY),
-                        ],
-                        gap="20px",
-                    ),
+                    _workflow_sections(DEFAULT_THEME_KEY),
                     dcc.Tabs(
                         id="dashboard-tabs",
                         value="overview",
