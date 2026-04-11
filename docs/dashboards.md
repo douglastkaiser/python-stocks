@@ -46,6 +46,17 @@ Use the dashboard as an analysis-first decision workbench: confirm signal qualit
 - **Decision it supports:** “Are these insights trustworthy enough to base decisions on?”
 - **UI location:** `Data Diagnostics` tab (`Data Diagnostics` histogram)
 
+## Timestamp semantics (all chart views)
+Each chart card now shows a provenance row so you can quickly confirm data timeliness before acting:
+
+- **Source:** Which provider or sample feed populated the current chart.
+- **Market date (as-of):** The latest market session represented by the prices in the chart.
+- **Last refresh:** The wall-clock timestamp when this dataset was last fetched or regenerated.
+
+Use **market date** to answer “how recent is the market session data?” and **last refresh** to answer
+“when did this app last update its copy?”. If refresh is old relative to your workflow, the chart shows a
+stale-data warning so you can refresh before making trade decisions.
+
 ## Preview without running a server
 - Run `make artifacts` to create the Plotly HTML/PNG exports under `artifacts/plotly/`.
 - Open `artifacts/plotly/price_trend.html` or `.../comparison_matrix.html` locally for a fast preview of the Dash visuals used in CI Draft Preview deployments.
