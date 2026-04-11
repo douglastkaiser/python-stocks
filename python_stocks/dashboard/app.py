@@ -384,7 +384,9 @@ def _scenario_panel(theme_key: str) -> html.Div:
                 children=[
                     html.Div(
                         [
-                            html.Div("Stress-test a scenario", style={"fontWeight": 700}),
+                            html.Div(
+                                "Stress-test a scenario", style={"fontWeight": 700}
+                            ),
                             html.Span(
                                 "Pick a preset to load assumptions quickly, then validate sensitivity across views.",
                                 style=muted_text(theme),

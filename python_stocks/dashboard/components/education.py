@@ -30,7 +30,9 @@ def myth_busting_callouts() -> html.Div:
                     html.Li(
                         "Participation stability often matters more than precise turning-point calls."
                     ),
-                    html.Li("Revisit sensitivity bands before increasing risk or allocation."),
+                    html.Li(
+                        "Revisit sensitivity bands before increasing risk or allocation."
+                    ),
                 ],
                 style={"margin": 0, "paddingLeft": "18px"},
             ),
