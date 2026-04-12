@@ -58,6 +58,7 @@ The [docs/](./docs) folder also includes deeper references:
 - **About + disclaimer:** [docs/about.md](./docs/about.md) is the primary location for legal/disclaimer text.
 - **Hands-on tutorials:** [docs/tutorials.md](./docs/tutorials.md) mirrors interactive views with notebook-style steps.
 - **Market data ingestion:** [docs/market_data.md](./docs/market_data.md) describes the daily provider, cache, quality checks, and demo fallback behavior.
+- **Ad hoc release process:** [docs/release_process.md](./docs/release_process.md) provides a lightweight solo-maintainer checklist for safe shipping.
 
 Time-in-market evidence remains available in the `Time in Market` tab as a supporting check, not the primary entry point.
 
