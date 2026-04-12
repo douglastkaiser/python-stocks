@@ -2,15 +2,29 @@
 
 from __future__ import annotations
 
+from typing import Sequence
+
 import plotly.graph_objects as go
 
 from python_stocks.dashboard.components.common import apply_layout
+from python_stocks.dashboard.components.events import (
+    DashboardEvent,
+    detect_drawdown_inflections,
+    detect_regime_shifts,
+    detect_turnover_spikes,
+    make_event_annotations,
+)
 from python_stocks.dashboard.components.market import MarketSample
 from python_stocks.dashboard.theme import Theme
 from python_stocks.interactive_charts import _moving_average
 
 
-def price_trend_figure(sample: MarketSample, ticker: str, theme: Theme) -> go.Figure:
+def price_trend_figure(
+    sample: MarketSample,
+    ticker: str,
+    theme: Theme,
+    events: Sequence[DashboardEvent] | None = None,
+) -> go.Figure:
     close_series = sample.history[ticker]["Close"].sort_index()
     ma10 = _moving_average(close_series, 10)
     ma100 = _moving_average(close_series, 100)
@@ -46,12 +60,27 @@ def price_trend_figure(sample: MarketSample, ticker: str, theme: Theme) -> go.Fi
 
     fig.update_yaxes(title_text="Price ($)", gridcolor=theme["grid"])
     fig.update_xaxes(title_text="Date", gridcolor=theme["grid"])
+    selected_events = (
+        list(events)
+        if events is not None
+        else [
+            *detect_regime_shifts(close_series),
+            *detect_drawdown_inflections(close_series),
+        ]
+    )
+    y_lookup = close_series.to_dict()
+    fig.update_layout(
+        annotations=make_event_annotations(selected_events, theme, y_lookup=y_lookup)
+    )
 
     return apply_layout(fig, theme)
 
 
 def strategy_signal_figure(
-    sample: MarketSample, ticker: str, theme: Theme
+    sample: MarketSample,
+    ticker: str,
+    theme: Theme,
+    events: Sequence[DashboardEvent] | None = None,
 ) -> go.Figure:
     close_series = sample.history[ticker]["Close"].sort_index()
     ma_short = _moving_average(close_series, 20)
@@ -83,11 +112,21 @@ def strategy_signal_figure(
 
     fig.update_yaxes(title_text="Cumulative Return (%)", gridcolor=theme["grid"])
     fig.update_xaxes(title_text="Date", gridcolor=theme["grid"])
+    if events:
+        y_lookup = strat_returns.to_dict()
+        fig.update_layout(
+            annotations=make_event_annotations(events, theme, y_lookup=y_lookup, ay=-36)
+        )
 
     return apply_layout(fig, theme)
 
 
-def cost_impact_figure(sample: MarketSample, ticker: str, theme: Theme) -> go.Figure:
+def cost_impact_figure(
+    sample: MarketSample,
+    ticker: str,
+    theme: Theme,
+    events: Sequence[DashboardEvent] | None = None,
+) -> go.Figure:
     volume = sample.history[ticker]["Volume"].tail(60)
     cost_basis = volume / volume.max()
     impact = (volume.rank(pct=True) * 0.4) + 0.1
@@ -125,11 +164,24 @@ def cost_impact_figure(sample: MarketSample, ticker: str, theme: Theme) -> go.Fi
         },
     )
     fig.update_xaxes(gridcolor=theme["grid"])
+    selected_events = (
+        list(events) if events is not None else detect_turnover_spikes(volume)
+    )
+    y_lookup = cost_basis.to_dict()
+    fig.update_layout(
+        annotations=make_event_annotations(selected_events, theme, y_lookup=y_lookup)
+    )
 
     return apply_layout(fig, theme)
 
 
-def time_in_market_figure(sample: MarketSample, ticker: str, theme: Theme) -> go.Figure:
+def time_in_market_figure(
+    sample: MarketSample,
+    ticker: str,
+    theme: Theme,
+    events: Sequence[DashboardEvent] | None = None,
+) -> go.Figure:
+    _ = events
     close_series = sample.history[ticker]["Close"].sort_index()
     trend = close_series.diff().fillna(0)
     positive = (trend > 0).sum()
@@ -153,7 +205,13 @@ def time_in_market_figure(sample: MarketSample, ticker: str, theme: Theme) -> go
     return apply_layout(fig, theme)
 
 
-def diagnostics_figure(sample: MarketSample, ticker: str, theme: Theme) -> go.Figure:
+def diagnostics_figure(
+    sample: MarketSample,
+    ticker: str,
+    theme: Theme,
+    events: Sequence[DashboardEvent] | None = None,
+) -> go.Figure:
+    _ = events
     close_series = sample.history[ticker]["Close"].sort_index()
     returns = close_series.pct_change().dropna() * 100
 

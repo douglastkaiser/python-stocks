@@ -2,13 +2,19 @@
 
 from __future__ import annotations
 
-from typing import Tuple
+from typing import Sequence, Tuple
 
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 
 from python_stocks.dashboard.components.common import apply_layout
+from python_stocks.dashboard.components.events import (
+    DashboardEvent,
+    concise_event_labels,
+    default_events_for_series,
+    make_event_annotations,
+)
 from python_stocks.dashboard.components.market import MarketSample
 from python_stocks.dashboard.theme import Theme
 
@@ -31,6 +37,7 @@ def comparison_matrix_figure(
     theme: Theme,
     window: int = 60,
     cost_penalty: float = 0.002,
+    events: Sequence[DashboardEvent] | None = None,
 ) -> go.Figure:
     """Plot return vs volatility and overlay execution cost."""
     points = []
@@ -68,8 +75,16 @@ def comparison_matrix_figure(
         )
     )
 
+    close_series = sample.history[ticker]["Close"].sort_index()
+    volume_series = sample.history[ticker]["Volume"].sort_index()
+    selected_events = (
+        list(events)
+        if events is not None
+        else default_events_for_series(close_series, volume_series)
+    )
+
     fig.add_annotation(
-        text="Bigger bubbles = more slippage drag. High return with lower volatility signals efficient compounding.",
+        text="Bubbles scale with estimated cost drag; efficient compounding tends to pair stronger returns with contained volatility.",
         xref="paper",
         yref="paper",
         x=0,
@@ -79,7 +94,7 @@ def comparison_matrix_figure(
         align="left",
     )
     fig.add_annotation(
-        text="Myth: you must swing for max returns to beat the market. Reality: controlling volatility and costs often wins.",
+        text=concise_event_labels(selected_events, limit=3),
         xref="paper",
         yref="paper",
         x=0,
@@ -96,7 +111,11 @@ def comparison_matrix_figure(
 
 
 def timeline_overlay_figure(
-    sample: MarketSample, ticker: str, theme: Theme, horizon: int = 120
+    sample: MarketSample,
+    ticker: str,
+    theme: Theme,
+    horizon: int = 120,
+    events: Sequence[DashboardEvent] | None = None,
 ) -> go.Figure:
     """Overlay returns with period annotations to guide interpretation."""
     close_series = sample.history[ticker]["Close"].sort_index().tail(horizon)
@@ -126,30 +145,35 @@ def timeline_overlay_figure(
     )
 
     if not close_series.empty:
-        start, mid, end = (
+        start, mid = (
             close_series.index[0],
             close_series.index[len(close_series) // 2],
-            close_series.index[-1],
         )
         fig.add_vrect(
             x0=start, x1=mid, fillcolor=theme["panel"], opacity=0.08, line_width=0
         )
-        fig.add_annotation(
-            x=start,
-            y=cumulative.max(),
-            text="Accumulation phase: small edges compound.",
-            showarrow=False,
-            bgcolor=theme["panel"],
-            font={"color": theme["text"]},
+        selected_events = (
+            list(events)
+            if events is not None
+            else default_events_for_series(
+                close_series,
+                sample.history[ticker]["Volume"].sort_index().tail(horizon),
+            )
         )
+        y_lookup = cumulative.to_dict()
+        for annotation in make_event_annotations(
+            selected_events, theme, y_lookup=y_lookup, ay=-34, limit=5
+        ):
+            fig.add_annotation(annotation)
         fig.add_annotation(
-            x=end,
-            y=cumulative.min(),
-            text="Myth busting: timing every swing isn't necessary when discipline keeps you invested.",
-            showarrow=True,
-            arrowcolor=theme["accent_alt"],
-            ay=-40,
-            font={"color": theme["accent_alt"]},
+            xref="paper",
+            yref="paper",
+            x=0,
+            y=1.14,
+            text=concise_event_labels(selected_events, limit=4),
+            showarrow=False,
+            align="left",
+            font={"size": 12, "color": theme["muted_text"]},
         )
 
     fig.update_layout(
