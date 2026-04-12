@@ -282,7 +282,7 @@ def assumptions_affordance(
         children=[
             html.Summary("Assumptions used"),
             html.Div(
-                className="assumptions-affordance-content",
+                className="assumptions-affordance-content mobile-disclosure-content",
                 children=[
                     html.P(summary, style=muted_text(theme) | {"fontSize": "13px"}),
                     html.Ul(
