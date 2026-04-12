@@ -9,6 +9,7 @@ from dash import Dash, Input, Output, State, dcc, html, no_update
 
 from python_stocks.dashboard.components import (
     MarketSample,
+    assumptions_affordance,
     build_market_narrative,
     button_link,
     chart_narrative_block,
@@ -153,6 +154,7 @@ PRIMARY_NARRATIVE_IDS = {
     "matrix-spotlight": "matrix-spotlight-narrative",
     "timeline-spotlight": "timeline-spotlight-narrative",
 }
+METHODOLOGY_HREF = "../methodology.md"
 
 
 def _build_card(
@@ -663,6 +665,16 @@ def _signal_confirmation_section(theme_key: str) -> html.Div:
                                     "Use ticker and lookback inputs to confirm where the current move sits in context.",
                                     style=muted_text(theme),
                                 ),
+                                assumptions_affordance(
+                                    theme_key=theme_key,
+                                    summary="Signal views assume daily close-to-close returns with the selected lookback and current cost-drag setting.",
+                                    bullets=[
+                                        "Trend proxy: 10/50-day moving-average spread.",
+                                        "Volatility: annualized stdev of daily returns.",
+                                        "Cost sensitivity: bps drag shown as a directional edge haircut.",
+                                    ],
+                                    methodology_href=METHODOLOGY_HREF,
+                                ),
                                 _graph_container(
                                     "price-spotlight",
                                     "Market replay spotlight chart",
@@ -685,6 +697,16 @@ def _signal_confirmation_section(theme_key: str) -> html.Div:
                                 html.P(
                                     "Check whether rules stay invested during constructive trends before tuning anything else.",
                                     style=muted_text(theme),
+                                ),
+                                assumptions_affordance(
+                                    theme_key=theme_key,
+                                    summary="Benchmark comparisons use the same symbol window and cost slider so spread diagnostics remain apples-to-apples.",
+                                    bullets=[
+                                        "Benchmark baseline: buy-and-hold over the selected window.",
+                                        "Signal output is illustrative, not an execution blotter.",
+                                        "Participation focus: compare invested time before optimizing turnover.",
+                                    ],
+                                    methodology_href=METHODOLOGY_HREF,
                                 ),
                                 _graph_container(
                                     "strategy-spotlight",
@@ -782,6 +804,16 @@ def _scenario_stress_test_section(theme_key: str) -> html.Div:
                             title="Comparison matrix",
                             subtitle="Spot return, volatility, and cost trade-offs fast.",
                             children=[
+                                assumptions_affordance(
+                                    theme_key=theme_key,
+                                    summary="Scenario stress tests reuse the selected ticker, lookback, and horizon to compare expected return, volatility, and drag in one frame.",
+                                    bullets=[
+                                        "Bubble size scales with estimated cost impact.",
+                                        "Horizon impacts timeline overlays and risk context.",
+                                        "Preset scenarios are deterministic demo configurations.",
+                                    ],
+                                    methodology_href=METHODOLOGY_HREF,
+                                ),
                                 _graph_container(
                                     "matrix-spotlight",
                                     "Comparison matrix spotlight chart",
@@ -801,6 +833,16 @@ def _scenario_stress_test_section(theme_key: str) -> html.Div:
                             title="Timeline overlays",
                             subtitle="Check if the rule held through regime shifts.",
                             children=[
+                                assumptions_affordance(
+                                    theme_key=theme_key,
+                                    summary="Timeline overlays are backtest-style simulations that assume frictionless fills except for the configured cost drag.",
+                                    bullets=[
+                                        "No order book microstructure modeling.",
+                                        "Signals are computed on available sample closes.",
+                                        "Use this as robustness context, not a trade promise.",
+                                    ],
+                                    methodology_href=METHODOLOGY_HREF,
+                                ),
                                 _graph_container(
                                     "timeline-spotlight",
                                     "Timeline overlay spotlight chart",
@@ -893,6 +935,16 @@ def _discipline_check_section(theme_key: str) -> html.Div:
                             title="Execution costs",
                             subtitle="Stress entry/exit assumptions before scaling.",
                             children=[
+                                assumptions_affordance(
+                                    theme_key=theme_key,
+                                    summary="Execution cost visuals apply a simple slippage proxy to highlight when edge erosion may dominate strategy benefit.",
+                                    bullets=[
+                                        "Cost slider units are basis points per turnover event.",
+                                        "Liquidity bars are scaled from sample volume, not live depth.",
+                                        "Cross-check caveats in Methodology before position sizing.",
+                                    ],
+                                    methodology_href=METHODOLOGY_HREF,
+                                ),
                                 _graph_container(
                                     "cost-spotlight",
                                     "Execution cost spotlight chart",

@@ -16,6 +16,7 @@ title: python-stocks
     <div class="cta-row">
       <a class="cta primary" href="./dashboard/">Confirm signal in dashboard preview</a>
       <a class="cta secondary" href="./dashboards.md">Open the dashboard workflow map</a>
+      <a class="cta secondary" href="./methodology.md">Review methodology assumptions</a>
     </div>
     <div class="landing-theme-row">
       <div class="landing-theme-switch" role="group" aria-label="Theme selector">
@@ -80,6 +81,16 @@ title: python-stocks
         <h3>Tutorial reproductions</h3>
         <p>Notebook-style walkthroughs for reproducing visual outputs offline.</p>
         <p class="landing-subtle"><a href="./tutorials.md">Tutorials</a></p>
+      </div>
+      <div class="landing-card">
+        <h3>Methodology</h3>
+        <p>Metric definitions, slippage assumptions, and backtest limitations.</p>
+        <p class="landing-subtle"><a href="./methodology.md">Methodology reference</a></p>
+      </div>
+      <div class="landing-card">
+        <h3>About + disclaimer</h3>
+        <p>Primary location for legal/disclaimer text and project intent.</p>
+        <p class="landing-subtle"><a href="./about.md">About page</a></p>
       </div>
       <div class="landing-card">
         <h3>Quickstart commands</h3>

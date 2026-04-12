@@ -9,6 +9,7 @@ from python_stocks.dashboard.components.education import (
     metric_callouts,
 )
 from python_stocks.dashboard.components.layout import (
+    assumptions_affordance,
     button_link,
     chart_narrative_block,
     data_provenance_panel,
@@ -53,6 +54,7 @@ __all__ = [
     "ChartNarrative",
     "build_market_narrative",
     "button_link",
+    "assumptions_affordance",
     "data_provenance_panel",
     "page_header",
     "pill",

@@ -54,6 +54,8 @@ The [docs/](./docs) folder also includes deeper references:
 
 - **Strategy catalog:** [docs/strategies.md](./docs/strategies.md) covers how each registered strategy behaves, what data it needs, and which parameters you can tweak.
 - **Decision workflow map:** [docs/dashboards.md](./docs/dashboards.md) explains when to use each dashboard tab and what decision each view supports.
+- **Methodology:** [docs/methodology.md](./docs/methodology.md) documents metric definitions, cost/slippage assumptions, and backtest limitations.
+- **About + disclaimer:** [docs/about.md](./docs/about.md) is the primary location for legal/disclaimer text.
 - **Hands-on tutorials:** [docs/tutorials.md](./docs/tutorials.md) mirrors interactive views with notebook-style steps.
 - **Market data ingestion:** [docs/market_data.md](./docs/market_data.md) describes the daily provider, cache, quality checks, and demo fallback behavior.
 
