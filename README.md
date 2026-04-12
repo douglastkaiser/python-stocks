@@ -3,8 +3,8 @@
 Analysis-first stock strategy workbench for decision support. Use it to validate signal quality, pressure-test scenarios, and check execution discipline before committing capital.
 
 - All issues should have a priority tag and one other tag.
-- All pull request should be reveiwed before merging.
-- Preference is for Python but other options may be considered.
+- All pull requests should be reviewed before merging.
+- Preference is for Python, but other options may be considered.
 
 ## Decision workflows and dashboard map
 
