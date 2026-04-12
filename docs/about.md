@@ -12,13 +12,15 @@ title: About
 - Making assumptions explicit (lookback, costs, horizon) before decisions.
 - Publishing reproducible dashboard snapshots for reviews and CI previews.
 
-## Disclaimer and legal notes
+## Disclaimer
 
-- This project is for educational and research purposes only and does not constitute investment, legal, tax, or accounting advice.
-- Nothing in this repository, dashboard, or documentation is a recommendation to buy, sell, or hold any security.
-- Trading and investing involve risk, including potential loss of principal.
-- Backtests and simulations are hypothetical and can differ materially from live results due to execution, liquidity, slippage, and behavioral effects.
-- Users are responsible for validating data quality, assumptions, and suitability for their own circumstances before making financial decisions.
+This project is for educational and research use only. It is not investment, legal, tax, or accounting advice, and nothing here is a recommendation to buy, sell, or hold any security. Trading and investing involve risk, including possible loss of principal. Backtests and simulations are hypothetical and may differ materially from live results.
+
+## Support
+
+For support, email **support@python-stocks.dev**.
+
+Support is provided on a best-effort basis; response times and issue resolution are not guaranteed.
 
 ## Data and methodology references
 
