@@ -440,7 +440,7 @@ def data_provenance_panel(
                     ),
                     html.Div(
                         [
-                            html.Span("Market date:", style=label_style),
+                            html.Span("Market date (as-of):", style=label_style),
                             html.Span(market_date, style=value_style),
                         ],
                         style=item_style,
