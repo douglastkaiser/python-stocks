@@ -67,9 +67,15 @@ def _plotly_snapshots(
         html_path = output_dir / f"{name}.html"
         png_path = output_dir / f"{name}.png"
         fig.write_html(str(html_path), include_plotlyjs="cdn", full_html=True)
-        fig.write_image(str(png_path), format="png", width=1024, height=640, scale=2)
+        try:
+            fig.write_image(
+                str(png_path), format="png", width=1024, height=640, scale=2
+            )
+        except RuntimeError as exc:
+            print(f"[artifacts] Skipping PNG for {name}: {exc}")
+        else:
+            yield name, png_path
         yield name, html_path
-        yield name, png_path
 
 
 def main() -> None:
