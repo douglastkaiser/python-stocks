@@ -8,7 +8,6 @@ import pandas as pd
 from dash import Dash, Input, Output, State, dcc, html, no_update
 
 from python_stocks.dashboard.components import (
-    ChartNarrative,
     MarketSample,
     build_market_narrative,
     button_link,
@@ -20,7 +19,7 @@ from python_stocks.dashboard.components import (
     guidance_tooltips,
     hero_banner,
     kpi_stat,
-    myth_busting_callouts,
+    metric_callouts,
     muted_text,
     page_header,
     responsive_grid,
@@ -147,12 +146,36 @@ SPOTLIGHT_LABELS = {
     "timeline-spotlight": "Timeline path",
     "cost-spotlight": "Cost sensitivity",
 }
+PRIMARY_NARRATIVE_IDS = {
+    "price-spotlight": "price-spotlight-narrative",
+    "strategy-spotlight": "strategy-spotlight-narrative",
+    "cost-spotlight": "cost-spotlight-narrative",
+    "matrix-spotlight": "matrix-spotlight-narrative",
+    "timeline-spotlight": "timeline-spotlight-narrative",
+}
 
 
 def _build_card(
     title: str, body: List[html.Div | dcc.Graph], theme_key: str
 ) -> html.Div:
     return surface_card(theme_key=theme_key, title=title, children=body)
+
+
+def _default_narrative_block(
+    *, theme_key: str, ticker: str, cost_bps: int, spotlight_id: str
+) -> html.Div:
+    close_series = _SAMPLE.history[ticker]["Close"].sort_index()
+    volume_series = _SAMPLE.history[ticker]["Volume"].sort_index()
+    return chart_narrative_block(
+        narrative=build_market_narrative(
+            close_series,
+            volume_series,
+            cost_bps=cost_bps,
+            label=SPOTLIGHT_LABELS[spotlight_id],
+        ),
+        theme_key=theme_key,
+        component_id=PRIMARY_NARRATIVE_IDS[spotlight_id],
+    )
 
 
 def _graph_container(graph_id: str, label: str, height: str) -> html.Div:
@@ -645,10 +668,11 @@ def _signal_confirmation_section(theme_key: str) -> html.Div:
                                     "Market replay spotlight chart",
                                     "360px",
                                 ),
-                                chart_narrative_block(
-                                    narrative=ChartNarrative("", "", ""),
+                                _default_narrative_block(
                                     theme_key=theme_key,
-                                    component_id="price-spotlight-narrative",
+                                    ticker=_SAMPLE.tickers[0],
+                                    cost_bps=25,
+                                    spotlight_id="price-spotlight",
                                 ),
                             ],
                         ),
@@ -667,10 +691,11 @@ def _signal_confirmation_section(theme_key: str) -> html.Div:
                                     "Strategy spotlight chart",
                                     "280px",
                                 ),
-                                chart_narrative_block(
-                                    narrative=ChartNarrative("", "", ""),
+                                _default_narrative_block(
                                     theme_key=theme_key,
-                                    component_id="strategy-spotlight-narrative",
+                                    ticker=_SAMPLE.tickers[0],
+                                    cost_bps=25,
+                                    spotlight_id="strategy-spotlight",
                                 ),
                             ],
                         ),
@@ -762,10 +787,11 @@ def _scenario_stress_test_section(theme_key: str) -> html.Div:
                                     "Comparison matrix spotlight chart",
                                     "380px",
                                 ),
-                                chart_narrative_block(
-                                    narrative=ChartNarrative("", "", ""),
+                                _default_narrative_block(
                                     theme_key=theme_key,
-                                    component_id="matrix-spotlight-narrative",
+                                    ticker=_SAMPLE.tickers[0],
+                                    cost_bps=25,
+                                    spotlight_id="matrix-spotlight",
                                 ),
                             ],
                         ),
@@ -780,10 +806,11 @@ def _scenario_stress_test_section(theme_key: str) -> html.Div:
                                     "Timeline overlay spotlight chart",
                                     "300px",
                                 ),
-                                chart_narrative_block(
-                                    narrative=ChartNarrative("", "", ""),
+                                _default_narrative_block(
                                     theme_key=theme_key,
-                                    component_id="timeline-spotlight-narrative",
+                                    ticker=_SAMPLE.tickers[0],
+                                    cost_bps=25,
+                                    spotlight_id="timeline-spotlight",
                                 ),
                             ],
                         ),
@@ -871,10 +898,11 @@ def _discipline_check_section(theme_key: str) -> html.Div:
                                     "Execution cost spotlight chart",
                                     "340px",
                                 ),
-                                chart_narrative_block(
-                                    narrative=ChartNarrative("", "", ""),
+                                _default_narrative_block(
                                     theme_key=theme_key,
-                                    component_id="cost-spotlight-narrative",
+                                    ticker=_SAMPLE.tickers[0],
+                                    cost_bps=25,
+                                    spotlight_id="cost-spotlight",
                                 ),
                             ],
                         ),
@@ -998,7 +1026,7 @@ def _comparison_tab(theme_key: str) -> html.Div:
                     _graph_container(
                         "timeline-overlay", "Timeline overlay chart", "420px"
                     ),
-                    myth_busting_callouts(),
+                    metric_callouts(),
                 ],
                 theme_key,
             ),

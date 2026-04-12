@@ -6,7 +6,7 @@ from python_stocks.dashboard.components.comparison import (
 )
 from python_stocks.dashboard.components.education import (
     guidance_tooltips,
-    myth_busting_callouts,
+    metric_callouts,
 )
 from python_stocks.dashboard.components.layout import (
     button_link,
@@ -46,7 +46,7 @@ __all__ = [
     "comparison_matrix_figure",
     "timeline_overlay_figure",
     "guidance_tooltips",
-    "myth_busting_callouts",
+    "metric_callouts",
     "surface_card",
     "text_stack",
     "chart_narrative_block",

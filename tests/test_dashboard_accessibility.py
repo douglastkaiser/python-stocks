@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Set
 
 import dash.dcc as dcc
+from dash import html
 
 from python_stocks.dashboard.app import build_app
 from python_stocks.dashboard.theme import get_theme
@@ -78,3 +79,48 @@ def test_theme_contrast_meets_wcag():
         theme = get_theme(mode)
         assert _contrast_ratio(theme["text"], theme["background"]) >= threshold
         assert _contrast_ratio(theme["text"], theme["panel"]) >= threshold
+
+
+def test_metric_callout_keeps_aria_labeling():
+    app = build_app()
+    callout_nodes = []
+    stack = [app.layout]
+    while stack:
+        node = stack.pop()
+        if getattr(node, "className", "") == "metric-callout-block":
+            callout_nodes.append(node)
+        children = getattr(node, "children", None)
+        if isinstance(children, (list, tuple)):
+            stack.extend(children)
+        elif children is not None:
+            stack.append(children)
+
+    assert callout_nodes
+    for node in callout_nodes:
+        props = node.to_plotly_json().get("props", {})
+        assert props.get("role") == "region"
+        assert props.get("aria-label")
+
+
+def test_mobile_disclosure_still_provides_summary_and_content():
+    app = build_app()
+    details_nodes = []
+    stack = [app.layout]
+    while stack:
+        node = stack.pop()
+        if isinstance(node, html.Details):
+            details_nodes.append(node)
+        children = getattr(node, "children", None)
+        if isinstance(children, (list, tuple)):
+            stack.extend(children)
+        elif children is not None:
+            stack.append(children)
+
+    assert details_nodes
+    for details in details_nodes:
+        children = list(getattr(details, "children", []) or [])
+        assert any(isinstance(child, html.Summary) for child in children)
+        assert any(
+            "mobile-disclosure-content" in str(getattr(child, "className", ""))
+            for child in children
+        )
