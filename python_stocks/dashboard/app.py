@@ -10,6 +10,7 @@ from dash import Dash, Input, Output, State, dcc, html, no_update
 from python_stocks.dashboard.components import (
     ChartNarrative,
     MarketSample,
+    build_market_narrative,
     button_link,
     chart_narrative_block,
     comparison_matrix_figure,
@@ -139,32 +140,12 @@ SIMULATION_FEED = [
         "note": "Stayed invested but resized positions to absorb overlapping signals.",
     },
 ]
-SPOTLIGHT_NARRATIVES = {
-    "price-spotlight": ChartNarrative(
-        what_changed="Price pushed above its recent range while pullbacks stayed shallow.",
-        why_it_matters="Momentum persistence supports staying aligned with the trend instead of overreacting to noise.",
-        what_to_watch_next="Watch whether closes hold above the prior breakout zone for multiple sessions.",
-    ),
-    "strategy-spotlight": ChartNarrative(
-        what_changed="Signal performance widened relative to buy-and-hold after reducing lag on turns.",
-        why_it_matters="A wider spread suggests the rule is capturing direction while avoiding the most expensive whipsaws.",
-        what_to_watch_next="Monitor if that spread remains positive after the next volatility spike.",
-    ),
-    "matrix-spotlight": ChartNarrative(
-        what_changed="Scenario rankings now favor balanced windows over the fastest settings.",
-        why_it_matters="It indicates risk-adjusted outcomes improved more from consistency than from maximum responsiveness.",
-        what_to_watch_next="Track if top-ranked scenarios keep their edge as cost assumptions are increased.",
-    ),
-    "timeline-spotlight": ChartNarrative(
-        what_changed="Overlay paths converged during chop and diverged again during directional moves.",
-        why_it_matters="That pattern confirms participation discipline matters most when trends re-emerge.",
-        what_to_watch_next="Look for repeated divergence after drawdown recoveries to validate regime-fit.",
-    ),
-    "cost-spotlight": ChartNarrative(
-        what_changed="Expected return decayed gradually as modeled slippage increased.",
-        why_it_matters="Small execution improvements can preserve edge when gross alpha is modest.",
-        what_to_watch_next="Watch the breakeven drag threshold where the strategy no longer outperforms.",
-    ),
+SPOTLIGHT_LABELS = {
+    "price-spotlight": "Price replay",
+    "strategy-spotlight": "Signal spread",
+    "matrix-spotlight": "Scenario matrix",
+    "timeline-spotlight": "Timeline path",
+    "cost-spotlight": "Cost sensitivity",
 }
 
 
@@ -663,8 +644,9 @@ def _signal_confirmation_section(theme_key: str) -> html.Div:
                                     "280px",
                                 ),
                                 chart_narrative_block(
-                                    narrative=SPOTLIGHT_NARRATIVES["price-spotlight"],
+                                    narrative=ChartNarrative("", "", ""),
                                     theme_key=theme_key,
+                                    component_id="price-spotlight-narrative",
                                 ),
                             ],
                         ),
@@ -683,10 +665,9 @@ def _signal_confirmation_section(theme_key: str) -> html.Div:
                                     "280px",
                                 ),
                                 chart_narrative_block(
-                                    narrative=SPOTLIGHT_NARRATIVES[
-                                        "strategy-spotlight"
-                                    ],
+                                    narrative=ChartNarrative("", "", ""),
                                     theme_key=theme_key,
+                                    component_id="strategy-spotlight-narrative",
                                 ),
                             ],
                         ),
@@ -778,8 +759,9 @@ def _scenario_stress_test_section(theme_key: str) -> html.Div:
                                     "300px",
                                 ),
                                 chart_narrative_block(
-                                    narrative=SPOTLIGHT_NARRATIVES["matrix-spotlight"],
+                                    narrative=ChartNarrative("", "", ""),
                                     theme_key=theme_key,
+                                    component_id="matrix-spotlight-narrative",
                                 ),
                             ],
                         ),
@@ -794,10 +776,9 @@ def _scenario_stress_test_section(theme_key: str) -> html.Div:
                                     "300px",
                                 ),
                                 chart_narrative_block(
-                                    narrative=SPOTLIGHT_NARRATIVES[
-                                        "timeline-spotlight"
-                                    ],
+                                    narrative=ChartNarrative("", "", ""),
                                     theme_key=theme_key,
+                                    component_id="timeline-spotlight-narrative",
                                 ),
                             ],
                         ),
@@ -885,8 +866,9 @@ def _discipline_check_section(theme_key: str) -> html.Div:
                                     "280px",
                                 ),
                                 chart_narrative_block(
-                                    narrative=SPOTLIGHT_NARRATIVES["cost-spotlight"],
+                                    narrative=ChartNarrative("", "", ""),
                                     theme_key=theme_key,
+                                    component_id="cost-spotlight-narrative",
                                 ),
                             ],
                         ),
@@ -1205,6 +1187,11 @@ def build_app() -> Dash:
         Output("cost-spotlight", "figure"),
         Output("matrix-spotlight", "figure"),
         Output("timeline-spotlight", "figure"),
+        Output("price-spotlight-narrative", "children"),
+        Output("strategy-spotlight-narrative", "children"),
+        Output("cost-spotlight-narrative", "children"),
+        Output("matrix-spotlight-narrative", "children"),
+        Output("timeline-spotlight-narrative", "children"),
         *[Output(f"{chart_id}-metadata", "children") for chart_id in _CHART_IDS],
         Input("ticker-dropdown", "value"),
         Input("theme-toggle", "value"),
@@ -1275,6 +1262,19 @@ def build_app() -> Dash:
             hero_preset=hero_preset,
             sample=_SAMPLE,
         )
+        narratives = {}
+        close_series = _SAMPLE.history[ticker]["Close"].sort_index()
+        volume_series = _SAMPLE.history[ticker]["Volume"].sort_index()
+        for spotlight_id, label in SPOTLIGHT_LABELS.items():
+            narratives[spotlight_id] = chart_narrative_block(
+                narrative=build_market_narrative(
+                    close_series,
+                    volume_series,
+                    cost_bps=cost_bps or 0,
+                    label=label,
+                ),
+                theme_key=theme_key,
+            )
         return (
             page_style(theme),
             theme_key,
@@ -1294,6 +1294,11 @@ def build_app() -> Dash:
             cost_chart,
             comparison_chart,
             timeline_chart,
+            narratives["price-spotlight"],
+            narratives["strategy-spotlight"],
+            narratives["cost-spotlight"],
+            narratives["matrix-spotlight"],
+            narratives["timeline-spotlight"],
             *[metadata[f"{chart_id}-metadata"] for chart_id in _CHART_IDS],
         )
 

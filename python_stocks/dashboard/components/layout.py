@@ -224,7 +224,9 @@ def responsive_grid(
     )
 
 
-def chart_narrative_block(*, narrative: ChartNarrative, theme_key: str) -> html.Div:
+def chart_narrative_block(
+    *, narrative: ChartNarrative, theme_key: str, component_id: Optional[str] = None
+) -> html.Div:
     theme = get_theme(theme_key)
     row_style = {
         "display": "flex",
@@ -241,6 +243,7 @@ def chart_narrative_block(*, narrative: ChartNarrative, theme_key: str) -> html.
         ("What to watch next", narrative.what_to_watch_next),
     ]
     return html.Div(
+        id=component_id,
         className="chart-narrative-block",
         children=[
             html.Div(
