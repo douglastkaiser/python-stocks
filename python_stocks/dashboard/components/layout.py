@@ -269,6 +269,37 @@ def chart_narrative_block(
     )
 
 
+def assumptions_affordance(
+    *,
+    theme_key: str,
+    summary: str,
+    bullets: List[str],
+    methodology_href: str = "../methodology.md",
+) -> html.Details:
+    theme = get_theme(theme_key)
+    return html.Details(
+        className="assumptions-affordance",
+        children=[
+            html.Summary("Assumptions used"),
+            html.Div(
+                className="assumptions-affordance-content",
+                children=[
+                    html.P(summary, style=muted_text(theme) | {"fontSize": "13px"}),
+                    html.Ul(
+                        [html.Li(item) for item in bullets],
+                        style={"margin": 0, "paddingLeft": "18px", "fontSize": "13px"},
+                    ),
+                    html.A(
+                        "Open full methodology",
+                        href=methodology_href,
+                        style={"fontSize": "13px", "fontWeight": 600},
+                    ),
+                ],
+            ),
+        ],
+    )
+
+
 def hero_banner(
     *,
     title: str,

@@ -6,6 +6,8 @@ title: Dashboard workflow map
 
 Use the dashboard as an analysis-first decision workbench: confirm signal quality, stress-test assumptions, then run execution discipline checks.
 
+Method details are centralized in [Methodology](./methodology.md). Legal/disclaimer text is centralized in [About](./about.md) so workflow screens stay focused.
+
 ## Workflow 1 — Signal confirmation
 - **When to use:** You want to decide whether a signal is strong enough to act on before changing costs or assumptions.
 - **Decision it supports:** “Do I have enough trend and benchmark evidence to proceed?”
@@ -56,6 +58,16 @@ Each chart card now shows a provenance row so you can quickly confirm data timel
 Use **market date** to answer “how recent is the market session data?” and **last refresh** to answer
 “when did this app last update its copy?”. If refresh is old relative to your workflow, the chart shows a
 stale-data warning so you can refresh before making trade decisions.
+
+## Assumptions affordances in chart sections
+
+Each primary workflow chart card includes an inline **Assumptions used** toggle that summarizes:
+
+- metric framing (return/volatility/drawdown proxies),
+- slippage/cost simplifications (bps drag and cost-penalty scaling), and
+- interpretation guardrails for backtest-style outputs.
+
+Use the toggle for quick context, then open [Methodology](./methodology.md) for full definitions and caveats.
 
 ## Preview without running a server
 - Run `make artifacts` to create the Plotly HTML/PNG exports under `artifacts/plotly/`.

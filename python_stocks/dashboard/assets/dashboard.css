@@ -133,6 +133,26 @@
   gap: 12px;
 }
 
+.assumptions-affordance {
+  border: 1px solid var(--surface-border-subtle);
+  border-radius: 10px;
+  background: rgba(148, 163, 184, 0.08);
+}
+
+.assumptions-affordance > summary {
+  cursor: pointer;
+  padding: 8px 10px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.assumptions-affordance-content {
+  padding: 0 10px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .hero-quick-toggles label,
 .scenario-actions button,
 .control-bar label,
