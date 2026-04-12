@@ -222,10 +222,30 @@ class TradingHistory:
     def _internal_irr(self, cash_flows: list[float], *, guess: float = 0.1) -> float:
         rate = guess
         for _ in range(100):
-            npv = sum(cf / (1 + rate) ** i for i, cf in enumerate(cash_flows))
-            derivative = sum(
-                -i * cf / (1 + rate) ** (i + 1) for i, cf in enumerate(cash_flows)
-            )
+            if not np.isfinite(rate):
+                break
+            if rate <= -0.999999:
+                rate = -0.999999
+
+            base = 1 + rate
+            npv = 0.0
+            derivative = 0.0
+            for i, cf in enumerate(cash_flows):
+                exponent = float(i)
+                try:
+                    with np.errstate(over="raise", invalid="raise", divide="raise"):
+                        discount = base**exponent
+                        derivative_discount = base ** (exponent + 1.0)
+                except (OverflowError, FloatingPointError):
+                    npv = np.nan
+                    derivative = np.nan
+                    break
+                if not np.isfinite(discount) or not np.isfinite(derivative_discount):
+                    npv = np.nan
+                    derivative = np.nan
+                    break
+                npv += cf / discount
+                derivative += -i * cf / derivative_discount
             if abs(derivative) < 1e-12:
                 break
 
