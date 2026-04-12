@@ -31,7 +31,10 @@ from python_stocks.dashboard.components.figures import (
     time_in_market_figure,
 )
 from python_stocks.dashboard.components.market import MarketSample
-from python_stocks.dashboard.components.narrative import ChartNarrative
+from python_stocks.dashboard.components.narrative import (
+    ChartNarrative,
+    build_market_narrative,
+)
 
 __all__ = [
     "MarketSample",
@@ -48,6 +51,7 @@ __all__ = [
     "text_stack",
     "chart_narrative_block",
     "ChartNarrative",
+    "build_market_narrative",
     "button_link",
     "data_provenance_panel",
     "page_header",
