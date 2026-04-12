@@ -80,6 +80,20 @@
   grid-template-columns: 1fr;
 }
 
+.decision-chart-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+.decision-chart-card {
+  order: 1;
+}
+
+.supporting-chart-card {
+  order: 2;
+}
+
 .data-provenance-items {
   display: grid;
   grid-template-columns: 1fr;
@@ -145,6 +159,10 @@
   .tab-grid {
     gap: 16px;
   }
+
+  .decision-chart-grid {
+    gap: 16px;
+  }
 }
 
 @media (min-width: 960px) {
@@ -163,6 +181,23 @@
 
   .tab-grid--comparison {
     grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  }
+
+  .decision-chart-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-auto-rows: minmax(220px, auto);
+    align-items: start;
+  }
+
+  .decision-chart-card {
+    grid-column: 1 / span 2;
+    grid-row: 1 / span 2;
+    min-height: 100%;
+  }
+
+  .supporting-chart-card {
+    grid-column: 3;
+    grid-row: 1;
   }
 
   .mobile-disclosure {

@@ -74,6 +74,7 @@ def surface_card(
     subtitle: Optional[str] = None,
     children: Optional[List] = None,
     footer: Optional[html.Div] = None,
+    class_name: Optional[str] = None,
 ) -> html.Div:
     theme = get_theme(theme_key)
     body: List = []
@@ -86,6 +87,7 @@ def surface_card(
     if footer:
         body.append(footer)
     return html.Div(
+        className=class_name,
         style=surface_style(theme)
         | {"display": "flex", "flexDirection": "column", "gap": SPACING["sm"]},
         children=body,
