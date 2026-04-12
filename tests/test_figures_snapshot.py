@@ -36,6 +36,37 @@ def _sample_history() -> MarketSample:
     return MarketSample(tickers=["AAA", "BBB"], history=frame)
 
 
+def _eventful_sample_history() -> MarketSample:
+    dates = pd.date_range("2024-01-01", periods=160, freq="B")
+    close = pd.Series(
+        [
+            100
+            + (idx * 0.15)
+            + (3 if idx % 25 == 0 else 0)
+            - (4 if idx % 40 == 0 else 0)
+            for idx in range(len(dates))
+        ],
+        index=dates,
+    )
+    volume = pd.Series(
+        [
+            1_000 + ((idx % 11) * 20) + (1_500 if idx in {75, 120, 145} else 0)
+            for idx in range(len(dates))
+        ],
+        index=dates,
+    )
+    frame = pd.DataFrame(
+        {
+            ("AAA", "Close"): close,
+            ("AAA", "Volume"): volume,
+            ("BBB", "Close"): close * 0.9,
+            ("BBB", "Volume"): volume * 0.8,
+        },
+        index=dates,
+    )
+    return MarketSample(tickers=["AAA", "BBB"], history=frame)
+
+
 def _normalize(fig) -> dict:
     payload = json.loads(fig.to_json())
     payload.pop("frames", None)
@@ -76,3 +107,17 @@ def test_figures_match_snapshots():
 
     for name, fig in snapshots.items():
         _assert_snapshot(fig, name)
+
+
+def test_key_figures_include_annotations_when_events_detected():
+    sample = _eventful_sample_history()
+    theme = get_theme("light")
+
+    price_fig = price_trend_figure(sample, "AAA", theme)
+    cost_fig = cost_impact_figure(sample, "AAA", theme)
+
+    price_annotations = price_fig.to_plotly_json().get("layout", {}).get("annotations")
+    cost_annotations = cost_fig.to_plotly_json().get("layout", {}).get("annotations")
+
+    assert price_annotations
+    assert cost_annotations

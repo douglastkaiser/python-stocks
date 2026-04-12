@@ -7,8 +7,11 @@ from typing import List
 from dash import html
 
 
-def myth_busting_callouts() -> html.Div:
+def metric_callouts() -> html.Div:
     return html.Div(
+        className="metric-callout-block",
+        role="region",
+        **{"aria-label": "Comparison metrics callouts"},
         style={
             "background": "linear-gradient(135deg, rgba(16,185,129,0.08), rgba(59,130,246,0.08))",
             "border": "1px solid rgba(255,255,255,0.08)",
@@ -17,24 +20,18 @@ def myth_busting_callouts() -> html.Div:
             "marginTop": "8px",
         },
         children=[
-            html.Strong("Context note:"),
+            html.Strong("Metric callouts:"),
             html.P(
-                "Treat this as a confidence check: edge quality depends on stable rules, risk controls, and disciplined cost assumptions.",
-                style={"marginBottom": "4px"},
+                "Participation ratio: 92% in-market in baseline replay.",
+                style={"marginBottom": "2px"},
             ),
-            html.Ul(
-                [
-                    html.Li(
-                        "Lower turnover can improve recovery odds when execution drag rises."
-                    ),
-                    html.Li(
-                        "Participation stability often matters more than precise turning-point calls."
-                    ),
-                    html.Li(
-                        "Revisit sensitivity bands before increasing risk or allocation."
-                    ),
-                ],
-                style={"margin": 0, "paddingLeft": "18px"},
+            html.P(
+                "Cost envelope: modeled drag stays below 40 bps across presets.",
+                style={"marginBottom": "2px"},
+            ),
+            html.P(
+                "Regime checkpoints: compare 60d, 120d, and 252d overlays before reallocating.",
+                style={"marginBottom": 0},
             ),
         ],
     )

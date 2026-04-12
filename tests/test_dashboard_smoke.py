@@ -22,6 +22,13 @@ _EXPECTED_GRAPH_IDS = {
     "matrix-spotlight",
     "timeline-spotlight",
 }
+_EXPECTED_NARRATIVE_IDS = {
+    "price-spotlight-narrative",
+    "strategy-spotlight-narrative",
+    "cost-spotlight-narrative",
+    "matrix-spotlight-narrative",
+    "timeline-spotlight-narrative",
+}
 
 
 def _collect_graph_ids(node):
@@ -56,6 +63,22 @@ def _collect_nodes(node, component_type):
     return nodes
 
 
+def _collect_component_ids(node):
+    ids = set()
+    node_id = getattr(node, "id", None)
+    if node_id:
+        ids.add(str(node_id))
+
+    children = getattr(node, "children", None)
+    if isinstance(children, (list, tuple)):
+        for child in children:
+            ids.update(_collect_component_ids(child))
+    elif children is not None:
+        ids.update(_collect_component_ids(children))
+
+    return ids
+
+
 def test_dashboard_layout_contains_expected_graphs():
     app = build_app()
     graph_ids = _collect_graph_ids(app.layout)
@@ -87,3 +110,9 @@ def test_mobile_disclosure_controls_exist():
         str(getattr(node, "className", "")) for node in disclosure_nodes
     }
     assert any("mobile-disclosure" in class_name for class_name in disclosure_classes)
+
+
+def test_primary_chart_sections_include_narrative_blocks():
+    app = build_app()
+    component_ids = _collect_component_ids(app.layout)
+    assert _EXPECTED_NARRATIVE_IDS.issubset(component_ids)
