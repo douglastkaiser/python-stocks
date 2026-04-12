@@ -111,11 +111,10 @@ title: python-stocks
   </div>
   <div class="landing-columns">
     <div class="landing-panel">
-      <p>Every push triggers the Pages workflow to rebuild, upload, and deploy the SPY/DIA sample.</p>
       <ul>
-        <li>Push to <code>main</code> to refresh the live site.</li>
-        <li>Open a pull request to get a Draft Preview link and comment.</li>
-        <li>Artifacts stay in lockstep with the dashboard for predictable decision reviews.</li>
+        <li><strong>Push to <code>main</code> (automatic):</strong> <code>deploy-main.yml</code> runs automatically on every push to <code>main</code> and publishes the refreshed production site.</li>
+        <li><strong>Manual workflow dispatch:</strong> <code>deploy-main.yml</code> can also be run manually from the Actions tab using <strong>Run workflow</strong> (for example, to republish without a new commit).</li>
+        <li><strong>PR previews (automatic publish + automatic cleanup):</strong> <code>pr-preview.yml</code> publishes/updates previews at <code>pr/&lt;number&gt;/</code> for pull requests, and <code>pr-cleanup.yml</code> removes that preview path when the pull request is closed.</li>
       </ul>
       <div class="landing-badges">
         <span class="landing-badge">Artifacts: Plotly + PNG</span>
