@@ -131,13 +131,9 @@ outputs from a lightweight buy-and-hold simulation. Artifacts are published in t
 GitHub Pages now serves content from the `gh-pages` branch so the public site stays in sync with CI assets while leaving the
 repository clean:
 
-- **Manual deploys from `main`:** Trigger the `Deploy Main` workflow (`.github/workflows/deploy-main.yml`) from the Actions tab
-  after merging to `main`. It rebuilds the SPY/DIA sample dashboards and landing page, then syncs the `gh-pages` branch root while
-  keeping any existing PR preview folders so `https://www.douglastkaiser.com/python-stocks/` stays current.
-- **Automatic PR previews:** The `PR Preview` workflow (`.github/workflows/pr-preview.yml`) runs on PR updates, publishes artifacts
-  to `https://www.douglastkaiser.com/python-stocks/pr/<number>/`, and posts/updates a PR comment with the preview URL. The
-  companion `PR Preview Cleanup` workflow (`.github/workflows/pr-cleanup.yml`) removes the matching preview folder from `gh-pages`
-  after the PR closes.
+- **Push to `main` (automatic):** `deploy-main.yml` runs automatically on every push to `main` and publishes the refreshed production site.
+- **Manual workflow dispatch:** `deploy-main.yml` can also be run manually from the Actions tab using **Run workflow** (for example, to republish without a new commit).
+- **PR previews (automatic publish + automatic cleanup):** `pr-preview.yml` publishes/updates previews at `pr/<number>/` for pull requests, and `pr-cleanup.yml` removes that preview path when the pull request is closed.
 
 You can still regenerate static reports locally into `docs/` with the same command used by the workflows:
 
