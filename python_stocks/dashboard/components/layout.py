@@ -6,6 +6,7 @@ from typing import Iterable, List, Optional
 
 from dash import html
 
+from python_stocks.dashboard.components.narrative import ChartNarrative
 from python_stocks.dashboard.theme import Theme, get_theme, surface_style
 
 SPACING = {"xs": "6px", "sm": "10px", "md": "16px", "lg": "24px"}
@@ -219,6 +220,46 @@ def responsive_grid(
             "display": "grid",
             "gridTemplateColumns": f"repeat(auto-fit, minmax({min_width}, 1fr))",
             "gap": gap,
+        },
+    )
+
+
+def chart_narrative_block(*, narrative: ChartNarrative, theme_key: str) -> html.Div:
+    theme = get_theme(theme_key)
+    row_style = {
+        "display": "flex",
+        "alignItems": "flex-start",
+        "gap": SPACING["xs"],
+        "fontSize": "13px",
+        "lineHeight": "1.4",
+    }
+    label_style = {"fontWeight": 700, "color": theme["text"], "minWidth": "128px"}
+    value_style = {"color": theme["muted_text"], "margin": 0}
+    rows = [
+        ("What changed", narrative.what_changed),
+        ("Why it matters", narrative.why_it_matters),
+        ("What to watch next", narrative.what_to_watch_next),
+    ]
+    return html.Div(
+        className="chart-narrative-block",
+        children=[
+            html.Div(
+                [
+                    html.Span(f"{label}:", style=label_style),
+                    html.P(value, style=value_style),
+                ],
+                style=row_style,
+            )
+            for label, value in rows
+        ],
+        style={
+            "display": "flex",
+            "flexDirection": "column",
+            "gap": SPACING["xs"],
+            "padding": "10px 12px",
+            "borderRadius": "12px",
+            "background": f"rgba(15,23,42,{0.03 if theme['mode']=='light' else 0.24})",
+            "border": f"1px solid {theme['grid']}",
         },
     )
 

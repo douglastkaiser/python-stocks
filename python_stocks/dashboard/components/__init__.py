@@ -10,6 +10,7 @@ from python_stocks.dashboard.components.education import (
 )
 from python_stocks.dashboard.components.layout import (
     button_link,
+    chart_narrative_block,
     data_provenance_panel,
     hero_banner,
     kpi_stat,
@@ -30,6 +31,7 @@ from python_stocks.dashboard.components.figures import (
     time_in_market_figure,
 )
 from python_stocks.dashboard.components.market import MarketSample
+from python_stocks.dashboard.components.narrative import ChartNarrative
 
 __all__ = [
     "MarketSample",
@@ -44,6 +46,8 @@ __all__ = [
     "myth_busting_callouts",
     "surface_card",
     "text_stack",
+    "chart_narrative_block",
+    "ChartNarrative",
     "button_link",
     "data_provenance_panel",
     "page_header",
