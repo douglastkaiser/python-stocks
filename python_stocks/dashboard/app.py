@@ -627,10 +627,12 @@ def _signal_confirmation_section(theme_key: str) -> html.Div:
                         ),
                     ],
                 ),
-                responsive_grid(
-                    [
+                html.Div(
+                    className="decision-chart-grid",
+                    children=[
                         surface_card(
                             theme_key=theme_key,
+                            class_name="decision-chart-card",
                             title="Market replay",
                             subtitle="Read the trend context before acting.",
                             children=[
@@ -641,7 +643,7 @@ def _signal_confirmation_section(theme_key: str) -> html.Div:
                                 _graph_container(
                                     "price-spotlight",
                                     "Market replay spotlight chart",
-                                    "280px",
+                                    "360px",
                                 ),
                                 chart_narrative_block(
                                     narrative=ChartNarrative("", "", ""),
@@ -652,6 +654,7 @@ def _signal_confirmation_section(theme_key: str) -> html.Div:
                         ),
                         surface_card(
                             theme_key=theme_key,
+                            class_name="supporting-chart-card",
                             title="Signals vs. benchmark",
                             subtitle="Validate signal behavior against buy-and-hold.",
                             children=[
@@ -672,7 +675,6 @@ def _signal_confirmation_section(theme_key: str) -> html.Div:
                             ],
                         ),
                     ],
-                    min_width="280px",
                 ),
                 responsive_grid(summary_cards, min_width="260px"),
             ],
@@ -746,17 +748,19 @@ def _scenario_stress_test_section(theme_key: str) -> html.Div:
                         ),
                     ],
                 ),
-                responsive_grid(
-                    [
+                html.Div(
+                    className="decision-chart-grid",
+                    children=[
                         surface_card(
                             theme_key=theme_key,
+                            class_name="decision-chart-card",
                             title="Comparison matrix",
                             subtitle="Spot return, volatility, and cost trade-offs fast.",
                             children=[
                                 _graph_container(
                                     "matrix-spotlight",
                                     "Comparison matrix spotlight chart",
-                                    "300px",
+                                    "380px",
                                 ),
                                 chart_narrative_block(
                                     narrative=ChartNarrative("", "", ""),
@@ -767,6 +771,7 @@ def _scenario_stress_test_section(theme_key: str) -> html.Div:
                         ),
                         surface_card(
                             theme_key=theme_key,
+                            class_name="supporting-chart-card",
                             title="Timeline overlays",
                             subtitle="Check if the rule held through regime shifts.",
                             children=[
@@ -783,7 +788,6 @@ def _scenario_stress_test_section(theme_key: str) -> html.Div:
                             ],
                         ),
                     ],
-                    min_width="280px",
                 ),
                 responsive_grid(steps, min_width="240px"),
             ],
@@ -853,17 +857,19 @@ def _discipline_check_section(theme_key: str) -> html.Div:
                         ),
                     ],
                 ),
-                responsive_grid(
-                    [
+                html.Div(
+                    className="decision-chart-grid",
+                    children=[
                         surface_card(
                             theme_key=theme_key,
+                            class_name="decision-chart-card",
                             title="Execution costs",
                             subtitle="Stress entry/exit assumptions before scaling.",
                             children=[
                                 _graph_container(
                                     "cost-spotlight",
                                     "Execution cost spotlight chart",
-                                    "280px",
+                                    "340px",
                                 ),
                                 chart_narrative_block(
                                     narrative=ChartNarrative("", "", ""),
@@ -873,7 +879,6 @@ def _discipline_check_section(theme_key: str) -> html.Div:
                             ],
                         ),
                     ],
-                    min_width="280px",
                 ),
                 responsive_grid(cards, min_width="260px"),
             ],
