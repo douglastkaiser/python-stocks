@@ -57,6 +57,7 @@ def test_data_provenance_panel_renders_stale_warning_when_required():
     text = _to_text(panel)
     assert "Data may be stale" in text
     assert "Unit test source" in text
+    assert "Market date (as-of):" in text
 
 
 def test_metadata_changes_with_ticker_and_scope_inputs():
