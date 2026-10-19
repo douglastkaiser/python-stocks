@@ -7,19 +7,16 @@ import {
   BookOpen,
   Check,
   ChevronDown,
-  CircleHelp,
   Clock3,
   FlaskConical,
   FolderOpen,
   GitCompareArrows,
-  Layers3,
   LoaderCircle,
   Play,
   Plus,
   RotateCcw,
   Search,
   ShieldCheck,
-  SlidersHorizontal,
   Trash2,
   X,
 } from 'lucide-react';
@@ -61,10 +58,7 @@ function Metric({
 }) {
   return (
     <div className="metric">
-      <div className="metric-label">
-        {title}
-        <CircleHelp size={13} aria-hidden="true" />
-      </div>
+      <div className="metric-label">{title}</div>
       <strong className={positive === undefined ? '' : positive ? 'positive' : 'negative'}>
         {value}
       </strong>
@@ -234,82 +228,63 @@ export default function App() {
       <a className="skip-link" href="#main-content">
         Skip to results
       </a>
-      <aside className="rail" aria-label="Main navigation">
-        <a
-          className="brand"
-          href="#"
-          aria-label="Strategy Lab home"
-          onClick={(e) => {
-            e.preventDefault();
-            setPage('workspace');
-          }}
-        >
-          <span className="brand-icon">
-            <Layers3 size={22} />
-          </span>
-          <span>
-            python<span className="brand-light">stocks</span>
-            <small>A STOCK-MARKET WORKBENCH</small>
-          </span>
-        </a>
-        <div className="rail-section-label">WORKSPACE</div>
-        <button
-          className={`nav-item ${page === 'workspace' ? 'active' : ''}`}
-          onClick={() => setPage('workspace')}
-          aria-current={page === 'workspace' ? 'page' : undefined}
-        >
-          <FlaskConical size={18} />
-          Strategy Lab
-          <span className="nav-dot" />
-        </button>
-        <button
-          className={`nav-item ${page === 'saved' ? 'active' : ''}`}
-          onClick={() => setPage('saved')}
-          aria-current={page === 'saved' ? 'page' : undefined}
-        >
-          <FolderOpen size={18} />
-          Saved analyses<span className="count">{saved.length}</span>
-        </button>
-        <div className="rail-bottom">
-          <div className="research-note">
-            <span className="small-icon">
-              <ShieldCheck size={18} />
+      <header className="desktop-header">
+        <div className="application-titlebar">
+          <a
+            className="brand"
+            href="#"
+            aria-label="Strategy Lab home"
+            onClick={(e) => {
+              e.preventDefault();
+              setPage('workspace');
+            }}
+          >
+            <span className="brand-icon" aria-hidden="true">
+              <BarChart3 size={18} />
             </span>
-            <strong>Try changing just one thing.</strong>
-            <p>
-              Save a run, then change a setting.
-              <br />
-              See what made a difference.
-            </p>
-            <button className="text-button" onClick={() => setHelp(true)}>
-              How this works <ArrowUpRight size={13} />
-            </button>
-          </div>
-          <button className="nav-item" onClick={() => setHelp(true)}>
-            <BookOpen size={17} />
-            Methodology & help
-            <ArrowUpRight size={14} />
-          </button>
-          <div className="local-label">
-            <span />
-            Private, in your browser
-          </div>
+            <span>
+              python<span className="brand-light">stocks</span>
+            </span>
+          </a>
+          <span className="titlebar-rule" aria-hidden="true" />
+          <span className="application-label">A STOCK-MARKET WORKBENCH</span>
         </div>
-      </aside>
-      <div className="app-body">
-        <header className="topbar">
-          <div className="breadcrumb">
-            Workspace <span>/</span>
-            <strong>{page === 'workspace' ? 'Strategy Lab' : 'Saved analyses'}</strong>
-          </div>
-          <button className="help-button" onClick={() => setHelp(true)} aria-label="Open help">
-            <CircleHelp size={18} />
+        <nav className="menubar" aria-label="Main navigation">
+          <button
+            className={`nav-item ${page === 'workspace' ? 'active' : ''}`}
+            onClick={() => setPage('workspace')}
+            aria-current={page === 'workspace' ? 'page' : undefined}
+          >
+            <FlaskConical size={15} />
+            Strategy Lab
           </button>
-        </header>
+          <button
+            className={`nav-item ${page === 'saved' ? 'active' : ''}`}
+            onClick={() => setPage('saved')}
+            aria-current={page === 'saved' ? 'page' : undefined}
+          >
+            <FolderOpen size={15} />
+            Saved analyses <span className="count">{saved.length}</span>
+          </button>
+          <button className="nav-item" onClick={() => setHelp(true)} aria-label="Open help">
+            <BookOpen size={15} />
+            How it works
+          </button>
+          <span className="local-label">
+            <span />
+            Runs stay in this browser
+          </span>
+        </nav>
+      </header>
+      <div className="app-body">
         <main id="main-content" tabIndex={-1}>
           <div className="page-heading">
             <div>
-              <div className="eyebrow">PYTHON STOCKS / BACKTESTS</div>
+              <div className="eyebrow">
+                <span className="document-number">{page === 'workspace' ? '01' : '02'}</span>
+                {page === 'workspace' ? 'THE WORKBENCH' : 'THE RUN ARCHIVE'}
+                <span className="edition-label">HISTORICAL STUDIES</span>
+              </div>
               <h1>
                 {page === 'workspace' ? 'What if I’d invested differently?' : 'Your saved runs.'}
               </h1>
@@ -319,10 +294,11 @@ export default function App() {
                   : 'Come back to a run, or put a few next to each other and compare the numbers.'}
               </p>
             </div>
-            <span className="historical-badge">
-              <span />
-              Historical data
-            </span>
+            <div className="snapshot-stamp">
+              <span>DATA CUT-OFF</span>
+              <strong>02 JUL 2019</strong>
+              <span>HISTORICAL, NOT LIVE</span>
+            </div>
           </div>
           {warning && (
             <div className="banner warning" role="status">
@@ -342,12 +318,12 @@ export default function App() {
             <div className="workspace-grid">
               <aside className="configuration card" aria-label="Analysis configuration">
                 <div className="panel-heading">
-                  <span className="icon-tile">
-                    <SlidersHorizontal size={17} />
+                  <span className="window-index" aria-hidden="true">
+                    A
                   </span>
                   <div>
                     <h2>Set up a run</h2>
-                    <p>The example is a good place to start.</p>
+                    <p>Change one thing. Run it again.</p>
                   </div>
                   <button
                     className="mobile-settings"
@@ -584,6 +560,14 @@ export default function App() {
                     </button>
                   </div>
                 )}
+                <div className="results-titlebar">
+                  <span className="window-index" aria-hidden="true">
+                    B
+                  </span>
+                  <span>RESULTS / {active?.ticker ?? draft.ticker}</span>
+                  <span className="window-rule" aria-hidden="true" />
+                  <span className="window-caption">MOVING AVERAGE STUDY</span>
+                </div>
                 <div className="results-toolbar">
                   <div className="result-context">
                     <span className="ticker-icon">{active?.ticker ?? draft.ticker}</span>
@@ -685,6 +669,12 @@ export default function App() {
                       />
                     </div>
                     <div className="card analysis-card">
+                      <div className="analysis-titlebar">
+                        <BarChart3 size={14} aria-hidden="true" />
+                        <span>THE RECORD</span>
+                        <span className="window-rule" aria-hidden="true" />
+                        <span>03 VIEWS</span>
+                      </div>
                       <div className="result-tabs" role="tablist" aria-label="Analysis views">
                         {(['Performance', 'Risk', 'Trades'] as View[]).map((tab, index) => (
                           <button
@@ -863,8 +853,8 @@ export default function App() {
                       </div>
                     </div>
                     <div className="insight-card">
-                      <span className="insight-icon">
-                        <FlaskConical size={20} />
+                      <span className="insight-icon" aria-hidden="true">
+                        N.B.
                       </span>
                       <div>
                         <div className="section-label">WHAT HAPPENED</div>
@@ -932,13 +922,16 @@ export default function App() {
                     </span>
                   </div>
                   <div className="saved-grid">
-                    {saved.map((run) => (
+                    {saved.map((run, runIndex) => (
                       <article
                         key={run.id}
                         className={`card saved-card ${compare.includes(run.id) ? 'is-compared' : ''}`}
                       >
                         <div className="saved-card-top">
                           <span className="symbol-badge">{run.result.config.ticker}</span>
+                          <span className="archive-index">
+                            RUN / {String(runIndex + 1).padStart(2, '0')}
+                          </span>
                           <button
                             className="icon-button"
                             aria-label={`Delete ${run.name}`}
@@ -1054,7 +1047,11 @@ export default function App() {
           )}
           <footer className="page-footer">
             <span>
-              <FlaskConical size={13} />
+              <span className="status-square" aria-hidden="true" />
+              LOCAL MODE
+              <span className="footer-divider" aria-hidden="true">
+                /
+              </span>
               Happy tinkering.
             </span>
             <span>
@@ -1092,6 +1089,7 @@ export default function App() {
               <X size={19} />
             </button>
           </div>
+          <div className="dialog-kicker">SAVE TO LOCAL ARCHIVE</div>
           <h2 id="save-title">Save this run</h2>
           <p>
             Save the displayed result and its assumptions on this browser.
@@ -1135,6 +1133,7 @@ export default function App() {
             <X size={19} />
           </button>
         </div>
+        <div className="dialog-kicker">WORKBENCH MANUAL</div>
         <h2 id="help-title">How the numbers are worked out</h2>
         <p>
           Strategy Lab is a historical research tool. The bundled snapshots end on July 2, 2019;

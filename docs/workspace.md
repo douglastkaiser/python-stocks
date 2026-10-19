@@ -91,3 +91,16 @@ Pull requests run Python regression/artifact checks and the web calculation,
 production build, and browser checks. Pushes to `main` build and verify the same
 web app, then deploy it using the official GitHub Pages artifact workflow. There
 is no separate static imitation, Jekyll build, or `gh-pages` branch requirement.
+
+## Interface notes
+
+The web interface uses a minimal desktop-tool layout inspired by early personal
+computer software: a horizontal menu bar, framed input and results windows,
+folder tabs, and ruled tables. System monospace type, serif document headings,
+paper-colored surfaces, and green chart ink keep the whole application consistent
+without remote fonts. Chart fills use a fine hatch rather than a gradient.
+
+The same treatment applies to saved-run index cards, comparisons, notifications,
+and the save/help dialogs. On small screens the two windows stack and input
+settings can be expanded; navigation remains labeled instead of becoming a row
+of unlabeled icons. The data cutoff is visible above the workspace.

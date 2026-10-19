@@ -72,23 +72,15 @@ export function Chart({
         }}
       >
         <defs>
-          <linearGradient id="chart-fill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#4f65e8" stopOpacity=".13" />
-            <stop offset="100%" stopColor="#4f65e8" stopOpacity="0" />
-          </linearGradient>
+          <pattern id="chart-fill" width="6" height="6" patternUnits="userSpaceOnUse">
+            <path d="M0 6L6 0" stroke="var(--plot-strategy)" strokeWidth="0.6" opacity=".14" />
+          </pattern>
         </defs>
         {Array.from({ length: 5 }, (_, i) => {
           const v = min + ((max - min) * i) / 4;
           return (
             <g key={i}>
-              <line
-                x1={left}
-                x2={W - right}
-                y1={y(v)}
-                y2={y(v)}
-                stroke="#e9edf3"
-                strokeDasharray="3 5"
-              />
+              <line x1={left} x2={W - right} y1={y(v)} y2={y(v)} stroke="var(--plot-grid)" />
               <text x={left - 13} y={y(v) + 4} textAnchor="end" className="axis-label">
                 {risk ? `${v.toFixed(0)}%` : `${(v / 1000).toFixed(1)}k`}
               </text>
@@ -99,13 +91,19 @@ export function Chart({
           d={`${path(false)} L${x(points.length - 1)},${H - bottom} L${left},${H - bottom} Z`}
           fill="url(#chart-fill)"
         />
-        <path d={path(true)} fill="none" stroke="#a6b0c2" strokeWidth="2" strokeDasharray="6 5" />
+        <path
+          d={path(true)}
+          fill="none"
+          stroke="var(--plot-benchmark)"
+          strokeWidth="2"
+          strokeDasharray="6 5"
+        />
         <path
           d={path(false)}
           fill="none"
-          stroke="#5265df"
-          strokeWidth="2.7"
-          strokeLinejoin="round"
+          stroke="var(--plot-strategy)"
+          strokeWidth="2.2"
+          strokeLinejoin="miter"
         />
         {Array.from({ length: 5 }, (_, i) => {
           const idx = Math.round((i * (points.length - 1)) / 4);
@@ -145,8 +143,8 @@ export function Chart({
                   cx={x(i)}
                   cy={y(points[i].equity)}
                   r="4"
-                  fill={t.side === 'Buy' ? '#5265df' : '#fff'}
-                  stroke="#5265df"
+                  fill={t.side === 'Buy' ? 'var(--plot-strategy)' : 'var(--paper)'}
+                  stroke="var(--plot-strategy)"
                   strokeWidth="2"
                 />
               </g>
@@ -159,14 +157,14 @@ export function Chart({
               x2={x(hover)}
               y1={top}
               y2={H - bottom}
-              stroke="#69758f"
+              stroke="var(--ink)"
               strokeDasharray="3 4"
             />
             <circle
               cx={x(hover)}
               cy={y(risk ? focus.drawdown * 100 : focus.equity)}
               r="5"
-              fill="#5265df"
+              fill="var(--plot-strategy)"
               stroke="#fff"
               strokeWidth="2"
             />
