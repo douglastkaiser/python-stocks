@@ -2,6 +2,17 @@
 
 A lightweight checklist for shipping safely without a formal release train.
 
+## Web workspace release checks
+
+Run `npm ci --prefix web`, `make web-test`, and `make web-build`. Install Chromium
+with `cd web && npx playwright install chromium`, then run `make web-browser`
+from the repository root. Verify the built root and `/dashboard/` paths using a
+static server, including a project subpath. Check saved comparisons, exports,
+mobile layout, and failed-data retries. Pushes to main deploy this interactive
+build after calculation and browser checks. See [workspace.md](./workspace.md).
+
+The checklist below applies to the legacy local Dash app.
+
 ## 1) Pre-release manual UX checks
 
 Before you ship, run the app locally and sanity-check the core user flow:

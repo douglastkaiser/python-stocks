@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
 
 import pandas as pd
@@ -76,7 +77,19 @@ def _normalize(fig) -> dict:
     layout.pop("transition", None)
     for trace in payload.get("data", []):
         trace.pop("uid", None)
-    return payload
+
+    # Plotly versions differ in trailing zero precision for identical timestamps.
+    # Canonicalize only zero fractions; retain meaningful fractional seconds.
+    def canonicalize(value):
+        if isinstance(value, str):
+            return re.sub(r"(T\d{2}:\d{2}:\d{2})\.0+(Z?)$", r"\1\2", value)
+        if isinstance(value, list):
+            return [canonicalize(item) for item in value]
+        if isinstance(value, dict):
+            return {key: canonicalize(item) for key, item in value.items()}
+        return value
+
+    return {key: canonicalize(value) for key, value in payload.items()}
 
 
 def _assert_snapshot(fig, name: str) -> None:

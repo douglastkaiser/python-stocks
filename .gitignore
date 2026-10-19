@@ -8,3 +8,12 @@ artifacts/
 # Python bytecode
 __pycache__/
 *.pyc
+
+# Interactive workspace
+web/node_modules/
+web/dist/
+web/public/data/*.json
+web/test-results/
+web/playwright-report/
+build/
+.venv/

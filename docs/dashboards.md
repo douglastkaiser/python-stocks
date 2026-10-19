@@ -2,7 +2,10 @@
 layout: default
 title: Dashboard workflow map
 ---
-# Dashboard workflow map
+# Legacy Dash dashboard workflow map
+
+The published app is now [Strategy Lab](./workspace.md), with Performance, Risk,
+and Trades views. This page describes the older local Python Dash interface.
 
 Use the dashboard as an analysis-first decision workbench: confirm signal quality, stress-test assumptions, then run execution discipline checks.
 
